@@ -4,7 +4,7 @@
     <div class="parallax-layer absolute inset-0 scale-110" data-speed="-0.3">
         <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-50"
                poster="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80">
-            <source src="https://cdn.coverr.co/videos/coverr-aerial-view-of-a-tropical-island-2330/1080p.mp4" type="video/mp4">
+            <source src="https://www.snamitravel.com/wp-content/uploads/2025/03/hls/master.m3u8" type="video/mp4">
         </video>
     </div>
 
@@ -20,12 +20,7 @@
         <div class="absolute top-[45%] right-[15%] w-2.5 h-2.5 bg-gold/15 rounded-full"></div>
     </div>
 
-    <!-- Brand mark — bottom left (big VOYAGE text) -->
-    <div class="absolute bottom-8 left-6 md:left-12 lg:left-24 z-10 hero-fade" style="opacity:0;">
-        <p class="text-[10px] md:text-xs font-body text-gold-light tracking-[0.25em] uppercase mb-2">
-            {{ site_settings.site_name|default:"VOYAGE" }}
-        </p>
-    </div>
+   
 
     <!-- Main Text — BOTTOM LEFT -->
     <div class="absolute bottom-24 md:bottom-32 left-6 md:left-12 lg:left-24 z-10 max-w-[700px]">
@@ -60,15 +55,5 @@
             <span>{{ site_settings.hero_cta_text|default:"Begin Your Journey" }}</span>
             <span>→</span>
         </a>
-    </div>
-
-    <!-- Scroll Indicator — bottom center -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hero-fade" style="opacity:0;">
-        <div class="flex flex-col items-center gap-2">
-            <span class="text-[9px] font-body text-stone/50 tracking-[0.25em] uppercase">Scroll</span>
-            <div class="w-[1px] h-6 bg-stone/20 relative overflow-hidden">
-                <div class="w-full h-1/2 bg-gold/60 absolute animate-scroll-line"></div>
-            </div>
-        </div>
     </div>
 </section>

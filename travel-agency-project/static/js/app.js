@@ -139,24 +139,56 @@ function initCustomCursor() {
 }
 
 /* ═══════════════════════════════════════════
-   NAVBAR — Minimal, transparent → solid
+   NAVBAR — Scroll hide/show, direction-aware
    ═══════════════════════════════════════════ */
 function initNavbar() {
     const navbar = document.getElementById('navbar');
     if (!navbar) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            navbar.classList.add('navbar-scrolled');
-            navbar.style.background = 'rgba(248, 245, 240, 0.95)';
-            navbar.style.backdropFilter = 'blur(12px)';
-            navbar.style.borderBottom = '1px solid #D4C9BC';
-        } else {
-            navbar.classList.remove('navbar-scrolled');
-            navbar.style.background = 'transparent';
-            navbar.style.backdropFilter = 'none';
-            navbar.style.borderBottom = '1px solid transparent';
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const currentScrollY = window.scrollY;
+                const delta = currentScrollY > lastScrollY ? 1 : -1;
+                const navbarHeight = navbar.offsetHeight;
+
+                // Smooth scroll handling
+                if (delta > 0) {
+                    // Scrolling down - hide
+                    if (currentScrollY > navbarHeight) {
+                        navbar.classList.remove('navbar-appearing', 'navbar-revealing');
+                        navbar.classList.add('navbar-hidden');
+                        navbar.classList.add('navbar-revealing');
+                        navbar.style.transform = `translateY(-${navbarHeight}px)`;
+                    }
+                } else {
+                    // Scrolling up - show
+                    navbar.classList.remove('navbar-hidden', 'navbar-revealing');
+                    navbar.classList.add('navbar-appearing');
+                    navbar.classList.add('navbar-revealing');
+                    navbar.style.transform = 'translateY(0)';
+                }
+
+                // Update last scroll position
+                lastScrollY = currentScrollY > 0 ? currentScrollY : 0;
+                ticking = false;
+            });
+            ticking = true;
         }
+    }, { passive: true });
+
+    // Handle first load and resize
+    window.addEventListener('resize', () => {
+        navbar.style.transform = navbar.classList.contains('navbar-hidden') ? `translateY(-${navbar.offsetHeight}px)` : 'translateY(0)';
     });
+
+    // Initial check
+    if (window.scrollY > navbar.offsetHeight) {
+        navbar.classList.add('navbar-hidden');
+    }
 }
 
 /* ═══════════════════════════════════════════
@@ -210,7 +242,12 @@ function initScrollProgress() {
     if (!bar) return;
     gsap.to(bar, {
         scaleX: 1, ease: 'none',
-        scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 },
+        scrollTrigger: {
+            trigger: document.body,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.5,  // Smoother scrub
+        },
     });
 }
 
@@ -367,7 +404,7 @@ function initMapAnimation() {
     const mapPoints = document.querySelectorAll('.map-point');
     const planeIcon = document.getElementById('plane-icon');
     if (!routePath) return;
-
+``
     // Animate route drawing on scroll
     gsap.to(routePath, {
         strokeDashoffset: 0,

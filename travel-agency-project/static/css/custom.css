@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════
+   VOYAGE — Updated Custom Styles
+   Full-page snap · Filled cursor · Smooth
+   ═══════════════════════════════════════════ */
+
+/* ── Reset ── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body { overflow-x: hidden; }
+::selection { background: #C8A96E; color: #1A1A1A; }
+
+/* ── Full-Page Snap Scrolling ── */
+.snap-scroll-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: auto;
+    height: 100vh;
+}
+.snap-section {
+    scroll-snap-align: start;
+    min-height: 100vh;
+}
+@media (max-width: 768px) {
+    .snap-section { min-height: auto; scroll-snap-align: none; }
+}
+
+/* ── Smooth Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #1A1A1A; }
+::-webkit-scrollbar-thumb { background: #C8A96E; border-radius: 2px; }
+
+/* ── Button: Primary ── */
+.btn-primary {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    background: #1A1A1A; color: #FFFFFF;
+    font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    position: relative; overflow: hidden;
+    transition: color 0.4s cubic-bezier(0.16,1,0.3,1);
+    cursor: pointer; border: none; text-decoration: none;
+}
+.btn-primary::before {
+    content: ''; position: absolute; inset: 0;
+    background: #C8A96E;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.btn-primary:hover::before { transform: scaleX(1); }
+.btn-primary:hover { color: #1A1A1A; }
+.btn-primary span { position: relative; z-index: 1; }
+
+/* ── Link Arrow ── */
+.link-arrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #1A1A1A; text-decoration: none; position: relative;
+}
+.link-arrow .arrow-icon { transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.link-arrow:hover .arrow-icon { transform: translateX(6px); }
+.link-arrow::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 100%; height: 1px; background: #C8A96E;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.link-arrow:hover::after { transform: scaleX(1); }
+
+.link-arrow-light {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: #C8A96E; text-decoration: none; position: relative;
+}
+.link-arrow-light .arrow-icon { transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.link-arrow-light:hover .arrow-icon { transform: translateX(6px); }
+.link-arrow-light::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 100%; height: 1px; background: #C8A96E;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.link-arrow-light:hover::after { transform: scaleX(1); }
+
+/* ── Image Reveal ── */
+.image-reveal { position: relative; overflow: hidden; }
+.image-reveal::before {
+    content: ''; position: absolute; inset: 0;
+    background: #EDE8E1; z-index: 2;
+    transform: scaleX(1); transform-origin: left;
+    transition: transform 1.2s cubic-bezier(0.16,1,0.3,1);
+}
+.image-reveal.revealed::before { transform: scaleX(0); }
+.image-reveal img { transition: transform 1.4s cubic-bezier(0.16,1,0.3,1); }
+.image-reveal.revealed img { transform: scale(1); }
+
+/* ── Destination Card Hover Swap ── */
+.rise-card:hover .card-img-default { opacity: 0; }
+.rise-card:hover .card-img-hover { opacity: 1; transform: scale(1); }
+
+/* ── Navbar ── */
+.nav-text { color: #FFFFFF; }
+.navbar-scrolled .nav-text { color: #1A1A1A !important; }
+
+/* ── Menu Overlay Active ── */
+#menu-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+#menu-overlay.active .menu-link {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* ── Hamburger → X Animation ── */
+#mobile-menu-btn.active #bar1 {
+    transform: translateY(6.5px) rotate(45deg);
+    width: 24px !important;
+}
+#mobile-menu-btn.active #bar2 {
+    opacity: 0; width: 0 !important;
+}
+#mobile-menu-btn.active #bar3 {
+    transform: translateY(-6.5px) rotate(-45deg);
+    width: 24px !important;
+}
+
+/* ── Big Voyage Text ── */
+.voyage-big-text {
+    transition: color 0.5s ease;
+}
+.voyage-big-text:hover {
+    color: rgba(26, 26, 26, 0.08);
+}
+
+/* ── Form Inputs ── */
+.form-input {
+    width: 100%; padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9375rem;
+    color: #1A1A1A; background: #FFFFFF;
+    border: 1px solid #D4C9BC; border-radius: 0.25rem;
+    transition: border-color 0.3s, box-shadow 0.3s; outline: none;
+}
+.form-input:focus { border-color: #C8A96E; box-shadow: 0 0 0 2px rgba(200,169,110,0.15); }
+.form-input::placeholder { color: #B8AFA4; }
+
+/* ── Map Points Animation ── */
+.map-point { transition: opacity 0.5s ease; }
+.map-point.revealed { opacity: 1 !important; }
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+    .snap-section { scroll-snap-align: none; min-height: auto; }
+}

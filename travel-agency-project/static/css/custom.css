@@ -98,7 +98,35 @@ body { overflow-x: hidden; }
 .rise-card:hover .card-img-default { opacity: 0; }
 .rise-card:hover .card-img-hover { opacity: 1; transform: scale(1); }
 
-/* ── Navbar ── */
+/* ── Navbar Scroll Animation ── */
+#navbar {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform;
+}
+
+/* Hidden navbar on scroll down */
+#navbar.navbar-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Visible navbar on scroll up */
+#navbar.navbar-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Transition phases */
+#navbar.navbar-revealing {
+    transition: transform 0.2s ease-out;
+}
+
+#navbar.navbar-disappearing {
+    transition: transform 0.55s ease-in;
+}
+
 .nav-text { color: #FFFFFF; }
 .navbar-scrolled .nav-text { color: #1A1A1A !important; }
 
@@ -131,7 +159,7 @@ body { overflow-x: hidden; }
     transition: color 0.5s ease;
 }
 .voyage-big-text:hover {
-    color: rgba(26, 26, 26, 0.08);
+    color: rgba(252, 178, 114, 0.08);
 }
 
 /* ── Form Inputs ── */

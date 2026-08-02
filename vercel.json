@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "travel-agency-project/travel-agency-project/wsgi.py",
+      "src": "travel-agency-project/config/wsgi.py",
       "use": "@vercel/python"
     }
   ],
@@ -13,7 +13,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "travel-agency-project/travel-agency-project/wsgi.py"
+      "dest": "travel-agency-project/config/wsgi.py"
     }
   ]
 }

@@ -2,18 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "travel-agency-project/wsgi.py",
+      "src": "config/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "static/$1"
+      "dest": "travel-agency-project/static/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "travel-agency-project/wsgi.py"
+      "dest": "config/wsgi.py"
     }
   ]
 }

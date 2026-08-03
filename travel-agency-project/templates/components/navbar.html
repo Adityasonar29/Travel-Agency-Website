@@ -1,0 +1,68 @@
+<!-- Minimal Navbar — Only brand name + hamburger menu -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 flex items-center justify-between h-16 md:h-20">
+        <!-- Brand Name -->
+        <a href="{% url 'core:home' %}" class="text-lg md:text-xl font-heading font-medium tracking-[0.15em] uppercase transition-colors duration-500 nav-text">
+            {{ site_settings.site_name|default:"VOYAGE" }}
+        </a>
+
+        <!-- Hamburger Button -->
+        <button id="mobile-menu-btn" class="flex flex-col gap-[5px] p-2 group" onclick="toggleMenu()">
+            <span class="block w-6 h-[1.5px] nav-text transition-all duration-300 origin-center" id="bar1"> ━ </span>
+            <span class="block w-4 h-[1.5px] nav-text transition-all duration-300 group-hover:w-6" id="bar2"> ━ </span>
+            <span class="block w-5 h-[1.5px] nav-text transition-all duration-300 origin-center" id="bar3"> ━ </span>
+        </button>
+    </div>
+</nav>
+
+<!-- Full-Screen Menu Overlay -->
+<div id="menu-overlay" class="fixed inset-0 z-[60] pointer-events-none opacity-0 transition-opacity duration-500">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-ink"></div>
+
+    <!-- Content -->
+    <div class="relative h-full flex flex-col justify-center items-center">
+        <!-- Close button -->
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 md:right-12 lg:right-24 p-2">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+        </button>
+
+        <!-- Nav Links -->
+        <div class="flex flex-col items-center gap-8">
+            <a href="{% url 'core:home' %}" class="menu-link text-[2rem] md:text-[3rem] font-heading font-light text-white tracking-wider hover:text-gold transition-colors duration-300" style="opacity:0;transform:translateY(30px);">
+                Home
+            </a>
+            <a href="{% url 'core:destinations' %}" class="menu-link text-[2rem] md:text-[3rem] font-heading font-light text-white tracking-wider hover:text-gold transition-colors duration-300" style="opacity:0;transform:translateY(30px);">
+                Destinations
+            </a>
+            <a href="{% url 'core:about' %}" class="menu-link text-[2rem] md:text-[3rem] font-heading font-light text-white tracking-wider hover:text-gold transition-colors duration-300" style="opacity:0;transform:translateY(30px);">
+                About
+            </a>
+            <a href="{% url 'core:contact' %}" class="menu-link text-[2rem] md:text-[3rem] font-heading font-light text-white tracking-wider hover:text-gold transition-colors duration-300" style="opacity:0;transform:translateY(30px);">
+                Contact
+            </a>
+            <a href="{% url 'booking:booking' %}" class="menu-link text-sm font-body text-gold tracking-[0.2em] uppercase mt-4 border border-gold px-8 py-3 hover:bg-gold hover:text-ink transition-all duration-300" style="opacity:0;transform:translateY(30px);">
+                Book Now
+            </a>
+        </div>
+
+        <!-- Bottom info -->
+        <div class="absolute bottom-8 left-0 right-0 px-6 md:px-12 lg:px-24 flex justify-between items-end">
+            <div>
+                <p class="text-[10px] font-body text-stone tracking-[0.15em] uppercase">Get in touch</p>
+                <a href="mailto:{{ site_settings.email }}" class="text-sm font-body text-white/70 hover:text-gold transition-colors">
+                    {{ site_settings.email|default:"hello@voyagetravel.com" }}
+                </a>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] font-body text-stone tracking-[0.15em] uppercase">Follow us</p>
+                <div class="flex gap-4 mt-2">
+                    <a href="#" class="text-white/50 hover:text-gold transition-colors text-sm">Instagram</a>
+                    <a href="#" class="text-white/50 hover:text-gold transition-colors text-sm">Facebook</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

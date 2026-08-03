@@ -1,0 +1,26 @@
+<!-- Intro / About Section — Split layout, full-page feel -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+    <!-- Image -->
+    <div class="image-reveal overflow-hidden rounded-sm">
+        {% if site_settings.about_image %}
+        <img src="{{ site_settings.about_image.url }}" alt="About" class="w-full aspect-[4/5] object-cover scale-110">
+        {% else %}
+        <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80" alt="About" class="w-full aspect-[4/5] object-cover scale-110">
+        {% endif %}
+    </div>
+    <!-- Text -->
+    <div>
+        <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4 scroll-reveal" style="opacity:0;">
+            {{ site_settings.about_overline|default:"MADE WITH PASSION" }}
+        </p>
+        <h2 class="text-h1 font-heading font-light text-ink mb-8 scroll-reveal" style="opacity:0;">
+            {{ site_settings.about_heading|default:"We Design Emotion" }}
+        </h2>
+        <p class="text-base font-body text-ink-muted leading-relaxed max-w-[60ch] mb-6 scroll-reveal" style="opacity:0;">
+            {{ site_settings.about_text|default:"We believe that travel is not about destinations — it is about feelings." }}
+        </p>
+        <a href="{% url 'core:about' %}" class="link-arrow scroll-reveal" style="opacity:0;">
+            Our Philosophy <span class="arrow-icon">→</span>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Your Journey — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
+    <div class="max-w-[700px] mx-auto px-6 md:px-12">
+        <div class="text-center mb-12">
+            <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4">START YOUR JOURNEY</p>
+            <h1 class="text-h1 font-heading font-light text-ink mb-4">Book Your Trip</h1>
+            <p class="text-base font-body text-ink-muted max-w-[50ch] mx-auto">Fill in the details below and our travel designers will craft your perfect experience.</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-8">
+            {% for message in messages %}
+            <div class="p-4 rounded-lg text-sm font-body {% if message.tags == 'success' %}bg-olive/10 text-olive border border-olive/20{% else %}bg-terracotta/10 text-terracotta border border-terracotta/20{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Booking Form -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Full Name *</label>
+                    {{ form.full_name }}
+                    {% if form.full_name.errors %}<p class="text-xs text-terracotta mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Email *</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<p class="text-xs text-terracotta mt-1">{{ form.email.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Phone *</label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}<p class="text-xs text-terracotta mt-1">{{ form.phone.errors.0 }}</p>{% endif %}
+                </div>
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Destination</label>
+                    {{ form.destination_name }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Date</label>
+                    {{ form.travel_date }}
+                </div>
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Number of Travelers</label>
+                    {{ form.num_travelers }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Budget Range</label>
+                    {{ form.budget_range }}
+                </div>
+                <div>
+                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Style</label>
+                    {{ form.travel_style }}
+                </div>
+            </div>
+
+            <div>
+                <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Special Requests</label>
+                {{ form.special_requests }}
+            </div>
+
+            <button type="submit" class="btn-primary w-full justify-center">
+                <span>Submit Booking Request</span>
+                <span>→</span>
+            </button>
+        </form>
+    </div>
+</section>
+
+<style>
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9375rem;
+        color: #1A1A1A;
+        background: #FFFFFF;
+        border: 1px solid #D4C9BC;
+        border-radius: 0.25rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        outline: none;
+    }
+    .form-input:focus {
+        border-color: #C8A96E;
+        box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.15);
+    }
+    .form-input::placeholder {
+        color: #B8AFA4;
+    }
+    select.form-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A4A4A' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 2.5rem;
+    }
+</style>
+{% endblock %}

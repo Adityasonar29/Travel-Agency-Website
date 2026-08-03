@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ destination.name }} — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+
+{% block content %}
+<section id="destination-hero"
+    class="relative min-h-screen lg:min-h-[105vh] overflow-hidden bg-ink text-white flex items-center">
+
+    <!-- Background -->
+    <div class="hero-parallax absolute inset-0 bg-cover bg-center scale-110"
+        style="background-image:url('{{ destination.hero_image|default:destination.image }}');">
+    </div>
+
+    <!-- Dark Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-black/55 to-black/25"></div>
+
+    <!-- Soft Radial Light -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.12),_transparent_35%)]"></div>
+
+    <!-- Bottom Fade -->
+    <div class="absolute bottom-0 left-0 w-full h-52 bg-gradient-to-t from-[#181512] to-transparent"></div>
+
+    <div class="relative z-10 mx-auto w-full max-w-[1500px] px-8 md:px-14 lg:px-24">
+
+        <div class="max-w-3xl space-y-6 scroll-reveal">
+
+            <div class="space-y-3">
+                <p class="text-xs uppercase tracking-[0.45em] text-gold-light">
+                    Destination
+                </p>
+
+                <p class="text-sm uppercase tracking-[0.35em] text-white/70">
+                    {{ destination.country }}
+                    {% if destination.state %}, {{ destination.state }}{% endif %}
+                    {% if destination.city %}, {{ destination.city }}{% endif %}
+                </p>
+            </div>
+
+            <h1
+                class="font-heading text-6xl md:text-7xl lg:text-[7rem] xl:text-[8rem] leading-[0.9] font-light gradient-heading">
+                {{ destination.name }}
+            </h1>
+
+            <p
+                class="max-w-2xl text-lg md:text-xl leading-9 text-white/80">
+                {{ destination.description|default:'A premium travel story awaits — explore breathtaking landscapes, authentic culture and unforgettable experiences.' }}
+            </p>
+
+            <div class="flex flex-wrap gap-4">
+
+                {% if destination.best_time_to_travel %}
+                <span class="badge">
+                    🌤 Best Time · {{ destination.best_time_to_travel }}
+                </span>
+                {% endif %}
+
+                {% if destination.rating %}
+                <span class="badge">
+                    ⭐ {{ destination.rating }}/5
+                </span>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="destination-section bg-[#F8F5F0] py-20">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="glass-card scroll-reveal">
+            <div class="grid gap-10 xl:grid-cols-[0.9fr_0.55fr] items-center">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light mb-4">story</p>
+                    <h2 class="text-4xl font-heading text-ink">A journey designed to feel cinematic</h2>
+                    <p class="mt-6 text-base leading-8 text-ink/80">{{ destination.description|default:'This destination has been shaped to deliver unforgettable moments, rich culture and refined travel experiences that feel both timeless and personal.' }}</p>
+                    {% if destination.related_tours_text %}
+                    <div class="mt-8 rounded-[28px] border border-ink/10 bg-ink/5 p-6 text-ink/80">
+                        <p class="text-sm uppercase tracking-[0.35em] text-gold-light mb-4">Suggested experiences</p>
+                        <p class="text-base leading-7">{{ destination.related_tours_text }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="rounded-[32px] bg-white/70 p-8 shadow-2xl shadow-ink/10 backdrop-blur-xl border border-white/40">
+                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light mb-5">trip highlights</p>
+                    <div class="space-y-4">
+                        <div class="feature-row"><span class="feature-label">Immersive views</span><span class="feature-value">Cliffside moments</span></div>
+                        <div class="feature-row"><span class="feature-label">Local cuisine</span><span class="feature-value">Authentic menus</span></div>
+                        <div class="feature-row"><span class="feature-label">Cultural access</span><span class="feature-value">Private tours</span></div>
+                        <div class="feature-row"><span class="feature-label">Relaxed pace</span><span class="feature-value">Luxury comfort</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="destination-section bg-ink py-20 text-white">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="glass-card glass-alt scroll-reveal">
+            <div class="section-header mb-12">
+                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">gallery</p>
+                <h2 class="mt-3 text-4xl font-heading">Explore the atmosphere</h2>
+            </div>
+            <div class="horizontal-gallery">
+                {% for image in destination.gallery %}
+                <div class="gallery-item">
+                    <img src="{{ image }}" alt="{{ destination.name }} gallery" />
+                    <div class="gallery-overlay">
+                        <span>View</span>
+                        <span>→</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if destination.gallery|length == 0 %}
+                <div class="gallery-empty">Gallery images will be added soon.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="destination-section bg-[#F8F5F0] py-20">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="grid gap-10 xl:grid-cols-[1.1fr_0.9fr]">
+            <div class="glass-card scroll-reveal">
+                <div class="section-header mb-8">
+                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">map & journey</p>
+                    <h2 class="text-4xl font-heading text-ink">Where the route unfolds</h2>
+                </div>
+                <div class="map-frame rounded-[32px] overflow-hidden border border-ink/10 bg-ink/5">
+                    {% if destination.latitude and destination.longitude %}
+                    <iframe
+                        src="https://www.google.com/maps?q={{ destination.latitude }},{{ destination.longitude }}&z=12&output=embed"
+                        allowfullscreen=""
+                        loading="lazy"></iframe>
+                    {% else %}
+                    <div class="flex h-[420px] items-center justify-center text-center p-8 text-ink/70">Map coordinates are not available for this destination.</div>
+                    {% endif %}
+                </div>
+                <div class="mt-8 grid gap-4 sm:grid-cols-2">
+                    <div class="info-card">
+                        <p class="text-sm uppercase tracking-[0.35em] text-gold-light">Temperature</p>
+                        <p class="mt-3 text-lg font-medium text-ink">{{ destination.weather|default:'TBA' }}</p>
+                    </div>
+                    <div class="info-card">
+                        <p class="text-sm uppercase tracking-[0.35em] text-gold-light">Best season</p>
+                        <p class="mt-3 text-lg font-medium text-ink">{{ destination.best_time_to_travel|default:'TBA' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card scroll-reveal">
+                <div class="section-header mb-8">
+                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">nearby gems</p>
+                    <h2 class="text-4xl font-heading text-ink">Local favorites</h2>
+                </div>
+                <div class="space-y-4">
+                    {% for place in destination.nearby_places %}
+                    <div class="place-card">
+                        <div>
+                            <p class="text-lg font-semibold text-ink">{{ place.name }}</p>
+                            <p class="mt-2 text-sm text-ink/70">{{ place.description }}</p>
+                        </div>
+                        <div class="text-right text-sm text-ink/70">Explore →</div>
+                    </div>
+                    {% endfor %}
+                    {% if destination.nearby_places|length == 0 %}
+                    <div class="place-card place-card-empty">Nearby attractions will appear here once available.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="destination-section bg-ink py-20 text-white">
+    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="glass-card glass-alt scroll-reveal">
+            <div class="section-header mb-10">
+                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">traveler reviews</p>
+                <h2 class="text-4xl font-heading">What visitors remember</h2>
+            </div>
+            <div class="grid gap-6 lg:grid-cols-2">
+                {% for review in destination.reviews %}
+                <div class="review-card">
+                    <p class="text-base leading-7 text-white/90">"{{ review.text }}"</p>
+                    <div class="mt-5 flex items-center justify-between text-sm text-white/70">
+                        <span>{{ review.author }}</span>
+                        <span>{{ review.date }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if destination.reviews|length == 0 %}
+                <div class="review-card review-card-empty">Reviews will appear here once travelers share their stories.</div>
+                {% endif %}
+            </div>
+            <div class="mt-12 text-center">
+                <a href="{% url 'booking:booking' %}" class="btn-primary"><span>Book Your Experience</span></a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

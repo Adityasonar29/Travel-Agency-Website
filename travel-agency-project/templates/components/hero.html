@@ -1,0 +1,60 @@
+<!-- Hero Section: Video + Mouse Parallax + Text bottom-left, CTA bottom-right -->
+{% load static %}
+<section id="hero" class="relative w-full h-screen overflow-hidden bg-ink snap-section">
+    <!-- Layer 1: Video Background -->
+    <div class="parallax-layer absolute inset-0 scale-110" data-speed="-0.3">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-50"
+               poster="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80">
+            <source src="{% static 'video/Herosection.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Layer 2: Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-ink/60 via-transparent to-transparent"></div>
+
+    <!-- Layer 3: Mouse Parallax Particles (subtle floating elements) -->
+    <div class="parallax-layer absolute inset-0 pointer-events-none" data-speed="-0.6">
+        <div class="absolute top-[20%] left-[15%] w-2 h-2 bg-gold/30 rounded-full"></div>
+        <div class="absolute top-[30%] right-[25%] w-1.5 h-1.5 bg-gold/20 rounded-full"></div>
+        <div class="absolute top-[60%] left-[40%] w-1 h-1 bg-gold/25 rounded-full"></div>
+        <div class="absolute top-[45%] right-[15%] w-2.5 h-2.5 bg-gold/15 rounded-full"></div>
+    </div>
+
+   
+
+    <!-- Main Text — BOTTOM LEFT -->
+    <div class="absolute bottom-24 md:bottom-32 left-6 md:left-12 lg:left-24 z-10 max-w-[700px]">
+        <!-- Overline -->
+        <p class="text-[10px] md:text-xs font-body text-gold-light tracking-[0.2em] uppercase mb-4 hero-fade" style="opacity:0;">
+            Discover Extraordinary
+        </p>
+
+        <!-- Heading — clip reveal from behind -->
+        <div class="overflow-hidden">
+            <h1 class="text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] font-heading font-light text-white leading-[0.95] tracking-tight hero-clip"
+                style="clip-path:inset(100% 0 0 0);">
+                {{ site_settings.hero_heading_line1|default:"Beyond the" }}
+            </h1>
+        </div>
+        <div class="overflow-hidden mt-1">
+            <h1 class="text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] font-heading font-light text-gold-light leading-[0.95] tracking-tight hero-clip"
+                style="clip-path:inset(100% 0 0 0);">
+                {{ site_settings.hero_heading_line2|default:"Horizon" }}
+            </h1>
+        </div>
+
+        <!-- Subtitle -->
+        <p class="text-sm md:text-base font-body text-stone/80 mt-6 max-w-[450px] leading-relaxed hero-fade" style="opacity:0;">
+            {{ site_settings.hero_subtitle|default:"Curated journeys that transform travel into art" }}
+        </p>
+    </div>
+
+    <!-- CTA — BOTTOM RIGHT -->
+    <div class="absolute bottom-24 md:bottom-32 right-6 md:right-12 lg:right-24 z-10 hero-fade" style="opacity:0;">
+        <a href="{% url 'booking:booking' %}" class="btn-primary">
+            <span>{{ site_settings.hero_cta_text|default:"Begin Your Journey" }}</span>
+            <span>→</span>
+        </a>
+    </div>
+</section>

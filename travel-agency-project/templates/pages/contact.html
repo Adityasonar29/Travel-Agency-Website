@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
+    <div class="max-w-[700px] mx-auto px-6 md:px-12 text-center">
+        <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4">GET IN TOUCH</p>
+        <h1 class="text-h1 font-heading font-light text-ink mb-8">Contact Us</h1>
+        <p class="text-base font-body text-ink-muted mb-12 max-w-[50ch] mx-auto">
+            Ready to start planning your dream journey? Reach out to us and let's create something extraordinary together.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-12">
+            <div class="bg-white p-8 rounded-lg">
+                <h3 class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-3">Email</h3>
+                <a href="mailto:{{ site_settings.email }}" class="text-base font-body text-ink hover:text-gold transition-colors">{{ site_settings.email|default:"hello@voyagetravel.com" }}</a>
+            </div>
+            <div class="bg-white p-8 rounded-lg">
+                <h3 class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-3">Phone</h3>
+                <a href="tel:{{ site_settings.phone }}" class="text-base font-body text-ink hover:text-gold transition-colors">{{ site_settings.phone|default:"+91 98765 43210" }}</a>
+            </div>
+        </div>
+        <a href="{% url 'booking:booking' %}" class="btn-primary inline-flex">
+            <span>Book Your Journey</span>
+            <span>→</span>
+        </a>
+    </div>
+</section>
+{% endblock %}

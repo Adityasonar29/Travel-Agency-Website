@@ -1,0 +1,121 @@
+<!-- Map Section — Animated SVG route between destinations -->
+<section class="snap-section min-h-screen bg-ink relative flex items-center overflow-hidden">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-ink via-ink-soft to-ink"></div>
+
+    <div class="relative z-10 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 w-full py-24">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4 scroll-reveal" style="opacity:0;">OUR ROUTES</p>
+            <h2 class="text-h1 font-heading font-light text-white scroll-reveal" style="opacity:0;">Connecting Destinations</h2>
+        </div>
+
+        <!-- Map Container -->
+        <div class="relative max-w-4xl mx-auto">
+            <svg viewBox="0 0 1000 500" class="w-full h-auto" id="route-map">
+                <!-- Map background (simplified world outline) -->
+                <defs>
+                    <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#C8A96E;stop-opacity:0.2" />
+                        <stop offset="50%" style="stop-color:#C8A96E;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#C8A96E;stop-opacity:0.2" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Grid dots background -->
+                <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+                    <circle cx="2" cy="2" r="0.5" fill="rgba(200,169,110,0.15)" />
+                </pattern>
+                <rect width="1000" height="500" fill="url(#dots)" />
+
+                <!-- Animated Route Path -->
+                <path id="route-path"
+                      d="M 150 350 C 250 200, 350 150, 450 280 S 600 120, 700 200 S 850 300, 900 180"
+                      fill="none"
+                      stroke="url(#routeGrad)"
+                      stroke-width="2"
+                      stroke-dasharray="1200"
+                      stroke-dashoffset="1200"
+                      stroke-linecap="round" />
+
+                <!-- Dashed secondary routes -->
+                <path d="M 150 350 C 200 380, 280 400, 350 350" fill="none" stroke="rgba(200,169,110,0.2)" stroke-width="1" stroke-dasharray="4 4" />
+                <path d="M 700 200 C 750 250, 800 280, 850 250" fill="none" stroke="rgba(200,169,110,0.2)" stroke-width="1" stroke-dasharray="4 4" />
+
+                <!-- Destination Points -->
+                <g class="map-point" data-city="Paris" style="opacity:0;">
+                    <circle cx="150" cy="350" r="8" fill="#C8A96E" opacity="0.3">
+                        <animate attributeName="r" values="8;14;8" dur="3s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="150" cy="350" r="4" fill="#C8A96E" />
+                    <text x="150" y="385" text-anchor="middle" fill="#DFC89B" font-family="DM Sans" font-size="11" letter-spacing="0.1em">PARIS</text>
+                </g>
+
+                <g class="map-point" data-city="Santorini" style="opacity:0;">
+                    <circle cx="450" cy="280" r="8" fill="#C8A96E" opacity="0.3">
+                        <animate attributeName="r" values="8;14;8" dur="3s" begin="0.5s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" begin="0.5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="450" cy="280" r="4" fill="#C8A96E" />
+                    <text x="450" y="250" text-anchor="middle" fill="#DFC89B" font-family="DM Sans" font-size="11" letter-spacing="0.1em">SANTORINI</text>
+                </g>
+
+                <g class="map-point" data-city="Amalfi" style="opacity:0;">
+                    <circle cx="300" cy="250" r="8" fill="#C8A96E" opacity="0.3">
+                        <animate attributeName="r" values="8;14;8" dur="3s" begin="1s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" begin="1s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="300" cy="250" r="4" fill="#C8A96E" />
+                    <text x="300" y="225" text-anchor="middle" fill="#DFC89B" font-family="DM Sans" font-size="11" letter-spacing="0.1em">AMALFI</text>
+                </g>
+
+                <g class="map-point" data-city="Kyoto" style="opacity:0;">
+                    <circle cx="700" cy="200" r="8" fill="#C8A96E" opacity="0.3">
+                        <animate attributeName="r" values="8;14;8" dur="3s" begin="1.5s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" begin="1.5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="700" cy="200" r="4" fill="#C8A96E" />
+                    <text x="700" y="175" text-anchor="middle" fill="#DFC89B" font-family="DM Sans" font-size="11" letter-spacing="0.1em">KYOTO</text>
+                </g>
+
+                <g class="map-point" data-city="Bali" style="opacity:0;">
+                    <circle cx="900" cy="180" r="8" fill="#C8A96E" opacity="0.3">
+                        <animate attributeName="r" values="8;14;8" dur="3s" begin="2s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" begin="2s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="900" cy="180" r="4" fill="#C8A96E" />
+                    <text x="900" y="155" text-anchor="middle" fill="#DFC89B" font-family="DM Sans" font-size="11" letter-spacing="0.1em">BALI</text>
+                </g>
+
+                <!-- Plane icon moving along path -->
+                <g id="plane-icon" opacity="0">
+                    <text font-size="18" fill="#C8A96E">✈</text>
+                    <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
+                        <mpath href="#route-path" />
+                    </animateMotion>
+                </g>
+            </svg>
+        </div>
+
+        <!-- Stats below map -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-3xl mx-auto">
+            <div class="text-center">
+                <p class="text-2xl md:text-3xl font-heading font-light text-gold">50+</p>
+                <p class="text-[10px] font-body text-stone tracking-[0.15em] uppercase mt-1">Countries</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl md:text-3xl font-heading font-light text-gold">200+</p>
+                <p class="text-[10px] font-body text-stone tracking-[0.15em] uppercase mt-1">Routes</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl md:text-3xl font-heading font-light text-gold">500+</p>
+                <p class="text-[10px] font-body text-stone tracking-[0.15em] uppercase mt-1">Destinations</p>
+            </div>
+            <div class="text-center">
+                <p class="text-2xl md:text-3xl font-heading font-light text-gold">24/7</p>
+                <p class="text-[10px] font-body text-stone tracking-[0.15em] uppercase mt-1">Support</p>
+            </div>
+        </div>
+    </div>
+</section>

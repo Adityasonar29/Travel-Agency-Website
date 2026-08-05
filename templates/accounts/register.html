@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Register — {{ site_settings.site_name|default:'VOYAGE' }}{% endblock %}
+{% block content %}
+<section class="snap-section min-h-screen flex items-center justify-center">
+  <div class="glass-card max-w-xl w-full">
+    <h2 class="section-header">Create Account</h2>
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label>First name</label>
+          {{ form.first_name|add_class:"form-input" }}
+          {% if form.first_name.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.first_name.errors.0 }}</p>{% endif %}
+        </div>
+        <div>
+          <label>Last name</label>
+          {{ form.last_name|add_class:"form-input" }}
+          {% if form.last_name.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.last_name.errors.0 }}</p>{% endif %}
+        </div>
+      </div>
+      <div>
+        <label>Username</label>
+        {{ form.username|add_class:"form-input" }}
+        {% if form.username.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.username.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label>Email</label>
+        {{ form.email|add_class:"form-input" }}
+        {% if form.email.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.email.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label>Phone</label>
+        {{ form.phone|add_class:"form-input" }}
+        {% if form.phone.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.phone.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label>Password</label>
+        {{ form.password1|add_class:"form-input" }}
+        {% if form.password1.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.password1.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label>Confirm Password</label>
+        {{ form.password2|add_class:"form-input" }}
+        {% if form.password2.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.password2.errors.0 }}</p>{% endif %}
+      </div>
+      <div class="flex items-center gap-3">{{ form.agree }} <label>I agree to the terms</label></div>
+      {% if form.agree.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.agree.errors.0 }}</p>{% endif %}
+      <div><button class="btn-primary" type="submit">Create Account</button></div>
+    </form>
+    <p class="mt-4">Already have an account? <a href="{% url 'accounts:login' %}" class="link-arrow-light">Login</a></p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Welcome {{ user_name }},</p>
+  <p>Thanks for creating an account. Explore destinations and complete your profile to get personalized recommendations.</p>
+  <p>
+    <a class="cta" href="{{ explore_url }}">Explore Destinations</a>
+    &nbsp;
+    <a class="cta" href="{{ profile_url }}">Complete Profile</a>
+  </p>
+{% endblock %}

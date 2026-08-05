@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Login — {{ site_settings.site_name|default:'VOYAGE' }}{% endblock %}
+{% block content %}
+<section class="snap-section min-h-screen flex items-center justify-center">
+  <div class="glass-card max-w-md w-full">
+    <h2 class="section-header">Welcome back</h2>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <div>
+        <label>Username or Email</label>
+        {{ form.username_or_email|add_class:"form-input" }}
+        {% if form.username_or_email.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.username_or_email.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label>Password</label>
+        {{ form.password|add_class:"form-input" }}
+        {% if form.password.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.password.errors.0 }}</p>{% endif %}
+      </div>
+      <div class="flex items-center justify-between">
+        <label class="flex items-center gap-2">{{ form.remember_me }} Remember me</label>
+        <a href="#" class="link-arrow-light">Forgot Password?</a>
+      </div>
+      <input type="hidden" name="next" value="{{ next }}" />
+      <div><button class="btn-primary" type="submit">Login</button></div>
+    </form>
+    <p class="mt-4">Don't have an account? <a href="{% url 'accounts:register' %}" class="link-arrow-light">Register</a></p>
+  </div>
+</section>
+{% endblock %}

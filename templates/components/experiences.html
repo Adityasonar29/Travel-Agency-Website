@@ -1,0 +1,28 @@
+<!-- Experiences Section (Flyward — image zoom on scroll, dark bg) -->
+<section class="bg-ink">
+    {% for exp in experiences %}
+    <div class="py-16 md:py-24 {% if not forloop.first %}border-t border-ink-soft{% endif %}">
+        <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center {% if forloop.counter|divisibleby:2 %}lg:grid-flow-dense{% endif %}">
+                <!-- Image (Zoom on scroll) -->
+                <div class="{% if forloop.counter|divisibleby:2 %}lg:col-start-2{% endif %} overflow-hidden rounded-sm">
+                    <div class="zoom-scroll aspect-[16/10]">
+                        <img src="{{ exp.image }}" alt="{{ exp.title }}" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <!-- Text -->
+                <div class="{% if forloop.counter|divisibleby:2 %}lg:col-start-1 lg:row-start-1{% endif %}">
+                    <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4 scroll-reveal" style="opacity:0;">{{ exp.subtitle }}</p>
+                    <h2 class="text-h1 font-heading font-light text-white mb-6 scroll-reveal" style="opacity:0;">{{ exp.title }}</h2>
+                    <p class="text-base font-body text-stone leading-relaxed max-w-[55ch] mb-8 scroll-reveal" style="opacity:0;">{{ exp.description }}</p>
+                    {% if exp.link %}
+                    <a href="{{ exp.link }}" class="link-arrow-light scroll-reveal" style="opacity:0;">
+                        Explore <span class="arrow-icon">→</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</section>

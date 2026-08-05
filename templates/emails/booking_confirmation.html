@@ -1,0 +1,22 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>Thank you for booking with Voyage — your trip is confirmed.</p>
+
+  <div class="card">
+    <strong>Booking ID:</strong> {{ booking_id }}<br>
+    <strong>Destination:</strong> {{ destination }}<br>
+    <strong>Travel Dates:</strong> {{ start_date }} — {{ end_date }}<br>
+    <strong>Travelers:</strong> {{ num_travelers }}<br>
+    <strong>Amount Paid:</strong> {{ amount_paid }}<br>
+    {% if balance %}<strong>Remaining Balance:</strong> {{ balance }}{% endif %}
+  </div>
+
+  <p>
+    <a class="cta" href="{{ view_booking_url }}">View Booking</a>
+    &nbsp;
+    <a class="cta" href="{{ invoice_url }}">Download Invoice</a>
+  </p>
+
+  <p>If you need help, reply to this email or contact support.</p>
+{% endblock %}

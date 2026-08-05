@@ -1,0 +1,11 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ name }},</p>
+  <p>Thanks for contacting Voyage. We've received your message and will reply within 24 hours.</p>
+  <div class="card">
+    <strong>Subject:</strong> {{ subject }}<br>
+    <strong>Message:</strong>
+    <div style="margin-top:8px">{{ message }}</div>
+  </div>
+  <p>In the meantime you can check our <a href="{{ site_url }}">website</a> for FAQs and support.</p>
+{% endblock %}

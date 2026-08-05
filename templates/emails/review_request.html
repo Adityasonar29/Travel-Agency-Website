@@ -1,0 +1,8 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>We hope you enjoyed your trip to {{ destination }}. Please leave a review to help other travelers.</p>
+  <p>
+    <a class="cta" href="{{ review_url }}">Leave a Review</a>
+  </p>
+{% endblock %}

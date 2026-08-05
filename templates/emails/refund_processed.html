@@ -1,0 +1,10 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>Your refund has been processed.</p>
+  <div class="card">
+    <strong>Refund Amount:</strong> {{ refund_amount }}<br>
+    <strong>Transaction ID:</strong> {{ transaction_id }}<br>
+    <strong>Processing Time:</strong> {{ processing_time }}
+  </div>
+{% endblock %}

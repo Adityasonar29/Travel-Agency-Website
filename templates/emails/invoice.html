@@ -1,0 +1,41 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>Please find your invoice attached.</p>
+  <div class="card">
+    <strong>Invoice ID:</strong> {{ invoice_id }}<br>
+    <strong>Booking ID:</strong> {{ booking_id }}<br>
+    <strong>Amount:</strong> {{ amount }}
+    <hr style="margin:10px 0;">
+    <div>
+      <strong>Cost Breakdown</strong>
+      <div style="margin-top:8px">
+        {% if items %}
+          <table style="width:100%; border-collapse:collapse; font-size:13px">
+            <thead>
+              <tr style="background:#f2f2f2"><th style="text-align:left;padding:6px">Description</th><th style="text-align:center;padding:6px">Qty</th><th style="text-align:right;padding:6px">Unit</th><th style="text-align:right;padding:6px">Total</th></tr>
+            </thead>
+            <tbody>
+              {% for it in items %}
+                <tr><td style="padding:6px">{{ it.desc }}</td><td style="text-align:center">{{ it.qty }}</td><td style="text-align:right">{{ it.unit }}</td><td style="text-align:right">{{ it.total }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div>No itemized breakdown available.</div>
+        {% endif %}
+      </div>
+      <div style="margin-top:8px">
+        <strong>Subtotal:</strong> {{ subtotal }}<br>
+        <strong>Tax:</strong> {{ tax }}<br>
+        <strong>Discount:</strong> {{ discount }}<br>
+        <strong>Grand Total:</strong> {{ grand_total }}<br>
+        <strong>Amount Paid:</strong> {{ amount_paid }}<br>
+        <strong>Remaining Balance:</strong> {{ remaining_balance }}
+      </div>
+    </div>
+  </div>
+  <p>
+    <a class="cta" href="{{ invoice_url }}">Download Invoice</a>
+  </p>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>This is a reminder for your upcoming trip to {{ destination }} on {{ travel_date }}.</p>
+  <p>We look forward to seeing you — safe travels!</p>
+{% endblock %}

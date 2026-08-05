@@ -1,0 +1,11 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>Your booking has been cancelled.</p>
+  <div class="card">
+    <strong>Booking ID:</strong> {{ booking_id }}<br>
+    <strong>Cancellation Date:</strong> {{ cancellation_date }}<br>
+    <strong>Refund Amount:</strong> {{ refund_amount }}
+  </div>
+  <p>If you have questions, contact support.</p>
+{% endblock %}

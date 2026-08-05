@@ -1,0 +1,32 @@
+<!-- Testimonials Section (Snami — large quote, fade transitions) -->
+<section class="py-24 md:py-40 bg-cream">
+    <div class="max-w-[900px] mx-auto px-6 md:px-12 text-center">
+        <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-8 scroll-reveal" style="opacity:0;">TESTIMONIALS</p>
+
+        <!-- Testimonial Carousel -->
+        <div id="testimonial-carousel" class="relative min-h-[300px]">
+            {% for testimonial in testimonials %}
+            <div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-700 {% if forloop.first %}opacity-100{% else %}opacity-0{% endif %}" data-index="{{ forloop.counter0 }}">
+                <!-- Quote Icon -->
+                <div class="text-gold text-5xl font-heading mb-6">"</div>
+                <!-- Quote -->
+                <p class="text-h2 font-heading font-light italic text-ink leading-relaxed mb-8">
+                    {{ testimonial.quote }}
+                </p>
+                <!-- Author -->
+                <div>
+                    <p class="text-sm font-body font-medium text-ink tracking-wide">{{ testimonial.author_name }}</p>
+                    <p class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mt-1">{{ testimonial.author_destination }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Dots -->
+        <div class="flex items-center justify-center gap-3 mt-8">
+            {% for testimonial in testimonials %}
+            <button class="testimonial-dot w-2 h-2 rounded-full transition-all duration-300 {% if forloop.first %}bg-gold w-6{% else %}bg-sand{% endif %}" data-index="{{ forloop.counter0 }}"></button>
+            {% endfor %}
+        </div>
+    </div>
+</section>

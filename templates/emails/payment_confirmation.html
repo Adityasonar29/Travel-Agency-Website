@@ -1,0 +1,15 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ customer_name }},</p>
+  <p>Your payment was successful.</p>
+  <div class="card">
+    <strong>Payment ID:</strong> {{ payment_id }}<br>
+    <strong>Booking ID:</strong> {{ booking_id }}<br>
+    <strong>Amount:</strong> {{ amount }}<br>
+    <strong>Method:</strong> {{ method }}<br>
+    <strong>Time:</strong> {{ time }}
+  </div>
+  <p>
+    <a class="cta" href="{{ invoice_url }}">Download Receipt</a>
+  </p>
+{% endblock %}

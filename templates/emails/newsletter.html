@@ -1,0 +1,13 @@
+{% extends 'emails/base.html' %}
+{% block body %}
+  <p>Hi {{ name }},</p>
+  <p>{{ intro }}</p>
+  <div class="card">
+    {% for item in items %}
+      <div style="margin-bottom:10px">
+        <strong>{{ item.title }}</strong><br>
+        <div>{{ item.summary }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

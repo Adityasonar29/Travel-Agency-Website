@@ -55,6 +55,139 @@ class SiteSettings(models.Model):
         return obj
 
 
+class AboutPage(models.Model):
+    """Singleton model for About page content."""
+
+    # Hero
+    hero_overline = models.CharField(
+        max_length=200,
+        default="OUR STORY"
+    )
+
+    hero_heading = models.CharField(
+        max_length=250,
+        default="Crafting Journeys That Shape Your Story"
+    )
+
+    hero_subheading = models.TextField(
+        default="We create immersive travel experiences for curious explorers, combining thoughtful planning, local expertise, and unforgettable moments into every journey."
+    )
+
+    hero_image = models.ImageField(
+        upload_to="about/",
+        blank=True
+    )
+
+    # Story
+    story_overline = models.CharField(
+        max_length=200,
+        default="HOW IT ALL STARTED"
+    )
+
+    story_heading = models.CharField(
+        max_length=250,
+        default="Born From a Passion for Meaningful Travel"
+    )
+
+    story_text = models.TextField(
+        default="""
+Voyage began with one simple belief — the best memories are created when travel feels personal.
+
+What started as a shared passion for discovering hidden places slowly became a mission to help others experience the world with the same excitement. Instead of rushed schedules and crowded tourist attractions, we focus on carefully designed journeys that balance comfort, authenticity, and unforgettable moments.
+
+Every destination we offer has been selected because it tells a story. Every itinerary is created to let travelers experience local culture, breathtaking landscapes, and genuine connections without worrying about complicated planning.
+
+Today, Voyage continues to craft experiences that inspire curiosity, encourage exploration, and create memories that last long after the journey ends.
+"""
+    )
+
+    story_image = models.ImageField(
+        upload_to="about/",
+        blank=True
+    )
+
+    vision_title = models.CharField(
+        max_length=200,
+        default="Redefining Exploration for the Conscious Traveler"
+    )
+
+    vision_text = models.TextField(
+        default="Our goal is to transform global tourism by making deeply immersive, culturally respectful, and carbon-neutral journeys the gold standard for every adventurer"
+    )
+
+    mission_title = models.CharField(
+        max_length=200,
+        default="Connecting Cultures, Protecting Communities, and Elevating Journeys"
+    )
+
+    mission_text = models.TextField(
+        default="Our mission is to engineer flawless, stress-free travel experiences and support local economies. ensuring you can immerse yourself fully and safely in the world’s most authentic destinations."
+    )
+
+    # Values
+    values_heading = models.CharField(
+        max_length=200,
+        default="What We Believe"
+    )
+
+    value_one_title = models.CharField(
+        max_length=100,
+        default="Authentic Experiences"
+    )
+
+    value_one_text = models.TextField(
+        default="Every itinerary is designed around genuine local culture rather than crowded tourist attractions."
+    )
+
+    value_two_title = models.CharField(
+        max_length=100,
+        default="Travel With Confidence"
+    )
+
+    value_two_text = models.TextField(
+        default="Trusted partners, verified accommodations, and dedicated support from the beginning of your trip until you return home."
+    )
+
+    value_three_title = models.CharField(
+        max_length=100,
+        default="Thoughtfully Curated"
+    )
+
+    value_three_text = models.TextField(
+        default="Every hotel, activity, and destination is chosen to create a seamless and memorable experience."
+    )
+
+    # Closing CTA
+    cta_heading = models.CharField(
+        max_length=250,
+        default="Ready for Your Next Adventure?"
+    )
+
+    cta_text = models.TextField(
+        default="Discover destinations that inspire curiosity and let us create a journey designed entirely around you."
+    )
+
+    cta_button = models.CharField(
+        max_length=100,
+        default="Explore Destinations"
+    )
+
+    class Meta:
+        verbose_name = "About Page"
+        verbose_name_plural = "About Page"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "About Page"
+
 class Destination(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=True)
@@ -214,8 +347,20 @@ class MarqueeWord(models.Model):
     word = models.CharField(max_length=100)
     order = models.IntegerField(default=0)
 
+class Blog(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True)
+    author = models.CharField(max_length=200)
+    content = models.TextField()
+    featured_image = models.ImageField(upload_to='blog_images/')
+    status = models.CharField(max_length=10, choices=[('Draft', 'Draft'), ('Publish', 'Publish')], default='Draft')
+    tags = models.CharField(max_length=200, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    related_tours = models.ManyToManyField('Tour', blank=True)
+
     class Meta:
-        ordering = ['order']
+        ordering = ['-created_on']
 
     def __str__(self):
-        return self.word
+        return self.title

@@ -1,117 +1,288 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Book Your Journey — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
 
 {% block content %}
 <section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
     <div class="max-w-[700px] mx-auto px-6 md:px-12">
+        <!-- Step Indicator -->
+        <div class="mb-12">
+            <div class="flex justify-between text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-4">
+                <span class="{% if step == '1' %}text-olive font-semibold{% endif %}">Step 1</span>
+                <span class="{% if step == '2' %}text-olive font-semibold{% endif %}">Step 2</span>
+                <span class="{% if step == '3' %}text-olive font-semibold{% endif %}">Step 3</span>
+                <span class="{% if step == '4' %}text-olive font-semibold{% endif %}">Step 4</span>
+            </div>
+            <div class="h-2 bg-cream-dark rounded-full overflow-hidden">
+                <div class="h-full bg-gold transition-all duration-300" style="width: {% if step == '1' %}25{% elif step == '2' %}50{% elif step == '3' %}75{% else %}100{% endif %}%;"></div>
+            </div>
+        </div>
+
         <div class="text-center mb-12">
             <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4">START YOUR JOURNEY</p>
             <h1 class="text-h1 font-heading font-light text-ink mb-4">Book Your Trip</h1>
-            <p class="text-base font-body text-ink-muted max-w-[50ch] mx-auto">Fill in the details below and our travel designers will craft your perfect experience.</p>
+            <p class="text-base font-body text-ink-muted max-w-[50ch] mx-auto mb-8">
+                {% if step == '1' %}Select your destination and tour package{% elif step == '2' %}Tell us about your travel details{% elif step == '3' %}Set your preferences{% else %}Review and confirm your booking{% endif %}
+            </p>
         </div>
 
         <!-- Messages -->
         {% if messages %}
         <div class="mb-8">
             {% for message in messages %}
-            <div class="p-4 rounded-lg text-sm font-body {% if message.tags == 'success' %}bg-olive/10 text-olive border border-olive/20{% else %}bg-terracotta/10 text-terracotta border border-terracotta/20{% endif %}">
+            <div class="p-4 rounded-lg text-sm font-body mb-3 {% if message.tags == 'success' %}bg-olive/10 text-olive border border-olive/20{% else %}bg-terracotta/10 text-terracotta border border-terracotta/20{% endif %}">
                 {{ message }}
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <!-- Booking Form -->
-        <form method="post" class="space-y-6">
+        <!-- Step Navigation -->
+        <form id="booking-form" method="post" class="space-y-8">
             {% csrf_token %}
+            <input type="hidden" name="step" value="{{ step }}" />
+            {% comment %} Single form with all steps - using hidden fields for state {% endcomment %}
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Full Name *</label>
-                    {{ form.full_name }}
-                    {% if form.full_name.errors %}<p class="text-xs text-terracotta mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
-                </div>
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Email *</label>
-                    {{ form.email }}
-                    {% if form.email.errors %}<p class="text-xs text-terracotta mt-1">{{ form.email.errors.0 }}</p>{% endif %}
+            <!-- STEP 1: Tour Selection -->
+            <div id="step-1" class="step-section {% if step != '1' %}hidden{% endif %}">
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Choose Your Journey</h2>
+                    <p class="text-sm font-body text-ink-muted mb-6">Select a destination and tour package from our curated options.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Destination *</label>
+                            {{ form.destination_name }}
+                            {% if form.destination_name.errors %}<p class="text-xs text-terracotta mt-1">{{ form.destination_name.errors.0 }}</p>{% endif %}
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Tour Package *</label>
+                            {{ form.tour }}
+                            {% if form.tour.errors %}<p class="text-xs text-terracotta mt-1">{{ form.tour.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
+                        <button type="button" onclick="goToStep(2)" class="btn-secondary">
+                            <span>Continue</span>
+                            <span>→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Phone *</label>
-                    {{ form.phone }}
-                    {% if form.phone.errors %}<p class="text-xs text-terracotta mt-1">{{ form.phone.errors.0 }}</p>{% endif %}
-                </div>
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Destination</label>
-                    {{ form.destination_name }}
+            <!-- STEP 2: Traveler Details -->
+            <div id="step-2" class="step-section {% if step != '2' %}hidden{% endif %}">
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Travel Details</h2>
+                    <p class="text-sm font-body text-ink-muted mb-6">Tell us about your trip plans.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Full Name *</label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}<p class="text-xs text-terracotta mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Email *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}<p class="text-xs text-terracotta mt-1">{{ form.email.errors.0 }}</p>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Phone *</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}<p class="text-xs text-terracotta mt-1">{{ form.phone.errors.0 }}</p>{% endif %}
+                        </div>
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Start Date *</label>
+                            {{ form.travel_date }}
+                            {% if form.travel_date.errors %}<p class="text-xs text-terracotta mt-1">{{ form.travel_date.errors.0 }}</p>{% endif %}
+                            <p class="text-xs font-body text-ink-muted mt-2">Select your preferred start date; we will use this as your trip start date.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Number of Travelers *</label>
+                        {{ form.num_travelers }}
+                        {% if form.num_travelers.errors %}<p class="text-xs text-terracotta mt-1">{{ form.num_travelers.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
+                        <button type="button" onclick="goToStep(1)" class="btn-secondary">
+                            <span>Back</span>
+                        </button>
+                        <button type="button" onclick="goToStep(3)" class="btn-primary">
+                            <span>Continue</span>
+                            <span>→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Date</label>
-                    {{ form.travel_date }}
-                </div>
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Number of Travelers</label>
-                    {{ form.num_travelers }}
+            <!-- STEP 3: Preferences -->
+            <div id="step-3" class="step-section {% if step != '3' %}hidden{% endif %}">
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Your Preferences</h2>
+                    <p class="text-sm font-body text-ink-muted mb-6">Tell us about your travel style and budget.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Budget Range</label>
+                            {{ form.budget_range }}
+                        </div>
+                        <div>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Style</label>
+                            {{ form.travel_style }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Special Requests</label>
+                        {{ form.special_requests }}
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
+                        <button type="button" onclick="goToStep(2)" class="btn-secondary">
+                            <span>Back</span>
+                        </button>
+                        <button type="button" onclick="goToStep(4)" class="btn-primary">
+                            <span>Continue</span>
+                            <span>→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Budget Range</label>
-                    {{ form.budget_range }}
-                </div>
-                <div>
-                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Style</label>
-                    {{ form.travel_style }}
+            <!-- STEP 4: Review & Confirm -->
+            <div id="step-4" class="step-section {% if step != '4' %}hidden{% endif %}">
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Review Your Booking</h2>
+                    <p class="text-sm font-body text-ink-muted mb-6">Please review your details before confirming.</p>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-cream/50 rounded-lg p-4">
+                                <label class="text-xs font-body text-ink-muted uppercase">Tour Package</label>
+                                <p id="review-tour" class="text-sm font-body text-ink mt-1">—</p>
+                            </div>
+                            <div class="bg-cream/50 rounded-lg p-4">
+                                <label class="text-xs font-body text-ink-muted uppercase">Travel Date</label>
+                                <p id="review-date" class="text-sm font-body text-ink mt-1">—</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-cream/50 rounded-lg p-4">
+                                <label class="text-xs font-body text-ink-muted uppercase">Full Name</label>
+                                <p id="review-name" class="text-sm font-body text-ink mt-1">—</p>
+                            </div>
+                            <div class="bg-cream/50 rounded-lg p-4">
+                                <label class="text-xs font-body text-ink-muted uppercase">Travelers</label>
+                                <p id="review-travelers" class="text-sm font-body text-ink mt-1">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
+                        <button type="button" onclick="goToStep(3)" class="btn-secondary">
+                            <span>Back</span>
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <span>Confirm Booking</span>
+                            <span>→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <div>
-                <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Special Requests</label>
-                {{ form.special_requests }}
-            </div>
-
-            <button type="submit" class="btn-primary w-full justify-center">
-                <span>Submit Booking Request</span>
-                <span>→</span>
-            </button>
         </form>
     </div>
 </section>
 
-<style>
-    .form-input {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.9375rem;
-        color: #1A1A1A;
-        background: #FFFFFF;
-        border: 1px solid #D4C9BC;
-        border-radius: 0.25rem;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        outline: none;
+<script>
+    let currentStep = {{ step|default:"1" }};
+
+    function setStep(step) {
+        const parsedStep = parseInt(step, 10) || 1;
+        currentStep = parsedStep;
+        document.querySelector('[name="step"]').value = parsedStep;
+
+        document.querySelectorAll('.step-section').forEach((section, index) => {
+            section.classList.toggle('hidden', index + 1 !== parsedStep);
+        });
+
+        document.querySelectorAll('.flex.justify-between.text-xs.font-body.text-ink-muted span').forEach((span, index) => {
+            const active = index + 1 === parsedStep;
+            span.classList.toggle('text-olive', active);
+            span.classList.toggle('font-semibold', active);
+        });
+
+        const progress = document.querySelector('.h-2.bg-cream-dark .bg-gold');
+        if (progress) {
+            progress.style.width = `${parsedStep === 1 ? 25 : parsedStep === 2 ? 50 : parsedStep === 3 ? 75 : 100}%`;
+        }
+
+        if (parsedStep === 4) {
+            updateReview();
+        }
     }
-    .form-input:focus {
-        border-color: #C8A96E;
-        box-shadow: 0 0 0 2px rgba(200, 169, 110, 0.15);
+
+    function goToStep(step) {
+        setStep(step);
     }
-    .form-input::placeholder {
-        color: #B8AFA4;
+
+    function updateReview() {
+        const tourSelect = document.querySelector('[name="tour"]');
+        const dateInput = document.querySelector('[name="travel_date"]');
+        const nameInput = document.querySelector('[name="full_name"]');
+        const travelersInput = document.querySelector('[name="num_travelers"]');
+
+        document.getElementById('review-tour').textContent = tourSelect ? tourSelect.options[tourSelect.selectedIndex]?.text || '—' : '—';
+        document.getElementById('review-date').textContent = dateInput ? dateInput.value : '—';
+        document.getElementById('review-name').textContent = nameInput ? nameInput.value || '—' : '—';
+        document.getElementById('review-travelers').textContent = travelersInput ? travelersInput.value : '—';
     }
-    select.form-input {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A4A4A' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        padding-right: 2.5rem;
+
+    function filterToursByDestination() {
+        const destinationSelect = document.querySelector('[name="destination_name"]');
+        const tourSelect = document.querySelector('[name="tour"]');
+        if (!destinationSelect || !tourSelect) return;
+
+        const destination = destinationSelect.value;
+        tourSelect.querySelectorAll('option').forEach((option) => {
+            if (!option.value) {
+                option.hidden = false;
+                return;
+            }
+            const text = option.text.toLowerCase();
+            option.hidden = destination ? !text.includes(`— ${destination.toLowerCase()}`) : false;
+        });
+
+        if (destination) {
+            if (tourSelect.value && tourSelect.options[tourSelect.selectedIndex].hidden) {
+                tourSelect.value = '';
+            }
+        }
     }
-</style>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setStep(currentStep);
+
+        const destinationSelect = document.querySelector('[name="destination_name"]');
+        destinationSelect?.addEventListener('change', () => {
+            filterToursByDestination();
+            updateReview();
+        });
+
+        document.querySelector('[name="tour"]')?.addEventListener('change', updateReview);
+        document.querySelector('[name="travel_date"]')?.addEventListener('change', updateReview);
+        document.querySelector('[name="full_name"]')?.addEventListener('input', updateReview);
+        document.querySelector('[name="num_travelers"]')?.addEventListener('input', updateReview);
+
+        filterToursByDestination();
+    });
+</script>
 {% endblock %}

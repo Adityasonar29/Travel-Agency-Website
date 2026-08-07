@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage
+from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage, Blog, AboutPage
+
+
 
 
 @admin.register(ContactMessage)
@@ -10,6 +12,67 @@ class ContactMessageAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
 
 
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+
+    fieldsets = (
+        (
+            "Hero Section",
+            {
+                "fields": (
+                    "hero_overline",
+                    "hero_heading",
+                    "hero_subheading",
+                    "hero_image",
+                )
+            },
+        ),
+        (
+            "Our Story",
+            {
+                "fields": (
+                    "story_overline",
+                    "story_heading",
+                    "story_text",
+                    "story_image",
+                )
+            },
+        ),
+        (
+            "Core Values",
+            {
+                "fields": (
+                    "values_heading",
+
+                    "value_one_title",
+                    "value_one_text",
+
+                    "value_two_title",
+                    "value_two_text",
+
+                    "value_three_title",
+                    "value_three_text",
+                )
+            },
+        ),
+        (
+            "Call To Action",
+            {
+                "fields": (
+                    "cta_heading",
+                    "cta_text",
+                    "cta_button",
+                )
+            },
+        ),
+    )
+
+    def has_add_permission(self, request):
+        return not AboutPage.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -19,6 +82,8 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         ('Contact', {'fields': ('email', 'phone', 'address')}),
         ('Social', {'fields': ('instagram', 'facebook', 'twitter')}),
     )
+
+
 
 
 @admin.register(Destination)

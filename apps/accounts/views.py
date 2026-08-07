@@ -54,7 +54,21 @@ def login_view(request):
                 else:
                     request.session.set_expiry(0)  # browser session
                 messages.success(request, 'You are now logged in.')
-                return redirect(next_url)
+                if user is not None:
+                    login(request, user)
+                
+                    if remember:
+                        request.session.set_expiry(60 * 60 * 24 * 30)
+                    else:
+                        request.session.set_expiry(0)
+                
+                    messages.success(request, "You are now logged in.")
+                
+                    # Admin goes to dashboard
+                    if user.is_staff or user.is_superuser:
+                        return redirect("admin_panel:dashboard")
+                
+                    return redirect(next_url)
             else:
                 messages.error(request, 'Invalid credentials')
     else:
@@ -73,7 +87,7 @@ def profile_view(request):
     user = request.user
     profile_form = ProfileForm(request.POST or None, request.FILES or None, instance=user)
     password_form = PasswordChangeForm(user=user, data=request.POST or None)
-    bookings = user.bookings.select_related('destination').all()
+    bookings = user.bookings.select_related('tour').all()
     wishlist_items = user.wishlist_items.select_related('destination', 'tour').all()
 
     if request.method == 'POST':

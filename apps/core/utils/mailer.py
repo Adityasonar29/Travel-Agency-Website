@@ -30,6 +30,13 @@ def send_booking_confirmation(to_email, context):
     _send_html_email(subject, to_email, template, context, attachments)
 
 
+def send_admin_booking_notification(to_email, context):
+    """Send admin notification when a new booking is created."""
+    subject = f"New Booking #{context.get('booking_id', '')} - {context.get('customer_name', '')}"
+    template = 'emails/admin_booking_notification.html'
+    _send_html_email(subject, to_email, template, context)
+
+
 def send_contact_auto_reply(to_email, context):
     subject = context.get('subject', 'Thanks for contacting Voyage')
     template = 'emails/contact_auto_reply.html'

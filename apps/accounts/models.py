@@ -3,8 +3,12 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
 
+ROLE_CHOICES = [
+    ('customer', 'Customer'),
+    ('admin', 'Admin'),
+]
 
-class User(AbstractUser):
+class User(AbstractUser):   
     phone = models.CharField(max_length=30, blank=True)
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     country = models.CharField(max_length=80, blank=True)
@@ -12,6 +16,13 @@ class User(AbstractUser):
     notification_emails = models.BooleanField(default=True)
     notification_sms = models.BooleanField(default=False)
 
+    
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='customer'
+    )
+        
     def __str__(self):
         return self.get_full_name() or self.username
 

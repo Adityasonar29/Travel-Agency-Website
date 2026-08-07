@@ -1,15 +1,831 @@
 {% extends 'base.html' %}
 
-{% block title %}Destinations — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block title %}
+Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
+{% endblock %}
 
 {% block content %}
-<section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
-        <div class="text-center mb-16">
-            <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4">ALL DESTINATIONS</p>
-            <h1 class="text-h1 font-heading font-light text-ink">Explore the World</h1>
+{% load static %}
+<!-- ===================================================== -->
+<!-- HERO -->
+<!-- ===================================================== -->
+<section class="relative min-h-screen bg-[#2d2f34] overflow-hidden">
+
+    <!-- decorative blobs -->
+
+    <div class="relative z-20 h-screen">
+
+        <div class="grid lg:grid-cols-2 h-full">
+
+            <!-- LEFT IMAGE -->
+
+            <div class="relative overflow-hidden">
+
+                <img
+                    src="{% static 'images/destinations_bg/dest_bg2 (2).jpg' %}"
+                    class="absolute inset-0 w-full h-full object-cover">
+
+            </div>
+
+            <!-- RIGHT CONTENT -->
+
+            <div class="bg-[#f5f2eb] flex items-center">
+
+                <div class="max-w-xl mx-auto px-16">
+
+                    <p class="uppercase tracking-[0.35em] text-gold text-xs mb-8">
+                        DISCOVER THE WORLD
+                    </p>
+
+                    <h1 class="font-heading text-[90px] leading-[0.95] font-light text-ink">
+
+                        Explore
+
+                        <br>
+
+                        Extraordinary
+
+                        <br>
+
+                        Places.
+
+                    </h1>
+
+                    <p class="mt-12 text-lg leading-9 text-charcoal/75">
+
+                        Discover timeless cities, breathtaking landscapes,
+                        luxury escapes and unforgettable adventures crafted
+                        for modern travelers.
+
+                    </p>
+
+                </div>
+
+            </div>
+
         </div>
-        {% include 'components/destinations.html' %}
+
     </div>
+
 </section>
+
+<!-- ===================================================== -->
+<!-- FEATURED DESTINATIONS -->
+<!-- ===================================================== -->
+
+<section class="py-28 bg-[#f0eade] overflow-hidden">
+
+    <div class="max-w-screen-x3 mx-auto px-6 md:px-12 lg:px-24">
+
+        <div class="text-center mb-16">
+
+            <p class="text-xs uppercase tracking-[0.3em] text-gold mb-4">
+
+                FEATURED DESTINATIONS
+
+            </p>
+
+            <h2 class="font-heading text-5xl font-light text-ink">
+
+                Curated Journeys
+
+            </h2>
+
+        </div>
+
+        <!-- Slider -->
+
+        <div
+            id="featured-slider"
+            class="relative rounded-[32px] overflow-hidden h-[760px] w-[100%] items-center justify-center">
+
+            {% for destination in featured_destinations %}
+
+            <div
+                class="featured-slide absolute inset-0 {% if not forloop.first %}hidden{% endif %}">
+                    <!-- Background Image -->
+
+                    <img
+                        src="{{ destination.image }}"
+                        alt="{{ destination.name }}"
+                        class="absolute inset-0 w-full h-full object-cover transition-transform duration-[6000ms] scale-100 slide-image">
+
+                    <!-- Overlay -->
+
+                        <div class="absolute inset-0 bg-gradient-to-r
+                        from-black/60
+                        via-black/25
+                        to-transparent">
+                        </div>
+
+                    <!-- Decorative Gradient -->
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+
+                    <!-- Content -->
+
+                    <div class="relative z-20 h-full flex items-center">
+
+                        <div class="max-w-7xl mx-auto w-full px-8 md:px-16">
+
+                            <div class="max-w-5xl">
+
+                                <p class="uppercase tracking-[0.35em] text-xs text-gold-light mb-5">
+
+                                    {{ destination.country }}
+
+                                </p>
+
+                                <h2 class="font-heading text-6xl md:text-7xl text-[#f9c26a] font-light leading-tight">
+
+                                    {{ destination.name }}
+
+                                </h2>
+
+                                {% if destination.description %}
+
+                                <p class="mt-8 max-w-xl text-lg leading-8 text-white/85">
+
+                                    {{ destination.description|truncatewords:28 }}
+
+                                </p>
+
+                                {% endif %}
+
+                                <div class="mt-12 flex gap-5">
+
+                                    <a
+                                        href="{{ destination.get_absolute_url }}"
+                                        class="inline-flex items-center gap-3 px-8 py-4 bg-white text-ink uppercase tracking-[0.2em] text-xs hover:bg-gold hover:text-white transition">
+
+                                        Explore
+
+                                        <span class="text-base">→</span>
+
+                                    </a>
+
+                                    <a
+                                        href="{% url 'core:tours' %}"
+                                        class="inline-flex items-center gap-3 px-8 py-4 border border-white/40 text-[#d3bb8c] uppercase tracking-[0.2em] text-xs hover:bg-[#ffd88f] hover:text-ink transition">
+
+                                        View Tours
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+                <!-- Left Arrow -->
+
+                <button
+                    id="slider-prev"
+                    class="absolute bottom-9 left-[calc(26%-4rem)] z-40 w-14 h-14 rounded-full bg-white/15 backdrop-blur text-white hover:bg-white hover:text-ink transition flex items-center justify-center">
+
+                    &#10094;
+
+                </button>
+
+                <!-- Right Arrow -->
+
+                <button
+                    id="slider-next"
+                    class="absolute bottom-8 right-[calc(26%-4rem)] z-40 w-14 h-14 rounded-full bg-white/15 backdrop-blur text-white hover:bg-white hover:text-ink transition flex items-center justify-center">
+
+                    &#10095;
+
+                </button>
+
+                <!-- Progress Bar -->
+
+                <div class="absolute bottom-0 left-0 w-full h-[3px] bg-white/20 z-40">
+
+                    <div
+                        id="slider-progress"
+                        class="h-full w-0 bg-gold transition-all duration-300">
+
+                    </div>
+
+                </div>
+
+                <!-- Dots -->
+
+                <div
+                    id="slider-dots"
+                    class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-40">
+
+                    {% for destination in featured_destinations %}
+
+                    <button
+                        class="slider-dot w-3 h-3 rounded-full {% if forloop.first %}bg-white{% else %}bg-white/40{% endif %}"
+                        data-slide="{{ forloop.counter0 }}">
+
+                    </button>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- Counter -->
+
+                <div
+                    class="absolute right-10 bottom-8 text-white tracking-[0.25em] uppercase text-xs z-40">
+
+                    <span id="current-slide">01</span>
+
+                    /
+
+                    <span>
+
+                        {% if featured_destinations|length < 10 %}
+                            0{{ featured_destinations|length }}
+                        {% else %}
+                            {{ featured_destinations|length }}
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+    <div>
+</section>
+
+
+
+
+    <!-- ================= DESTINATIONS ================= -->
+
+    <section class="pb-32 bg-[#f0eade]">
+
+        <div class="max-w-screen-x3 pt-10 mx-auto px-6 md:px-12 lg:px-24">
+
+            <div class="flex items-center justify-between mb-12">
+
+                <div>
+
+                    <p class="text-xs uppercase  tracking-[0.25em] text-gold mb-2 text-ink">
+                        Signature Collection
+                    </p>
+
+                    <h2 class="font-heading text-5xl md:text-5xl font-light text-gold mb-2">
+                        Discover Destinations
+                    </h2>
+
+                </div>
+
+                <div class="hidden md:block text-sm text-charcoal/60">
+
+                    {{ destinations|length }} Destination{{ destinations|length|pluralize }}
+
+                </div>
+
+            </div>
+
+<section class="-mt-12 mt-20 mb-20 relative z-40">
+
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+
+        <form method="GET">
+
+            <div
+                class="flex items-center  rounded-full bg-[#fff4e2]  overflow-hidden border border-[#d4af37]">
+
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request.GET.q }}"
+                    placeholder="Search destinations or countries..."
+                    class="flex-1 px-8 py-6 outline-none bg-transparent">
+
+                <button
+                    class="bg-gold text-white px-10 py-6 hover:bg-ink transition">
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+            {% if destinations %}
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+
+                {% for dest in destinations %}
+
+                <a href="{{ dest.get_absolute_url }}"
+                   class="group block">
+
+                    <article class="relative overflow-hidden rounded-2xl bg-white shadow-sm hover:shadow-2xl transition-all duration-500">
+
+                        <!-- Image -->
+
+                        <div class="relative aspect-[3/4] min-h-[620px] overflow-hidden rounded-2xl">
+
+                            <!-- Main Image -->
+
+                            <img
+                                src="{{ dest.image }}"
+                                alt="{{ dest.name }}"
+                                class="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 {% if dest.hover_image %}group-hover:opacity-0{% endif %}">
+
+                            <!-- Hover Image -->
+
+                            {% if dest.hover_image %}
+
+                            <img
+                                src="{{ dest.hover_image }}"
+                                alt="{{ dest.name }}"
+                                class="absolute inset-0 w-full h-full object-cover opacity-0 scale-110 transition-all duration-700 group-hover:opacity-100 group-hover:scale-100">
+
+                            {% endif %}
+
+                            <!-- Overlay -->
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+                            <!-- Floating Badge -->
+
+                            <div class="absolute top-6 left-6">
+
+                                <span class="bg-[#f5f2eb] backdrop-blur px-4 py-2 rounded-full text-[11px] uppercase tracking-[0.2em] text-ink">
+
+                                    {{ dest.country }}
+
+                                </span>
+
+                            </div>
+
+                            <!-- Hover Arrow -->
+
+                            <div class="absolute top-6 right-6 w-12 h-12 rounded-full bg-white flex items-center justify-center opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+
+                                →
+
+                            </div>
+
+                            <!-- Bottom Content -->
+
+                            <div class="absolute bottom-0 left-0 right-0 p-10 md:p-12   ">
+
+                                <h3 class="font-heading text-4xl text-white font-light">
+
+                                    {{ dest.name }}
+
+                                </h3>
+
+                                {% if dest.description %}
+
+                                <p class="mt-4 text-white/80 leading-7 line-clamp-2">
+
+                                    {{ dest.description|truncatewords:18 }}
+
+                                </p>
+
+                                {% endif %}
+
+                                <div class="mt-8 flex items-center justify-between">
+
+                                    <span class="uppercase tracking-[0.2em] text-xs text-gold-light">
+
+                                        Explore
+
+                                    </span>
+
+                                    <span class="text-[#d3bb8c] group-hover:translate-x-2 transition-transform duration-300">
+
+                                        →
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <!-- Empty State -->
+
+            <div class="py-32 text-center">
+
+                <div class="max-w-lg mx-auto">
+
+                    <div class="w-24 h-24 rounded-full bg-white shadow-md flex items-center justify-center mx-auto mb-8">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             class="w-10 h-10 text-gold"
+                             fill="none"
+                             viewBox="0 0 24 24"
+                             stroke="currentColor">
+
+                            <path stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 01.553-.894L9 2m0 18l6-2m-6 2V2m6 16l6 2m-6-2V2m6 18V4m0 0l-6-2m6 2l-6 2"/>
+
+                        </svg>
+
+                    </div>
+
+                    <h3 class="font-heading text-4xl font-light text-ink mb-4">
+
+                        No destinations found
+
+                    </h3>
+
+                    <p class="text-charcoal/60 leading-8">
+
+                        We couldn't find any destinations matching your search.
+                        Try another country or browse all destinations.
+
+                    </p>
+
+                    <a href="{% url 'destinations' %}"
+                       class="inline-flex mt-10 px-8 py-4 border border-ink uppercase tracking-[0.2em] text-xs hover:bg-ink hover:text-white transition-all duration-300">
+
+                        View All Destinations
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section
+
+    <!-- ================= TRAVEL STATS ================= -->
+
+    <section class="py-28 bg-white border-y border-black/5">
+
+        <div class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+
+            <div class="text-center mb-20">
+
+                <p class="text-xs uppercase tracking-[0.25em] text-gold mb-4">
+                    WHY VOYAGE
+                </p>
+
+                <h2 class="font-heading text-5xl font-light text-ink">
+                    Travel by Numbers
+                </h2>
+
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-10">
+
+                <div class="text-center">
+
+                    <h3 class="font-heading text-6xl font-light text-ink">
+                        50+
+                    </h3>
+
+                    <p class="mt-4 uppercase tracking-[0.2em] text-xs text-charcoal/60">
+                        Countries
+                    </p>
+
+                </div>
+
+                <div class="text-center">
+
+                    <h3 class="font-heading text-6xl font-light text-ink">
+                        120+
+                    </h3>
+
+                    <p class="mt-4 uppercase tracking-[0.2em] text-xs text-charcoal/60">
+                        Destinations
+                    </p>
+
+                </div>
+
+                <div class="text-center">
+
+                    <h3 class="font-heading text-6xl font-light text-ink">
+                        15K+
+                    </h3>
+
+                    <p class="mt-4 uppercase tracking-[0.2em] text-xs text-charcoal/60">
+                        Happy Travelers
+                    </p>
+
+                </div>
+
+                <div class="text-center">
+
+                    <h3 class="font-heading text-6xl font-light text-ink">
+                        98%
+                    </h3>
+
+                    <p class="mt-4 uppercase tracking-[0.2em] text-xs text-charcoal/60">
+                        Satisfaction
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= CTA ================= -->
+
+    <section class="py-32 bg-cream">
+
+        <div class="max-w-5xl mx-auto px-6 text-center">
+
+            <p class="text-xs uppercase tracking-[0.3em] text-gold mb-5">
+
+                START YOUR NEXT JOURNEY
+
+            </p>
+
+            <h2 class="font-heading text-5xl md:text-6xl font-light text-ink leading-tight">
+
+                Your Perfect Destination
+                Awaits
+
+            </h2>
+
+            <p class="max-w-2xl mx-auto mt-8 text-charcoal/70 leading-8">
+
+                Whether you're dreaming of Mediterranean coastlines,
+                peaceful mountain escapes, or vibrant city adventures,
+                Voyage helps you experience the world differently.
+
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-5 mt-14">
+
+                <a href="{% url 'core:tours' %}"
+                   class="px-10 py-5 bg-ink text-white uppercase tracking-[0.2em] text-xs hover:bg-gold transition-all duration-300">
+
+                    Browse Tours
+
+                </a>
+
+                <a href="{% url 'core:contact' %}"
+                   class="px-10 py-5 border border-ink uppercase tracking-[0.2em] text-xs hover:bg-ink hover:text-white transition-all duration-300">
+
+                    Contact Us
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- Slider Script -->
+
+    <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const slides = document.querySelectorAll(".featured-slide");
+        const dots = document.querySelectorAll(".slider-dot");
+
+        const progress = document.getElementById("slider-progress");
+
+        const counter = document.getElementById("current-slide");
+
+        const nextBtn = document.getElementById("slider-next");
+
+        const prevBtn = document.getElementById("slider-prev");
+
+        let current = 0;
+
+        const duration = 6000;
+
+        let timer;
+
+        function resetProgress() {
+
+            progress.style.transition = "none";
+            progress.style.width = "0%";
+
+            requestAnimationFrame(() => {
+
+                requestAnimationFrame(() => {
+
+                    progress.style.transition = `width ${duration}ms linear`;
+                    progress.style.width = "100%";
+
+                });
+
+            });
+
+        }
+
+        function showSlide(index) {
+
+            slides.forEach((slide, i) => {
+
+                slide.classList.toggle("hidden", i !== index);
+
+                const image = slide.querySelector(".slide-image");
+
+                if (image) {
+
+                    image.classList.remove("scale-105");
+
+                    if (i === index) {
+
+                        setTimeout(() => {
+
+                            image.classList.add("scale-105");
+
+                        }, 50);
+
+                    }
+
+                }
+
+            });
+
+            dots.forEach((dot, i) => {
+
+                dot.classList.toggle("bg-white", i === index);
+                dot.classList.toggle("bg-white/40", i !== index);
+
+            });
+
+            current = index;
+
+            counter.textContent =
+                String(current + 1).padStart(2, "0");
+
+            resetProgress();
+
+        }
+
+        function nextSlide() {
+
+            let next = current + 1;
+
+            if (next >= slides.length) {
+
+                next = 0;
+
+            }
+
+            showSlide(next);
+
+        }
+
+        function prevSlide() {
+
+            let prev = current - 1;
+
+            if (prev < 0) {
+
+                prev = slides.length - 1;
+
+            }
+
+            showSlide(prev);
+
+        }
+
+        function startSlider() {
+
+            clearInterval(timer);
+
+            timer = setInterval(() => {
+
+                nextSlide();
+
+            }, duration);
+
+            resetProgress();
+
+        }
+
+        function stopSlider() {
+
+            clearInterval(timer);
+
+            progress.style.transition = "none";
+
+        }
+
+        nextBtn.addEventListener("click", () => {
+
+            nextSlide();
+
+            startSlider();
+
+        });
+
+        prevBtn.addEventListener("click", () => {
+
+            prevSlide();
+
+            startSlider();
+
+        });
+
+        dots.forEach((dot, index) => {
+
+            dot.addEventListener("click", () => {
+
+                showSlide(index);
+
+                startSlider();
+
+            });
+
+        });
+
+        showSlide(0);
+
+        startSlider();
+
+        const slider = document.getElementById("featured-slider");
+
+        slider.addEventListener("mouseenter", stopSlider);
+
+        slider.addEventListener("mouseleave", startSlider);
+
+        document.addEventListener("keydown", (e) => {
+
+            if (e.key === "ArrowRight") {
+
+                nextSlide();
+
+                startSlider();
+
+            }
+
+            if (e.key === "ArrowLeft") {
+
+                prevSlide();
+
+                startSlider();
+
+            }
+
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        slider.addEventListener("touchstart", (e) => {
+
+            touchStartX = e.changedTouches[0].screenX;
+
+        });
+
+        slider.addEventListener("touchend", (e) => {
+
+            touchEndX = e.changedTouches[0].screenX;
+
+            if (touchStartX - touchEndX > 60) {
+
+                nextSlide();
+                startSlider();
+
+            }
+
+            if (touchEndX - touchStartX > 60) {
+
+                prevSlide();
+                startSlider();
+
+            }
+
+        });
+
+    });
+    </script>
+
 {% endblock %}

@@ -1,11 +1,659 @@
-{% extends 'base.html' %}
+{% extends "base.html" %} {% block title %} About — {{ about.page_title }} 
+{% endblock %} {% block content %}
+{% load static %}
 
-{% block title %}About — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+<!-- ===================================================== -->
+<!-- ABOUT HERO -->
+<!-- ===================================================== -->
 
-{% block content %}
-<section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
-        {% include 'components/intro.html' %}
+<section
+    class="relative min-h-screen overflow-hidden bg-[#F7F3EB] flex items-center"
+>
+    <!-- Background Image -->
+
+    <div class="absolute inset-0 overflow-hidden">
+        <img
+            src="{% static 'images\destinations_bg\dest_bg2 (1).webp' %}"
+            class="w-full h-full object-cover  mix-blend-overlay scale-105"
+            alt=""
+        />
+    </div>
+
+    <!-- Decorative Blobs -->
+
+    <div
+        class="absolute -top-40 -left-40 w-[520px] h-[520px] rounded-full bg-[#E8DCC5]/60 blur-3xl"
+    ></div>
+
+    <div
+        class="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[#DCC6A3]/30 blur-3xl"
+    ></div>
+
+    <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.03))]"
+    ></div>
+
+    <div
+        class="relative max-w-[1500px] mx-auto px-6 md:px-12 lg:px-24 pt-24 pb-40 w-full"
+    >
+        <div class="grid lg:grid-cols-2 gap-20 items-center">
+            <!-- LEFT CONTENT -->
+
+            <div>
+                
+                <h1
+                    class="font-heading font-light text-[64px] md:text-[88px] xl:text-[104px] leading-[0.88] tracking-[-0.03em] leading-[0.95] text-ink max-w-3xl"
+                >
+                    {{ about.values_heading }}
+                </h1>
+
+                <p
+                    class="mt-8 text-xl md:text-2xl leading-10 max-w-2xl text-ink-muted leading-relaxed max-w-xl"
+                >
+                    {{ about.value_one_title }}
+                </p>
+
+                <div class="mt-12 flex flex-wrap gap-5">
+                    <a
+                        href="{% url 'core:destinations' %}"
+                        class="px-8 py-4 text-white bg-gold text-white hover:bg-[#9D7B3B] shadow-lg hover:-translate-y-1 rounded-full transition-all duration-500"
+                    >
+                        Destinations
+                    </a>
+
+                    <a
+                        href="#story"
+                        class="px-8 py-4 border
+                        bg-white/70
+
+                        backdrop-bx`lur-md
+
+                        border border-gold/20
+
+                        text-ink
+
+                        hover:bg-gold
+
+                        hover:text-white
+
+                        hover:border-gold
+                        rounded-full  transition"
+                    >
+                        Learn More
+                    </a>
+                </div>
+
+                <div class="w-20 h-px bg-gold my-10"></div>
+
+                <!-- Small Trust Row -->
+
+                <div class="mt-16 flex flex-wrap gap-16">
+                    <div>
+                        <h3
+                            class="text-5xl md:text-6xl font-heading font-heading"
+                        >
+                            {{ stats.0.value }}
+                        </h3>
+
+                        <p
+                            class="text-base uppercase tracking-[0.18em] text-ink-muted mt-2"
+                        >
+                            {{ stats.0.label }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3
+                            class="text-5xl md:text-6xl font-heading font-heading"
+                        >
+                            {{ stats.1.value }}
+                        </h3>
+
+                        <p
+                            class="text-base uppercase tracking-[0.18em] text-ink-muted mt-2"
+                        >
+                            {{ stats.1.label }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3
+                            class="text-5xl md:text-6xl font-heading font-heading"
+                        >
+                            {{ stats.2.value }}
+                        </h3>
+
+                        <p class="text-sm text-ink-muted mt-2">
+                            {{ stats.2.label }}
+                        </p>
+                    </div>
+                </div>
+            <p class="mt-12 text-lg italic text-ink-muted max-w-xl">
+            
+            "Every destination has a story.
+            Our job is helping you become part of it."
+            
+            </p>
+            </div>
+
+
+            <!-- RIGHT IMAGE -->
+
+            <div class="relative">
+                <div
+                    class="absolute -top-10 -left-10 w-full h-full border-20 border-gold/90 rounded-[40px]"
+                ></div>
+
+                {% if about.hero_image %}
+
+                <img
+                    src="{{ about.hero_image.url }}"
+                    alt="{{ about.hero_title }}"
+                    class="relative rounded-[40px] aspect-[4/5] object-cover shadow-2xl w-full"
+                />
+
+                {% else %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1200&q=80"
+                    alt="About Voyage"
+                    class="
+                    relative
+                    rounded-[40px]
+                    aspect-[4/5]
+                    object-cover
+                    shadow-2xl
+                    w-full
+                    
+                    transition-transform
+                    duration-700
+                    hover:scale-[1.02]
+                    "
+                />
+
+                {% endif %}
+
+                <!-- Floating Card -->
+
+                <div
+                    class="absolute bottom-8 -left-10
+                    bg-white/70
+                    
+                    backdrop-blur-xl
+                    
+                    border
+                    
+                    border-white/60
+                    
+                    shadow-[0_25px_70px_rgba(0,0,0,0.15)]
+                    rounded-3xl shadow-2xl p-6 w-72 
+                    hover:-translate-y-2
+                    
+                    transition-all
+                    
+                    duration-500
+                    transition-transform
+                    duration-700
+                    hover:scale-[1.13]"
+                >
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p
+                                class="uppercase tracking-[0.25em] text-[10px] text-gold"
+                            >
+                                Trusted Since
+                            </p>
+
+                            <h3 class="font-heading text-4xl">
+                                2026
+                            </h3>
+                        </div>
+
+                        <div
+                            class="w-16 h-5 rounded-full  flex items-center justify-center text-3xl"
+                        >
+                            ✈
+                        </div>
+                    </div>
+
+                    <p class="mt-5 text-sm leading-relaxed text-ink-muted">
+                        {{ about.hero_card_text }}
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- ===================================================== -->
+<!-- STORY SECTION STARTS BELOW -->
+<!-- ===================================================== -->
+
+<section id="story" class="py-32 bg-white">
+    <div class="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="grid lg:grid-cols-2 gap-24 items-center">
+            <!-- LEFT -->
+
+            <div>
+                <p class="uppercase tracking-[0.3em] text-xs text-gold mb-5">
+                    OUR STORY
+                </p>
+
+                <h2
+                    class="font-heading text-5xl md:text-6xl leading-tight text-ink mb-8"
+                >
+                    {{ about.story_heading }}
+                </h2>
+
+                <div class="space-y-6 text-lg leading-9 text-ink-muted">
+                    <p>{{ about.story_text }}</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 mt-14">
+                    <div
+                        class="rounded-3xl bg-[#FAF7F2] p-8 border border-black/5"
+                    >
+                        <div class="text-5xl mb-4">🌍</div>
+
+                        <h4 class="font-heading text-2xl mb-3">
+                            {{ about.mission_title }}
+                        </h4>
+
+                        <p class="text-sm leading-7 text-ink-muted">
+                            {{ about.mission_text }}
+                        </p>
+                    </div>
+
+                    <div
+                        class="rounded-3xl bg-[#FAF7F2] p-8 border border-black/5"
+                    >
+                        <div class="text-5xl mb-4">❤️</div>
+
+                        <h4 class="font-heading text-2xl mb-3">
+                            {{ about.vision_title }}
+                        </h4>
+
+                        <p class="text-sm leading-7 text-ink-muted">
+                            {{ about.vision_text }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="relative">
+                {% if about.story_image %}
+
+                <img
+                    src="{{ about.story_image.url }}"
+                    class="rounded-[38px] shadow-2xl aspect-[4/5] object-cover w-full"
+                    alt=""
+                />
+
+                {% else %}
+
+                <img
+                    src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1200&q=80"
+                    class="rounded-[38px] shadow-2xl aspect-[4/5] object-cover w-full"
+                    alt=""
+                />
+
+                {% endif %}
+
+                <div
+                    class="absolute -right-10 top-12 bg-white rounded-3xl shadow-xl p-8 max-w-xs"
+                >
+                    <p
+                        class="uppercase text-[11px] tracking-[0.25em] text-gold"
+                    >
+                        WHY WE EXIST
+                    </p>
+
+                    <h3 class="font-heading text-3xl mt-4 mb-4">
+                        Travel that actually means something.
+                    </h3>
+
+                    <p class="text-sm leading-7 text-ink-muted">
+                        Every itinerary is handcrafted by real travelers,
+                        refined through local knowledge, and designed so every
+                        journey feels personal rather than packaged.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================== -->
+<!-- VALUES -->
+<!-- ====================================== -->
+
+<section class="py-32 bg-[#F8F4EE]">
+    <div class="max-w-[1450px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="uppercase tracking-[0.3em] text-xs text-gold">
+                WHAT WE BELIEVE
+            </p>
+
+            <h2 class="font-heading text-5xl md:text-6xl mt-6 text-ink">
+                Our Core Values
+            </h2>
+
+            <p class="mt-8 text-lg text-ink-muted leading-8">
+                Great journeys aren't measured only in miles. They're measured
+                by memories, trust, and meaningful connections.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8 mt-20">
+            <div
+                class="bg-white rounded-[32px] p-10 hover:-translate-y-2 transition duration-500"
+            >
+                <div class="text-5xl mb-8">🛡️</div>
+
+                <h3 class="font-heading text-3xl mb-5">Safety First</h3>
+
+                <p class="leading-8 text-ink-muted">
+                    We partner only with trusted local operators, verified
+                    accommodations, and experienced guides for complete peace of
+                    mind.
+                </p>
+            </div>
+
+            <div
+                class="bg-white rounded-[32px] p-10 hover:-translate-y-2 transition duration-500"
+            >
+                <div class="text-5xl mb-8">🌿</div>
+
+                <h3 class="font-heading text-3xl mb-5">
+                    Authentic Experiences
+                </h3>
+
+                <p class="leading-8 text-ink-muted">
+                    Skip crowded tourist traps and discover local neighborhoods,
+                    hidden cafés, and unforgettable cultural moments.
+                </p>
+            </div>
+
+            <div
+                class="bg-white rounded-[32px] p-10 hover:-translate-y-2 transition duration-500"
+            >
+                <div class="text-5xl mb-8">♻️</div>
+
+                <h3 class="font-heading text-3xl mb-5">Responsible Travel</h3>
+
+                <p class="leading-8 text-ink-muted">
+                    We believe tourism should benefit local communities while
+                    protecting nature for future generations.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ====================================== -->
+<!-- TEAM -->
+<!-- ====================================== -->
+
+<section class="py-32 bg-white">
+    <div class="max-w-[1450px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="text-center max-w-3xl mx-auto">
+            <p class="uppercase tracking-[0.3em] text-xs text-gold">
+                MEET THE PEOPLE
+            </p>
+
+            <h2 class="font-heading text-5xl md:text-6xl mt-6 text-ink">
+                The Travel Architects
+            </h2>
+
+            <p class="mt-8 text-lg leading-8 text-ink-muted">
+                Behind every unforgettable itinerary is a team obsessed with
+                details, passionate about exploration, and dedicated to creating
+                experiences you'll never forget.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+            <!-- Member -->
+
+            <div class="group">
+                <div class="overflow-hidden rounded-[32px]">
+                    <img
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&q=80"
+                        class="aspect-[4/5] object-cover w-full group-hover:scale-105 transition duration-700"
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="font-heading text-2xl">Sarah Jenkins</h3>
+
+                    <p
+                        class="text-gold uppercase tracking-[0.2em] text-xs mt-2"
+                    >
+                        Co-Founder
+                    </p>
+
+                    <p class="mt-4 text-sm leading-7 text-ink-muted">
+                        40+ countries explored and always searching for hidden
+                        cafés overlooking the sea.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Member -->
+
+            <div class="group">
+                <div class="overflow-hidden rounded-[32px]">
+                    <img
+                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900&q=80"
+                        class="aspect-[4/5] object-cover w-full group-hover:scale-105 transition duration-700"
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="font-heading text-2xl">Marcus Vance</h3>
+
+                    <p
+                        class="text-gold uppercase tracking-[0.2em] text-xs mt-2"
+                    >
+                        Operations
+                    </p>
+
+                    <p class="mt-4 text-sm leading-7 text-ink-muted">
+                        Turns complex international logistics into smooth,
+                        stress-free adventures.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Member -->
+
+            <div class="group">
+                <div class="overflow-hidden rounded-[32px]">
+                    <img
+                        src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&q=80"
+                        class="aspect-[4/5] object-cover w-full group-hover:scale-105 transition duration-700"
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="font-heading text-2xl">Emma Carter</h3>
+
+                    <p
+                        class="text-gold uppercase tracking-[0.2em] text-xs mt-2"
+                    >
+                        Asia Specialist
+                    </p>
+
+                    <p class="mt-4 text-sm leading-7 text-ink-muted">
+                        Expert in immersive cultural journeys throughout Asia
+                        and island destinations.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Member -->
+
+            <div class="group">
+                <div class="overflow-hidden rounded-[32px]">
+                    <img
+                        src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=900&q=80"
+                        class="aspect-[4/5] object-cover w-full group-hover:scale-105 transition duration-700"
+                    />
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="font-heading text-2xl">Daniel Brooks</h3>
+
+                    <p
+                        class="text-gold uppercase tracking-[0.2em] text-xs mt-2"
+                    >
+                        Guest Experience
+                    </p>
+
+                    <p class="mt-4 text-sm leading-7 text-ink-muted">
+                        Available before, during and after every journey to make
+                        sure everything runs perfectly.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================== -->
+<!-- STATS -->
+<!-- ====================================== -->
+
+<section class="py-32 bg-[#171717] text-white">
+    <div class="max-w-[1450px] mx-auto px-6 md:px-12 lg:px-24">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+            {% for stat in stats %}
+
+            <div>
+                <h2 class="font-heading text-7xl">
+                    {{ stat.prefix }}{{ stat.value }}{{ stat.suffix }}
+                </h2>
+
+                <p
+                    class="uppercase tracking-[0.25em] text-sm text-stone-300 mt-6"
+                >
+                    {{ stat.label }}
+                </p>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ====================================== -->
+<!-- TESTIMONIALS -->
+<!-- ====================================== -->
+
+<section class="py-32 bg-[#F8F4EE]">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-12">
+        <div class="text-center mb-20">
+            <p class="uppercase tracking-[0.3em] text-xs text-gold">
+                CLIENT STORIES
+            </p>
+
+            <h2 class="font-heading text-5xl mt-6">
+                Travelers Love Their Journey
+            </h2>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            {% for testimonial in testimonials %}
+
+            <div class="bg-white rounded-[32px] p-10 shadow-sm">
+                <div class="text-5xl text-gold mb-8">“</div>
+
+                <p class="leading-8 text-ink-muted italic">
+                    {{ testimonial.quote }}
+                </p>
+
+                <div class="mt-10">
+                    <h4 class="font-heading text-xl">
+                        {{ testimonial.author_name }}
+                    </h4>
+
+                    <p class="text-sm text-gold mt-2">
+                        {{ testimonial.author_destination }}
+                    </p>
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- ====================================== -->
+<!-- FINAL CTA -->
+<!-- ====================================== -->
+
+<section class="relative overflow-hidden">
+    {% if about.cta_background %}
+
+    <img
+        src="{{ about.cta_background.url }}"
+        class="absolute inset-0 w-full h-full object-cover"
+        alt=""
+    />
+
+    {% else %}
+
+    <img
+        src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1800&q=80"
+        class="absolute inset-0 w-full h-full object-cover"
+        alt=""
+    />
+
+    {% endif %}
+
+    <!-- Overlay -->
+
+    <div class="absolute inset-0 bg-black/55"></div>
+
+    <!-- Decorative -->
+
+    <div
+        class="absolute -top-32 -left-32 w-[420px] h-[420px] rounded-full bg-gold/20 blur-3xl"
+    ></div>
+
+    <div
+        class="absolute -bottom-32 -right-32 w-[420px] h-[420px] rounded-full bg-white/10 blur-3xl"
+    ></div>
+
+    <div class="relative max-w-[1400px] mx-auto px-6 md:px-12 lg:px-24 py-40">
+        <div class="max-w-4xl">
+            <h2
+                class="font-heading font-light text-white text-5xl md:text-7xl leading-[1]"
+            >
+                {{ about.cta_heading }}
+            </h2>
+
+            <p class="text-lg text-white/80 leading-9 mt-8 max-w-2xl">
+                {{ about.cta_text }}
+            </p>
+
+            <div class="flex flex-wrap gap-5 mt-12">
+                <a
+                    href="{% url 'core:tours' %}"
+                    class="px-10 py-5 rounded-full bg-white text-black hover:bg-gold hover:text-white transition duration-500"
+                >
+                    {{ about.cta_button }}
+                </a>
+
+                <a
+                    href="{% url 'core:contact' %}"
+                    class="px-10 py-5 rounded-full border border-white/30 text-white hover:bg-white hover:text-black transition duration-500"
+                >
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

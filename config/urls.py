@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('apps.core.urls'), name='home'),
     path('booking/', include('apps.booking.urls')),
     path('accounts/', include('apps.accounts.urls')),
+    path('dashboard/',include('apps.admin_panel.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,131 @@
+{% load static %}
+
+<header class="admin-topbar">
+
+    <div class="topbar-left">
+
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="search-box">
+
+            <i class="fas fa-search"></i>
+
+            <input
+                type="text"
+                placeholder="Search bookings, users, tours..."
+            >
+
+        </div>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <!-- Notifications -->
+
+        <div class="topbar-icon">
+
+            <i class="fas fa-bell"></i>
+
+            {% if pending_bookings %}
+                <span class="notification-badge">
+                    {{ pending_bookings }}
+                </span>
+            {% endif %}
+
+        </div>
+
+        <!-- Messages -->
+
+        <div class="topbar-icon">
+
+            <i class="fas fa-envelope"></i>
+
+        </div>
+
+        <!-- User -->
+
+        <div class="admin-profile">
+
+            <div class="profile-image">
+
+                {% if request.user.profile_image %}
+                    <img src="{{ request.user.profile_image.url }}" alt="">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" alt="">
+                {% endif %}
+
+            </div>
+
+            <div class="profile-info">
+
+                <span class="profile-name">
+
+                    {{ request.user.get_full_name|default:request.user.username }}
+
+                </span>
+
+                <span class="profile-role">
+
+                    Administrator
+
+                </span>
+
+            </div>
+
+            <div class="profile-dropdown">
+
+                <a href="{% url 'accounts:profile' %}">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+
+                <a href="/">
+                    <i class="fas fa-globe"></i>
+                    View Website
+                </a>
+
+                <hr>
+
+                <a href="{% url 'accounts:logout' %}" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<script>
+
+const profile=document.querySelector(".admin-profile");
+
+if(profile){
+
+    profile.addEventListener("click",function(){
+
+        this.classList.toggle("open");
+
+    });
+
+}
+
+const toggle=document.getElementById("sidebarToggle");
+
+if(toggle){
+
+    toggle.addEventListener("click",()=>{
+
+        document.body.classList.toggle("sidebar-collapsed");
+
+    });
+
+}
+
+</script>

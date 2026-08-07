@@ -19,7 +19,7 @@
                 {% if tour.rating %}<span class="badge">⭐ {{ tour.rating }}/5</span>{% endif %}
             </div>
             <div class="flex flex-wrap gap-4">
-                <a href="{% url 'booking:booking' %}" class="btn-primary">Book This Tour</a>
+                <a href="{% url 'booking:booking_with_tour' tour.pk %}" class="btn-primary">Book This Tour</a>
                 {% if user.is_authenticated and tour.pk %}
                 <a href="{% url 'accounts:toggle_wishlist' %}?tour={{ tour.id }}&next={{ request.path }}" class="btn-primary">
                     {% if wishlist_tour %}Remove from Wishlist{% else %}Save to Wishlist{% endif %}
@@ -114,7 +114,7 @@
                     <p><strong>Meals:</strong> {{ tour.meals|join:', ' }}</p>
                     <p><strong>Guides:</strong> {{ tour.guides|join:', ' }}</p>
                 </div>
-                <a href="{% url 'booking:booking' %}" class="btn-primary w-full justify-center">Book This Tour</a>
+                <a href="{% url 'booking:booking_with_tour' tour.pk %}" class="btn-primary w-full justify-center">Book This Tour</a>
             </div>
 
             <div class="glass-card p-8 space-y-5">

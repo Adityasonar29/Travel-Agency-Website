@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmation — {{ booking.booking_id|default:"BK########" }}{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
+    <div class="max-w-[700px] mx-auto px-6 md:px-12 text-center">
+        <div class="mb-12">
+            <div class="w-24 h-24 mx-auto bg-olive/10 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-olive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h1 class="text-h1 font-heading font-light text-ink mb-4">Booking Confirmed!</h1>
+            <p class="text-base font-body text-ink-muted mb-6">Your booking has been submitted successfully.</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+            <div class="space-y-6">
+                <div class="text-2xl font-heading text-olive pb-6">
+                    Your Booking Id is {{ booking.booking_id|default:"BK####" }}
+                </div>
+                <p class="text-xl font-body text-cream-muted">
+                    Thank you for choosing our travel services! Your booking has been received and is now pending confirmation.
+                </p>
+            </div>
+
+            <div class="text-center">
+                <p class="text-lg font-body text-ink-muted mb-2">
+                    {% if booking.created_at %}
+                        Process started: {{ booking.created_at| date:"F j, Y" }}
+                    {% else %}
+                        Process started recently
+                    {% endif %}
+                </p>
+
+                <a href="{% url 'accounts:profile' %}#bookings" class="mt-2 inline-block">
+                    <span class="underline text-gold-hover">Check Booking Status</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

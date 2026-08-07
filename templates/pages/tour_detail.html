@@ -3,138 +3,1233 @@
 {% block title %}{{ tour.name }} — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
 
 {% block content %}
-<section class="relative min-h-screen overflow-hidden bg-ink text-white">
-    <div class="hero-parallax absolute inset-0 bg-cover bg-center" style="background-image:url('{{ tour.hero_image|default:tour.image }}');"></div>
-    <div class="absolute inset-0 bg-black/60"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.12),_transparent_28%)]"></div>
-    <div class="relative z-10 mx-auto max-w-[1440px] px-6 md:px-12 lg:px-24 py-24">
-        <div class="max-w-3xl space-y-6">
-            <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Tour Experience</p>
-            <h1 class="text-h1 font-heading font-light">{{ tour.name }}</h1>
-            <p class="max-w-2xl text-lg leading-8 text-white/80">{{ tour.overview }}</p>
-            <div class="flex flex-wrap gap-4">
-                <span class="badge">{{ tour.duration }}</span>
-                <span class="badge">${{ tour.price_per_person|floatformat:0 }} per person</span>
-                <span class="badge">{{ tour.budget_range }}</span>
-                {% if tour.rating %}<span class="badge">⭐ {{ tour.rating }}/5</span>{% endif %}
+
+<!-- ================= PREMIUM HERO ================= -->
+<!-- ================= PREMIUM HERO ================= -->
+<section class="relative overflow-hidden bg-[#f8f4ec] py-28 md:py-36">
+    <!-- Decorative Background -->
+    
+       <!-- Decorative Background Wrapper -->
+       <div class="absolute inset-0 overflow-hidden pointer-events-none">
+           
+           <!-- 1. NEW LAYER: Custom Background Image Watermark -->
+           <!-- Replace placeholder link with your image path (e.g., {{ tour.image }} or a pattern asset) -->
+           <div class="absolute inset-0 opacity-[0.20] mix-blend-multiply">
+               <img src="{{ tour.hero_image|default:tour.image }}" 
+                    alt="Background pattern" 
+                    class="w-full h-full object-cover">
+           </div>
+   
+           <!-- 2. Existing Gradient Blobs (Sits on top of the image for rich light leakage) -->
+           <div class="absolute -top-40 -left-32 w-[520px] h-[520px] rounded-full bg-[#d4af37]/10 blur-3xl"></div>
+           <div class="absolute bottom-0 right-0 w-[420px] h-[420px] rounded-full bg-[#b8860b]/10 blur-3xl"></div>
+           
+           <!-- 3. Existing Dot Grid Overlay -->
+           <div class="absolute inset-0 opacity-[0.04]"
+               style="background-image: radial-gradient(#b8860b 1px, transparent 1px); background-size:32px 32px;"></div>
+       </div>
+
+    <div class="relative z-10 max-w-[1450px] mx-auto px-8 md:px-14 lg:px-24">
+        <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <!-- LEFT CONTENT -->
+            <div>
+                <p class="uppercase tracking-[0.45em] text-[12px] text-[#b8860b] font-medium mb-5">
+                    PREMIUM TOUR EXPERIENCE
+                </p>
+                <h1 class="font-heading text-5xl md:text-7xl leading-tight text-[#1f2937]">
+                    {{ tour.name }}
+                </h1>
+                <p class="mt-8 text-lg leading-9 text-gray-600">
+                    {{ tour.overview }}
+                </p>
+
+                <!-- Tags -->
+                <div class="flex flex-wrap gap-4 mt-10">
+                    <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">🕒 {{ tour.duration }}</span>
+                    <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">💎 {{ tour.budget_range }}</span>
+                    <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">💲 ${{ tour.price_per_person|floatformat:0 }}</span>
+                    {% if tour.rating %}
+                    <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">⭐ {{tour.rating }}/5</span>
+                    {% endif %}
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center gap-5 mt-12">
+                    <!-- Primary Booking Button -->
+                    <a href="{% url 'booking:booking_with_tour' tour.pk %}" class="btn-primary py-5">
+                        Book This Tour
+                    </a>
+                
+                    <!-- Enhanced Secondary Wishlist Button -->
+                    {% if user.is_authenticated and tour.pk %}
+                        <a href="{% url 'accounts:toggle_wishlist' %}?tour={{ tour.id }}&next={{ request.path }}"
+                           class="inline-flex items-center gap-2.5 px-8 py-5   border-2 border-[#1f2937]/10 bg-transparent text-sm font-semibold tracking-wide text-[#1f2937] transition-all duration-300 hover:border-[#b8860b] hover:text-[#b8860b] hover:bg-[#b8860b]/5">
+                            
+                            {% if wishlist_tour %}
+                                <!-- Filled Heart Icon for Remove State -->
+                                <svg xmlns="http://w3.org" class="h-4 w-4 text-red-500 fill-current" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656l-6.828 6.829a1 1 0 01-1.414 0L3.172 10.83a4 4 0 010-5.656z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Remove Wishlist</span>
+                            {% else %}
+                                <!-- Outline Heart Icon for Save State -->
+                                <svg xmlns="http://w3.org" class="h-4 w-4 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                                <span>Save Tour</span>
+                            {% endif %}
+                        </a>
+                
+                    {% elif user.is_authenticated %}
+                        <span class="inline-flex items-center px-5 py-2.5   bg-gray-100 border border-gray-200 text-xs font-medium text-gray-400 tracking-wider uppercase">
+                            Wishlist unavailable
+                        </span>
+                
+                    {% else %}
+                        <!-- Login Fallback Button with matching style -->
+                        <a href="{% url 'accounts:login' %}?next={{ request.path }}"
+                           class="inline-flex items-center gap-2.5 px-8 py-4.5   border-2 border-[#1f2937]/10 bg-transparent text-sm font-semibold tracking-wide text-[#1f2937] transition-all duration-300 hover:border-[#b8860b] hover:text-[#b8860b] hover:bg-[#b8860b]/5">
+                            <svg xmlns="http://w3.org" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            <span>Login to Save</span>
+                        </a>
+                    {% endif %}
+                </div>
+
             </div>
-            <div class="flex flex-wrap gap-4">
-                <a href="{% url 'booking:booking_with_tour' tour.pk %}" class="btn-primary">Book This Tour</a>
-                {% if user.is_authenticated and tour.pk %}
-                <a href="{% url 'accounts:toggle_wishlist' %}?tour={{ tour.id }}&next={{ request.path }}" class="btn-primary">
-                    {% if wishlist_tour %}Remove from Wishlist{% else %}Save to Wishlist{% endif %}
-                </a>
-                {% elif user.is_authenticated %}
-                <span class="badge">Wishlist is unavailable for sample tours.</span>
-                {% else %}
-                <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn-primary">Login to Save</a>
+
+            <!-- RIGHT IMAGE (Removed the heavy tilted background card for a cleaner look) -->
+            <div class="relative">
+                <div class="relative overflow-hidden rounded-[40px] shadow-[0_30px_80px_rgba(0,0,0,.12)]">
+                    <img src="{{ tour.hero_image|default:tour.image }}" alt="{{ tour.name }}"
+                        class="w-full h-[540px] md:h-[620px] object-cover hover:scale-105 duration-700">
+                </div>
+
+                <!-- Floating Info Badges -->
+                <div class="absolute -left-6 top-10 bg-white rounded-3xl px-6 py-4 shadow-xl">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-[#b8860b]">Starting From</p>
+                    <h3 class="text-2xl font-heading text-[#1f2937] mt-0.5">${{ tour.price_per_person|floatformat:0 }}
+                    </h3>
+                    <p class="text-xs text-gray-400">Per Traveler</p>
+                </div>
+
+                {% if tour.rating %}
+                <div class="absolute -right-6 bottom-10 bg-white rounded-3xl px-6 py-4 shadow-xl">
+                    <div class="text-yellow-500 text-sm tracking-wide">★★★★★</div>
+                    <h3 class="text-xl font-heading text-[#1f2937] mt-0.5">{{ tour.rating }}/5</h3>
+                    <p class="text-xs text-gray-400">Traveler Rating</p>
+                </div>
                 {% endif %}
-                <a href="{% url 'core:tours' %}" class="link-arrow link-arrow-light">Back to Tours <span class="arrow-icon">→</span></a>
             </div>
         </div>
     </div>
 </section>
+<!-- ================= CONTENT ================= -->
 
-<section class="py-24 bg-cream">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 grid gap-16 xl:grid-cols-[1.2fr_0.8fr]">
-        <div class="space-y-12">
-            <div class="glass-card">
-                <div class="section-header mb-10">
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Overview</p>
-                    <h2 class="text-4xl font-heading text-ink">What to expect</h2>
-                </div>
-                <p class="text-base leading-8 text-ink/80">{{ tour.overview }}</p>
+<section class="relative py-24 bg-[#faf8f3]">
+
+    <!-- Decorative -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute left-0 top-0 w-80 h-80 rounded-full bg-[#d4af37]/5 blur-3xl"></div>
+        <div class="absolute right-0 bottom-0 w-96 h-96 rounded-full bg-[#b8860b]/5 blur-3xl"></div>
+    </div>
+
+    <div class="relative pr-10 pl-10 mx-auto px-6 md:px-12 lg:px-24 space-y-16">
+
+
+        <!--<div class="space-y-12">-->
+
+
+
+        <!-- ================= TOUR HIGHLIGHTS ================= -->
+
+        <section>
+
+            <div class="section-header text-center mb-12">
+
+                <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
+
+                    TOUR HIGHLIGHTS
+
+                </p>
+
+                <h2 class="text-5xl font-heading text-[#1f2937] mt-3">
+
+                    Everything at a Glance
+
+                </h2>
+
+                <p class="mt-5 text-gray-600 max-w-2xl mx-auto">
+
+                    Carefully designed experiences, luxury accommodations,
+                    expert guides and unforgettable adventures—all crafted
+                    for a seamless travel experience.
+
+                </p>
+
             </div>
 
-            <div class="glass-card">
-                <div class="section-header mb-10">
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Itinerary</p>
-                    <h2 class="text-4xl font-heading text-ink">Day-by-day plan</h2>
-                </div>
-                <div class="space-y-6">
-                    {% for item in tour.itinerary %}
-                    <div class="itinerary-card">
-                        <p class="text-xs uppercase tracking-[0.25em] text-gold-light">{{ item.day }}</p>
-                        <h3 class="mt-2 text-2xl font-heading text-ink">{{ item.title }}</h3>
-                        <p class="mt-3 text-base leading-7 text-ink/75">{{ item.description }}</p>
+            <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-7">
+
+                <!-- Duration -->
+
+                <div class="group rounded-[30px] bg-white p-8 border border-[#efe6d4]
+                                hover:-translate-y-2 hover:shadow-2xl duration-500">
+
+                    <div class="w-16 h-16 rounded-2xl bg-[#f8f1df]
+                                    flex items-center justify-center text-3xl">
+
+                        🕒
+
                     </div>
-                    {% endfor %}
+
+                    <h3 class="mt-6 text-3xl font-heading text-[#1f2937]">
+
+                        {{ tour.duration }}
+
+                    </h3>
+
+                    <p class="mt-2 text-gray-500">
+
+                        Tour Duration
+
+                    </p>
+
                 </div>
+
+                <!-- Price -->
+
+                <div class="group rounded-[30px] bg-white p-8 border border-[#efe6d4]
+                                hover:-translate-y-2 hover:shadow-2xl duration-500">
+
+                    <div class="w-16 h-16 rounded-2xl bg-[#f8f1df]
+                                    flex items-center justify-center text-3xl">
+
+                        💰
+
+                    </div>
+
+                    <h3 class="mt-6 text-3xl font-heading text-[#1f2937]">
+
+                        ${{ tour.price_per_person|floatformat:0 }}
+
+                    </h3>
+
+                    <p class="mt-2 text-gray-500">
+
+                        Starting Price
+
+                    </p>
+
+                </div>
+
+                <!-- Seats -->
+
+                <div class="group rounded-[30px] bg-white p-8 border border-[#efe6d4]
+                                hover:-translate-y-2 hover:shadow-2xl duration-500">
+
+                    <div class="w-16 h-16 rounded-2xl bg-[#f8f1df]
+                                    flex items-center justify-center text-3xl">
+
+                        👥
+
+                    </div>
+
+                    <h3 class="mt-6 text-3xl font-heading text-[#1f2937]">
+
+                        {{ tour.seats_available }}
+
+                    </h3>
+
+                    <p class="mt-2 text-gray-500">
+
+                        Seats Available
+
+                    </p>
+
+                </div>
+
+                <!-- Hotels -->
+
+                <div class="group rounded-[30px] bg-white p-8 border border-[#efe6d4]
+                                hover:-translate-y-2 hover:shadow-2xl duration-500">
+
+                    <div class="w-16 h-16 rounded-2xl bg-[#f8f1df]
+                                    flex items-center justify-center text-3xl">
+
+                        🏨
+
+                    </div>
+
+                    <h3 class="mt-6 text-xl font-heading text-[#1f2937]">
+
+                        {{ tour.hotels|length }}
+
+                    </h3>
+
+                    <p class="mt-2 text-gray-500">
+
+                        Premium Hotels
+
+                    </p>
+
+                </div>
+
+                <!-- Meals -->
+
+                <div class="group rounded-[30px] bg-white p-8 border border-[#efe6d4]
+                                hover:-translate-y-2 hover:shadow-2xl duration-500">
+
+                    <div class="w-16 h-16 rounded-2xl bg-[#f8f1df]
+                                    flex items-center justify-center text-3xl">
+
+                        🍽️
+
+                    </div>
+
+                    <h3 class="mt-6 text-xl font-heading text-[#1f2937]">
+
+                        {{ tour.meals|length }}
+
+                    </h3>
+
+                    <p class="mt-2 text-gray-500">
+
+                        Meal Experiences
+
+                    </p>
+
+                </div>
+
+                <!-- Transport -->
+
+                <div class="group rounded-[30px] bg-white p-8 border border-[#efe6d4]
+                                hover:-translate-y-2 hover:shadow-2xl duration-500">
+
+                    <div class="w-16 h-16 rounded-2xl bg-[#f8f1df]
+                                    flex items-center justify-center text-3xl">
+
+                        ✈️
+
+                    </div>
+
+                    <h3 class="mt-6 text-xl font-heading text-[#1f2937]">
+
+                        {{ tour.transport_modes|length }}
+
+                    </h3>
+
+                    <p class="mt-2 text-gray-500">
+
+                        Travel Modes
+
+                    </p>
+
+                </div>
+
             </div>
 
-            <div class="grid gap-10 lg:grid-cols-2">
-                <div class="glass-card">
-                    <div class="section-header mb-8">
-                        <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Included</p>
-                        <h2 class="text-3xl font-heading text-ink">What’s included</h2>
+        </section>
+
+        <!-- ================= OVERVIEW ================= -->
+
+        <section class="relative overflow-hidden rounded-[38px]
+                            bg-gradient-to-br from-white to-[#fcf8ef]
+                            border border-[#eee3cf]
+                            p-12 lg:p-16">
+
+            <div class="absolute -right-20 -top-20 w-72 h-72
+                            rounded-full bg-[#d4af37]/10 blur-3xl"></div>
+
+            <div class="relative z-10">
+
+                <p class="uppercase tracking-[0.45em]
+                              text-[#b8860b] text-xs">
+
+                    ABOUT THIS JOURNEY
+
+                </p>
+
+                <h2 class="mt-4 text-5xl font-heading text-[#1f2937]">
+
+                    Discover the Experience
+
+                </h2>
+
+                <div class="mt-10 grid lg:grid-cols-[1.4fr_0.6fr] gap-12">
+
+                    <div>
+
+                        <p class="text-lg leading-9 text-gray-600">
+
+                            {{ tour.overview }}
+
+                        </p>
+
                     </div>
-                    <ul class="list-disc list-inside space-y-3 text-ink/80">
-                        {% for item in tour.included_items %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="glass-card">
-                    <div class="section-header mb-8">
-                        <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Excluded</p>
-                        <h2 class="text-3xl font-heading text-ink">What’s not included</h2>
+
+                    <div class="rounded-[28px]
+                                    bg-[#f8f4ea]
+                                    border border-[#eadfc8]
+                                    p-8">
+
+                        <h3 class="font-heading text-2xl text-[#1f2937]">
+
+                            Why Travelers Love It
+
+                        </h3>
+
+                        <ul class="mt-6 space-y-4 text-gray-600">
+
+                            <li>✓ Expert Local Guides</li>
+
+                            <li>✓ Handpicked Luxury Hotels</li>
+
+                            <li>✓ Curated Experiences</li>
+
+                            <li>✓ Flexible Booking</li>
+
+                            <li>✓ Small Group Travel</li>
+
+                        </ul>
+
                     </div>
-                    <ul class="list-disc list-inside space-y-3 text-ink/80">
-                        {% for item in tour.excluded_items %}
-                        <li>{{ item }}</li>
-                        {% endfor %}
-                    </ul>
+
                 </div>
+
             </div>
 
-            <div class="glass-card">
-                <div class="section-header mb-10">
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Gallery</p>
-                    <h2 class="text-4xl font-heading text-ink">Moments from this tour</h2>
-                </div>
-                <div class="grid gap-4 sm:grid-cols-2">
-                    {% for image in tour.gallery %}
-                    <div class="image-reveal rounded-[28px] overflow-hidden bg-ink/5">
-                        <img src="{{ image }}" alt="{{ tour.name }} gallery" class="w-full h-64 object-cover" />
-                    </div>
-                    {% endfor %}
-                </div>
+        </section>
+
+        <!-- ================= ITINERARY ================= -->
+
+
+            <div class="section-header mb-12">
+
+                <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
+
+                    TOUR TIMELINE
+
+                </p>
+
+                <h2 class="text-5xl font-heading text-[#1f2937]">
+
+                    Your Journey Day by Day
+
+                </h2>
+
             </div>
+
+            <div class="relative">
+
+
+
+                <div class="space-y-10">
+
+                    <div class="relative">
+
+                        <!-- Timeline Line -->
+                        <div
+                            class="absolute left-7 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#d4af37] via-[#e8d8a8] to-transparent">
+                        </div>
+
+                        <div class="space-y-12">
+
+                            {% for item in tour.itinerary %}
+
+                            <div class="relative flex gap-8 group">
+
+                                <!-- Timeline Circle -->
+
+                                <div class="relative z-10 flex-shrink-0">
+
+                                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#d4af37] to-[#b8860b]
+                                                    shadow-lg flex items-center justify-center text-white font-bold">
+
+                                        {{ forloop.counter }}
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Card -->
+
+                                <div class="flex-1 rounded-[32px]
+                                                border border-[#ece3d1]
+                                                bg-white
+                                                p-8
+                                                transition-all duration-500
+                                                hover:-translate-y-2
+                                                hover:shadow-[0_25px_60px_rgba(0,0,0,.08)]">
+
+                                    <div class="flex flex-wrap items-center justify-between gap-4">
+
+                                        <div>
+
+                                            <span class="inline-flex px-4 py-2 rounded-full
+                                                                 bg-[#f8f2e4]
+                                                                 text-[#b8860b]
+                                                                 text-xs
+                                                                 uppercase
+                                                                 tracking-[0.25em]">
+
+                                                {{ item.day }}
+
+                                            </span>
+
+                                            <h3 class="mt-5 text-3xl font-heading text-[#1f2937]">
+
+                                                {{ item.title }}
+
+                                            </h3>
+
+                                        </div>
+
+                                        <div class="hidden lg:flex w-16 h-16 rounded-2xl
+                                                        bg-[#faf5ea]
+                                                        items-center justify-center
+                                                        text-3xl">
+
+                                            ✈️
+
+                                        </div>
+
+                                    </div>
+
+                                    <p class="mt-6 text-gray-600 leading-8 text-lg">
+
+                                        {{ item.description }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ================= INCLUDED / EXCLUDED ================= -->
+
+                <section>
+
+                    <div class="section-header text-center mb-12">
+
+                        <p class="uppercase tracking-[0.45em] text-xs text-[#b8860b]">
+
+                            TOUR DETAILS
+
+                        </p>
+
+                        <h2 class="mt-3 text-5xl font-heading text-[#1f2937]">
+
+                            What's Included
+
+                        </h2>
+
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-10">
+
+                        <!-- Included -->
+
+                        <div class="rounded-[34px]
+                                            border border-[#ece3d1]
+                                            bg-white
+                                            p-10">
+
+                            <h3 class="text-3xl font-heading text-[#1f2937] mb-8">
+
+                                Included
+
+                            </h3>
+
+                            <div class="space-y-5">
+
+                                {% for item in tour.included_items %}
+
+                                <div class="flex items-center gap-4 rounded-2xl
+                                                    bg-[#faf7ef]
+                                                    p-5">
+
+                                    <div class="w-10 h-10 rounded-full
+                                                        bg-[#d4af37]
+                                                        text-white
+                                                        flex items-center justify-center">
+
+                                        ✓
+
+                                    </div>
+
+                                    <span class="text-gray-700">
+
+                                        {{ item }}
+
+                                    </span>
+
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                        <!-- Excluded -->
+
+                        <div class="rounded-[34px]
+                                            border border-[#ece3d1]
+                                            bg-white
+                                            p-10">
+
+                            <h3 class="text-3xl font-heading text-[#1f2937] mb-8">
+
+                                Not Included
+
+                            </h3>
+
+                            <div class="space-y-5">
+
+                                {% for item in tour.excluded_items %}
+
+                                <div class="flex items-center gap-4 rounded-2xl
+                                                    bg-[#fff8f8]
+                                                    p-5">
+
+                                    <div class="w-10 h-10 rounded-full
+                                                        bg-red-400
+                                                        text-white
+                                                        flex items-center justify-center">
+
+                                        ✕
+
+                                    </div>
+
+                                    <span class="text-gray-700">
+
+                                        {{ item }}
+
+                                    </span>
+
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- ================= GALLERY ================= -->
+                <section class="py-20 bg-[#faf8f3]">
+                    <div class="mx-auto max-w-[1450px] px-8 md:px-14 lg:px-24">
+                
+                        <!-- Section Header -->
+                        <div class="scroll-reveal text-center mb-16">
+                            <p class="uppercase tracking-[0.45em] text-xs text-[#b8860b] font-medium mb-3">
+                                GALLERY
+                            </p>
+                            <h2 class="text-4xl md:text-5xl font-light font-heading text-[#1f2937]">
+                                Moments From The Journey
+                            </h2>
+                        </div>
+                
+                        <!-- Invisible data pipeline mapping your raw Django image array straight to JavaScript -->
+                        <div id="galleryDataList" class="hidden">
+                            {% for image in tour.gallery %}
+                                <span data-src="{{ image }}"></span>
+                            {% endfor %}
+                        </div>
+                
+                        <!-- 
+                            Self-Correcting Mosaic Column Structure 
+                            - If you have 1 image: Spans beautifully across the view.
+                            - If you have 2-3 images: Automatically forms balanced panels.
+                            - If you have 4+ images: Assembles an elegant staggered photo wall.
+                        -->
+                        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance] w-full">
+                            {% for image in tour.gallery %}
+                                <div class="break-inside-avoid mb-6">
+                                    <div onclick="openLightbox({{ forloop.counter0 }})" 
+                                         class="relative overflow-hidden rounded-[28px] group shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer bg-slate-100">
+                                        
+                                        <!-- Premium Asymmetric Sizing Logic based on dynamic element index values -->
+                                        <img src="{{ image }}" alt="{{ tour.name }}" 
+                                             class="w-full object-cover transition duration-700 ease-out group-hover:scale-105
+                                             {% if forloop.counter == 1 %} h-[560px]
+                                             {% elif forloop.counter|divisibleby:3 %} h-[440px]
+                                             {% elif forloop.counter|divisibleby:2 %} h-[280px]
+                                             {% else %} h-[360px] {% endif %}">
+                                        
+                                        <!-- Smooth Overlay Protection Wash -->
+                                        <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                                            <span class="bg-white/90 text-slate-800 text-xs tracking-wider uppercase px-5 py-2.5 rounded-full backdrop-blur-sm transform translate-y-2 group-hover:translate-y-0 transition duration-300 shadow-sm">
+                                                View Image
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <!-- Graceful Fallback if Gallery is completely empty -->
+                                <div class="col-span-full py-16 text-center border-2 border-dashed border-slate-200 rounded-[32px] bg-white">
+                                    <p class="text-slate-400 font-serif italic text-lg">Visual memories for this journey are being processed...</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ================= LIGHTBOX MODAL OVERLAY ================= -->
+                <div id="lightboxModal" 
+                     class="fixed inset-0 z-50 hidden bg-black/35 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300 opacity-0"
+                     onclick="closeLightbox()">
+                    
+                    <!-- Top Action Close Pin -->
+                    <button class="absolute top-6 right-6 text-white/70 hover:text-white transition bg-white/10 hover:bg-white/20 p-3 rounded-full z-50 shadow-lg"
+                            onclick="closeLightbox()">
+                        <svg xmlns="http://w3.org" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                
+                    <!-- PREVIOUS BUTTON (Left Navigation) -->
+                    <button class="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition bg-white/5 hover:bg-white/10 p-4 rounded-full z-50 backdrop-blur-sm group shadow-xl"
+                            onclick="navigateLightbox(-1, event)">
+                        <svg xmlns="http://w3.org" class="h-6 w-6 transform group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                
+                    <!-- MAIN LIGHTBOX IMAGE CONTAINER -->
+                    <div class="relative max-w-full max-h-[85vh] flex items-center justify-center">
+                        <!-- Added fixed path namespace error fix from prior step snippet -->
+                        <img id="lightboxTargetImg" src="" alt="Enlarged view"
+                             class="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl transform scale-95 transition-all duration-300 select-none"
+                             onclick="event.stopPropagation()">
+                            
+                        <!-- Floating Graphic Counter UI Badge -->
+                        <span id="lightboxCounter" class="absolute bottom-4 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full text-white/80 font-mono text-xs tracking-wider select-none">
+                            1 / 1
+                        </span>
+                    </div>
+                
+                    <!-- NEXT BUTTON (Right Navigation) -->
+                    <button class="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition bg-white/5 hover:bg-white/10 p-4 rounded-full z-50 backdrop-blur-sm group shadow-xl"
+                            onclick="navigateLightbox(1, event)">
+                        <svg xmlns="http://w3.org" class="h-6 w-6 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                
+                </div>
+                
+                <!-- ================= JAVASCRIPT CONTROLS ================= -->
+                <script>
+                    let currentImageIndex = 0;
+                    let totalImagesArray = [];
+                
+                    function ensureImagesLoaded() {
+                      if (totalImagesArray.length === 0) {
+                          const dataNodes = document.querySelectorAll("#galleryDataList span");
+                          totalImagesArray = Array.from(dataNodes).map(node => {
+                              const src = node.getAttribute("data-src");
+                              console.log("Image URL:", src); // Check console for valid URLs
+                              return src;
+                          });
+                      }
+                  }
+                
+                    document.addEventListener("DOMContentLoaded", () => {
+                        ensureImagesLoaded();
+                    });
+                
+                    function openLightbox(index) {
+                        ensureImagesLoaded();
+                        
+                        currentImageIndex = index;
+                        const modal = document.getElementById('lightboxModal');
+                        
+                        updateLightboxContent();
+                        modal.classList.remove('hidden');
+                        
+                        setTimeout(() => {
+                            modal.classList.remove('opacity-0');
+                            document.getElementById('lightboxTargetImg').classList.remove('scale-95');
+                        }, 10);
+                    }
+                
+                    function updateLightboxContent() {
+                        ensureImagesLoaded();
+                        
+                        const imgTarget = document.getElementById('lightboxTargetImg');
+                        const counterTarget = document.getElementById('lightboxCounter');
+                        
+                        if (totalImagesArray.length === 0 || !totalImagesArray[currentImageIndex]) {
+                            console.error("Gallery Error: No image source found at index", currentImageIndex);
+                            return;
+                        }
+                        
+                        imgTarget.src = totalImagesArray[currentImageIndex];
+                        counterTarget.textContent = `${currentImageIndex + 1} / ${totalImagesArray.length}`;
+                    }
+                
+                    function navigateLightbox(direction, event) {
+                        if (event) event.stopPropagation();
+                        ensureImagesLoaded();
+                        
+                        if (totalImagesArray.length <= 1) return; 
+                        
+                        currentImageIndex += direction;
+                        if (currentImageIndex >= totalImagesArray.length) currentImageIndex = 0;
+                        if (currentImageIndex < 0) currentImageIndex = totalImagesArray.length - 1;
+                
+                        const imgTarget = document.getElementById('lightboxTargetImg');
+                        imgTarget.style.opacity = '0.3';
+                        imgTarget.style.transform = 'scale(0.98)';
+                        setTimeout(() => {updateLightboxContent();imgTarget.style.opacity = '1';imgTarget.style.transform = 'scale(1)';}, 120);}function closeLightbox() {const modal = document.getElementById('lightboxModal');const imgTarget = document.getElementById('lightboxTargetImg');modal.classList.add('opacity-0');imgTarget.classList.add('scale-95');setTimeout(() => {modal.classList.add('hidden');imgTarget.src = "";}, 300);}document.addEventListener('keydown', function(e) {const modal = document.getElementById('lightboxModal');if (modal.classList.contains('hidden')) return;if (e.key === 'Escape') closeLightbox();if (e.key === 'ArrowRight') navigateLightbox(1);if (e.key === 'ArrowLeft') navigateLightbox(-1);});
+
+                              </script>
+
+
+
+
+                <!-- ================= SIDEBAR ================= -->
+
+                <aside class="sticky top-28 self-start space-y-8">
+                
+                    <!-- ================= PREMIUM BOOKING CARD ================= -->
+                
+                    <div class="overflow-hidden rounded-[36px] bg-white border border-[#e9deca] shadow-[0_30px_70px_rgba(0,0,0,.06)]">
+                
+                        <div class="px-8 pt-8">
+                
+                            <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
+                
+                                Starting From
+                
+                            </p>
+                
+                            <div class="mt-4 flex items-end gap-2">
+                
+                                <h2 class="text-5xl font-heading text-[#1f2937]">
+                
+                                    ${{ tour.price_per_person|floatformat:0 }}
+                
+                                </h2>
+                
+                                <span class="pb-2 text-gray-500">
+                
+                                    / Person
+                
+                                </span>
+                
+                            </div>
+                
+                            <div class="mt-8 h-px bg-[#ece3d1]"></div>
+                
+                        </div>
+                
+                        <div class="px-8 py-7 space-y-5">
+                
+                            <div class="flex items-center justify-between">
+                
+                                <span class="text-gray-500">
+                
+                                    Duration
+                
+                                </span>
+                
+                                <span class="font-medium text-[#1f2937]">
+                
+                                    {{ tour.duration }}
+                
+                                </span>
+                
+                            </div>
+                
+                            <div class="flex items-center justify-between">
+                
+                                <span class="text-gray-500">
+                
+                                    Available Seats
+                
+                                </span>
+                
+                                <span class="font-medium text-[#1f2937]">
+                
+                                    {{ tour.seats_available }}
+                
+                                </span>
+                
+                            </div>
+                
+                            {% if tour.rating %}
+                
+                            <div class="flex items-center justify-between">
+                
+                                <span class="text-gray-500">
+                
+                                    Rating
+                
+                                </span>
+                
+                                <span class="font-medium text-[#1f2937]">
+                
+                                    ★ {{ tour.rating }}/5
+                
+                                </span>
+                
+                            </div>
+                
+                            {% endif %}
+                
+                        </div>
+                
+                        <div class="px-8 pb-8">
+                
+                            <a href="{% url 'booking:booking_with_tour' tour.pk %}"
+                               class="btn-primary w-full justify-center">
+                
+                                Book This Journey
+                
+                            </a>
+                
+                            <div class="mt-8 grid grid-cols-2 gap-3 text-center">
+                
+                                <div class="rounded-2xl bg-[#faf7f1] py-4">
+                
+                                    <p class="text-xs tracking-[0.25em] uppercase text-[#b8860b]">
+                
+                                        Secure
+                
+                                    </p>
+                
+                                    <p class="mt-2 text-sm text-gray-600">
+                
+                                        Booking
+                
+                                    </p>
+                
+                                </div>
+                
+                                <div class="rounded-2xl bg-[#faf7f1] py-4">
+                
+                                    <p class="text-xs tracking-[0.25em] uppercase text-[#b8860b]">
+                
+                                        Instant
+                
+                                    </p>
+                
+                                    <p class="mt-2 text-sm text-gray-600">
+                
+                                        Confirmation
+                
+                                    </p>
+                
+                                </div>
+                
+                            </div>
+                
+                        </div>
+                
+                    </div>
+                
+                    <!-- ================= PRIVATE CONCIERGE ================= -->
+                
+                    <div class="relative overflow-hidden rounded-[36px] border border-[#e9deca] bg-gradient-to-br from-white to-[#faf7f1] p-10">
+                
+                        <div class="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#d4af37]/10 blur-3xl"></div>
+                
+                        <div class="relative">
+                
+                            <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
+                
+                                PRIVATE CONCIERGE
+                
+                            </p>
+                
+                            <h3 class="mt-5 text-4xl font-heading text-[#1f2937] leading-tight">
+                
+                                Tailor This Journey
+                                Around You
+                
+                            </h3>
+                
+                            <p class="mt-6 leading-8 text-gray-600">
+                
+                                Every itinerary can be refined to match your preferred pace,
+                                accommodation style, transport options and exclusive
+                                experiences.
+                
+                            </p>
+                
+                            <div class="mt-8 space-y-4">
+                
+                                <div class="flex items-center gap-3">
+                
+                                    <div class="w-2 h-2 rounded-full bg-[#b8860b]"></div>
+                
+                                    <span class="text-gray-700">
+                
+                                        Dedicated Travel Designer
+                
+                                    </span>
+                
+                                </div>
+                
+                                <div class="flex items-center gap-3">
+                
+                                    <div class="w-2 h-2 rounded-full bg-[#b8860b]"></div>
+                
+                                    <span class="text-gray-700">
+                
+                                        Flexible Itinerary Planning
+                
+                                    </span>
+                
+                                </div>
+                
+                                <div class="flex items-center gap-3">
+                
+                                    <div class="w-2 h-2 rounded-full bg-[#b8860b]"></div>
+                
+                                    <span class="text-gray-700">
+                
+                                        Premium Accommodation Upgrades
+                
+                                    </span>
+                
+                                </div>
+                
+                                <div class="flex items-center gap-3">
+                
+                                    <div class="w-2 h-2 rounded-full bg-[#b8860b]"></div>
+                
+                                    <span class="text-gray-700">
+                
+                                        24/7 Journey Assistance
+                
+                                    </span>
+                
+                                </div>
+                
+                            </div>
+                
+                            <a href="{% url 'core:contact' %}"
+                               class="inline-flex items-center gap-3 mt-10 text-[#b8860b] font-medium hover:gap-5 transition-all duration-300">
+                
+                                Plan My Journey
+                
+                                <span>→</span>
+                
+                            </a>
+                
+                        </div>
+                
+                    </div>
+                
+                    <!-- ================= JOURNEY INFORMATION ================= -->
+                
+                    <div class="rounded-[36px] bg-white border border-[#e9deca] p-10">
+                
+                        <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
+                
+                            JOURNEY INFORMATION
+                
+                        </p>
+                
+                        <div class="mt-8 space-y-6">
+                
+                            <div class="flex justify-between border-b border-[#efe7d8] pb-4">
+                                <span class="text-gray-500">Transport</span>
+                                <span class="font-medium text-right text-[#1f2937]">{{ tour.transport_modes|join:", " }}</span>
+                            </div>
+                
+                            <div class="flex justify-between border-b border-[#efe7d8] pb-4">
+                                <span class="text-gray-500">Accommodation</span>
+                                <span class="font-medium text-right text-[#1f2937]">{{ tour.hotels|join:", " }}</span>
+                            </div>
+                
+                            <div class="flex justify-between border-b border-[#efe7d8] pb-4">
+                                <span class="text-gray-500">Meals</span>
+                                <span class="font-medium text-right text-[#1f2937]">{{ tour.meals|join:", " }}</span>
+                            </div>
+                
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">Guide</span>
+                                <span class="font-medium text-right text-[#1f2937]">{{ tour.guides|join:", " }}</span>
+                            </div>
+                
+                        </div>
+                
+                    </div>
+                
+                    <!-- ================= TRAVELER REVIEWS ================= -->
+                
+                    <div class="rounded-[36px] bg-white border border-[#e9deca] p-10">
+                
+                        <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
+                
+                            TRAVELER STORIES
+                
+                        </p>
+                
+                        <h3 class="mt-4 text-3xl font-heading text-[#1f2937]">
+                
+                            Loved by Explorers
+                
+                        </h3>
+                
+                        <div class="mt-8 space-y-6">
+                
+                            {% for review in tour.reviews|slice:":3" %}
+                
+                            <div class="border-b border-[#efe7d8] pb-6 last:border-none">
+                
+                                <div class="flex items-center justify-between">
+                
+                                    <h4 class="font-medium text-[#1f2937]">
+                
+                                        {{ review.author }}
+                
+                                    </h4>
+                
+                                    <span class="text-[#c79a2b] text-sm">
+                
+                                        ★★★★★
+                
+                                    </span>
+                
+                                </div>
+                
+                                <p class="mt-4 text-gray-600 leading-7 italic">
+                
+                                    “{{ review.text }}”
+                
+                                </p>
+                
+                                <span class="inline-block mt-4 text-xs uppercase tracking-[0.25em] text-[#b8860b]">
+                
+                                    Verified Traveler
+                
+                                </span>
+                
+                            </div>
+                
+                            {% empty %}
+                
+                            <p class="text-gray-500 leading-8">
+                
+                                Reviews from our travelers will appear here once journeys have been completed.
+                
+                            </p>
+                
+                            {% endfor %}
+                
+                        </div>
+                
+                    </div>
+                
+                </aside>
+            </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- PREMIUM CTA -->
+<!-- ===================================================== -->
+
+<div class="relative -mt-10 md:-mt-16 
+            border border-[#e8dcc6]
+            bg-gradient-to-br
+            from-[#fffdf8]
+            via-[#faf6ee]
+            to-[#f5efe3]
+            px-10 md:px-20 py-20
+            text-center
+            shadow-[0_35px_90px_rgba(0,0,0,.08)]">
+
+    <!-- Decorative Blur -->
+    <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#d4af37]/8 blur-3xl"></div>
+    <div class="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-[#b8860b]/8 blur-3xl"></div>
+
+    <div class="relative z-10">
+
+        <p class="uppercase tracking-[0.45em]
+                  text-xs
+                  text-[#b8860b]">
+
+            YOUR NEXT JOURNEY AWAITS
+
+        </p>
+
+        <h2 class="mt-6 text-5xl md:text-6xl
+                   font-heading
+                   text-[#1f2937]
+                   leading-tight">
+
+            Ready To Experience
+
+            <br>
+
+            <span class="text-[#b8860b]">
+                {{ tour.name }}
+            </span>?
+
+        </h2>
+
+        <p class="max-w-3xl mx-auto
+                  mt-8
+                  text-lg
+                  leading-9
+                  text-gray-600">
+
+            From breathtaking landscapes to unforgettable cultural
+            encounters, every detail has been thoughtfully designed
+            to create a journey you'll remember for a lifetime.
+
+        </p>
+
+        <div class="flex flex-wrap justify-center gap-6 mt-14">
+
+            <a href="{% url 'booking:booking_with_tour' tour.pk %}"
+               class="btn-primary">
+
+                Book This Journey
+
+            </a>
+
+            <a href="{% url 'core:contact' %}"
+               class="inline-flex items-center justify-center
+                      px-10 py-5
+                      rounded-full
+                      border
+                      border-[#d8ccb2]
+                      text-[#1f2937]
+                      font-medium
+                      hover:bg-[#f5efe3]
+                      transition-all duration-300">
+
+                Speak With Our Team
+
+            </a>
+
         </div>
 
-        <aside class="space-y-8">
-            <div class="glass-card p-8 space-y-5">
-                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Tour Details</p>
-                <div class="space-y-3 text-ink/80">
-                    <p><strong>Duration:</strong> {{ tour.duration }}</p>
-                    <p><strong>Price:</strong> ${{ tour.price_per_person|floatformat:0 }} per person</p>
-                    <p><strong>Seats Available:</strong> {{ tour.seats_available }} / {{ tour.max_capacity }}</p>
-                    <p><strong>Transport:</strong> {{ tour.transport_modes|join:', ' }}</p>
-                    <p><strong>Hotels:</strong> {{ tour.hotels|join:', ' }}</p>
-                    <p><strong>Meals:</strong> {{ tour.meals|join:', ' }}</p>
-                    <p><strong>Guides:</strong> {{ tour.guides|join:', ' }}</p>
-                </div>
-                <a href="{% url 'booking:booking_with_tour' tour.pk %}" class="btn-primary w-full justify-center">Book This Tour</a>
-            </div>
-
-            <div class="glass-card p-8 space-y-5">
-                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Need help?</p>
-                <h2 class="text-3xl font-heading text-ink">Speak with a travel designer</h2>
-                <p class="text-base leading-7 text-ink/80">Our concierge team can customize this itinerary, upgrade your accommodations, or add private experiences.</p>
-                <a href="{% url 'core:contact' %}" class="link-arrow">Contact Us <span class="arrow-icon">→</span></a>
-            </div>
-
-            <div class="glass-card p-8 space-y-5">
-                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">Reviews</p>
-                <h2 class="text-3xl font-heading text-ink">Traveler impressions</h2>
-                {% for review in tour.reviews %}
-                <div class="border-t border-ink/10 pt-4">
-                    <p class="text-base leading-7 text-ink/80">"{{ review.text }}"</p>
-                    <p class="mt-3 text-sm text-ink/70">{{ review.author }} · {{ review.date }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </aside>
     </div>
+
+</div>
+
 </section>
+
+
 {% endblock %}

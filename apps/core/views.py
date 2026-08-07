@@ -180,6 +180,12 @@ def contact_page(request):
 
 def destination_detail(request, slug):
     destination = get_object_or_404(Destination, slug=slug)
+
+    destination = get_object_or_404(
+            Destination.objects.prefetch_related('tours'), 
+            slug=slug
+        )
+    
     wishlist_destination = False
     if request.user.is_authenticated:
         from apps.accounts.models import WishlistItem

@@ -1,213 +1,1027 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ destination.name }} — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block title %}{{ destination.name }} Details — {{ site_settings.site_name|default:"VOYAGE" }} {% endblock %}
 
 {% block content %}
-<section id="destination-hero"
-    class="relative min-h-screen lg:min-h-[105vh] overflow-hidden bg-ink text-white flex items-center">
+
+<!-- ===================================================== -->
+<!-- HERO -->
+<!-- ===================================================== -->
+
+<section class="relative min-h-screen overflow-hidden bg-[#0d0d0d]">
 
     <!-- Background -->
-    <div class="hero-parallax absolute inset-0 bg-cover bg-center scale-110"
-        style="background-image:url('{{ destination.hero_image|default:destination.image }}');">
+    <div id="heroImage"
+        class="absolute inset-0 bg-cover bg-center scale-110 transition-transform duration-[12000ms] ease-out"
+        style="background-image:url('{{ destination.hero_image|default:destination.image.url }}');">
     </div>
 
     <!-- Dark Overlay -->
-    <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-black/55 to-black/25"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#080808] via-black/60 to-black/20"></div>
 
-    <!-- Soft Radial Light -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.12),_transparent_35%)]"></div>
+    <!-- Gold Glow -->
+    <div
+        class="absolute -top-40 -left-32 h-[550px] w-[550px] rounded-full bg-[#d4b170]/20 blur-[160px] animate-pulse">
+    </div>
+
+    <div
+        class="absolute bottom-0 right-0 h-[500px] w-[500px] rounded-full bg-amber-300/10 blur-[150px]">
+    </div>
+
+    <!-- Noise -->
+    <div class="absolute inset-0 opacity-[0.05]"
+        style="background-image:url('https://www.transparenttextures.com/patterns/noise.png');">
+    </div>
 
     <!-- Bottom Fade -->
-    <div class="absolute bottom-0 left-0 w-full h-52 bg-gradient-to-t from-[#181512] to-transparent"></div>
+    <!--<div class="absolute bottom-0 left-0 h-48 w-full bg-gradient-to-t from-[#F8F3EA] to-transparent"></div>-->
 
-    <div class="relative z-10 mx-auto w-full max-w-[1500px] px-8 md:px-14 lg:px-24">
+    <!-- Content -->
+    <div
+        class="relative z-10 mx-auto flex min-h-screen max-w-[1500px] items-center px-8 md:px-14 lg:px-24">
 
-        <div class="max-w-3xl space-y-6 scroll-reveal">
+        <div class="max-w-3xl">
 
-            <div class="space-y-3">
-                <p class="text-xs uppercase tracking-[0.45em] text-gold-light">
-                    Destination
-                </p>
-
-                <p class="text-sm uppercase tracking-[0.35em] text-white/70">
-                    {{ destination.country }}
-                    {% if destination.state %}, {{ destination.state }}{% endif %}
-                    {% if destination.city %}, {{ destination.city }}{% endif %}
+            <!-- Eyebrow -->
+            <div class="overflow-hidden">
+                <p
+                    class="hero-item mb-5 text-xs uppercase tracking-[0.55em] text-[#d4b170] opacity-0">
+                    Luxury Destination
                 </p>
             </div>
 
-            <h1
-                class="font-heading text-6xl md:text-7xl lg:text-[7rem] xl:text-[8rem] leading-[0.9] font-light gradient-heading">
-                {{ destination.name }}
-            </h1>
+            <!-- Location -->
+            <div class="overflow-hidden">
 
-            <p
-                class="max-w-2xl text-lg md:text-xl leading-9 text-white/80">
-                {{ destination.description|default:'A premium travel story awaits — explore breathtaking landscapes, authentic culture and unforgettable experiences.' }}
-            </p>
+                <p
+                    class="hero-item mb-7 text-sm uppercase tracking-[0.35em] text-white/70 opacity-0">
 
-            <div class="flex flex-wrap gap-4">
+                    {{ destination.country }}
 
-                {% if destination.best_time_to_travel %}
-                <span class="badge">
-                    🌤 Best Time · {{ destination.best_time_to_travel }}
-                </span>
-                {% endif %}
+                    {% if destination.state %}
+                    • {{ destination.state }}
+                    {% endif %}
 
-                {% if destination.rating %}
-                <span class="badge">
-                    ⭐ {{ destination.rating }}/5
-                </span>
-                {% endif %}
+                    {% if destination.city %}
+                    • {{ destination.city }}
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+            <!-- Title -->
+
+            <div class="overflow-hidden">
+
+                <h1
+                    class="hero-item font-heading text-6xl font-light leading-[0.88] text-white opacity-0 md:text-7xl lg:text-[7rem] xl:text-[8rem]">
+
+                    {{ destination.name }}
+
+                </h1>
+
+            </div>
+
+            <!-- Description -->
+
+            <div class="overflow-hidden">
+
+                <p
+                    class="hero-item mt-10 max-w-2xl text-lg leading-9 text-white/80 opacity-0 md:text-xl">
+
+                    {{ destination.description|default:"Discover breathtaking landscapes, timeless culture, unforgettable luxury experiences and curated journeys crafted for every traveler." }}
+
+                </p>
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div
+                class="hero-item mt-12 flex flex-wrap items-center gap-5 opacity-0">
+
+                <a href="#overview"
+                    class="group rounded-full bg-[#d4b170] px-8 py-4 font-medium text-black transition duration-300 hover:scale-105 hover:bg-[#e4c58b]">
+
+                    Explore Destination
+
+                </a>
 
                 {% if user.is_authenticated %}
-                <a href="{% url 'accounts:toggle_wishlist' %}?destination={{ destination.id }}&next={{ request.path }}" class="btn-primary">
-                    {% if wishlist_destination %}Remove from Wishlist{% else %}Save to Wishlist{% endif %}
-                </a>
-                {% else %}
-                <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn-primary">Login to Save</a>
-                {% endif %}
 
-            </div>
+                <a href="{% url 'accounts:toggle_wishlist' %}?destination={{ destination.id }}&next={{ request.path }}"
+                    class="rounded-full border border-white/20 bg-white/10 px-8 py-4 text-white backdrop-blur-xl transition hover:bg-white/20">
 
-        </div>
-
-    </div>
-
-</section>
-
-<section class="destination-section bg-[#F8F5F0] py-20">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
-        <div class="glass-card scroll-reveal">
-            <div class="grid gap-10 xl:grid-cols-[0.9fr_0.55fr] items-center">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light mb-4">story</p>
-                    <h2 class="text-4xl font-heading text-ink">A journey designed to feel cinematic</h2>
-                    <p class="mt-6 text-base leading-8 text-ink/80">{{ destination.description|default:'This destination has been shaped to deliver unforgettable moments, rich culture and refined travel experiences that feel both timeless and personal.' }}</p>
-                    {% if destination.related_tours_text %}
-                    <div class="mt-8 rounded-[28px] border border-ink/10 bg-ink/5 p-6 text-ink/80">
-                        <p class="text-sm uppercase tracking-[0.35em] text-gold-light mb-4">Suggested experiences</p>
-                        <p class="text-base leading-7">{{ destination.related_tours_text }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="rounded-[32px] bg-white/70 p-8 shadow-2xl shadow-ink/10 backdrop-blur-xl border border-white/40">
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light mb-5">trip highlights</p>
-                    <div class="space-y-4">
-                        <div class="feature-row"><span class="feature-label">Immersive views</span><span class="feature-value">Cliffside moments</span></div>
-                        <div class="feature-row"><span class="feature-label">Local cuisine</span><span class="feature-value">Authentic menus</span></div>
-                        <div class="feature-row"><span class="feature-label">Cultural access</span><span class="feature-value">Private tours</span></div>
-                        <div class="feature-row"><span class="feature-label">Relaxed pace</span><span class="feature-value">Luxury comfort</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="destination-section bg-ink py-20 text-white">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
-        <div class="glass-card glass-alt scroll-reveal">
-            <div class="section-header mb-12">
-                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">gallery</p>
-                <h2 class="mt-3 text-4xl font-heading">Explore the atmosphere</h2>
-            </div>
-            <div class="horizontal-gallery">
-                {% for image in destination.gallery %}
-                <div class="gallery-item">
-                    <img src="{{ image }}" alt="{{ destination.name }} gallery" />
-                    <div class="gallery-overlay">
-                        <span>View</span>
-                        <span>→</span>
-                    </div>
-                </div>
-                {% endfor %}
-                {% if destination.gallery|length == 0 %}
-                <div class="gallery-empty">Gallery images will be added soon.</div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="destination-section bg-[#F8F5F0] py-20">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
-        <div class="grid gap-10 xl:grid-cols-[1.1fr_0.9fr]">
-            <div class="glass-card scroll-reveal">
-                <div class="section-header mb-8">
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">map & journey</p>
-                    <h2 class="text-4xl font-heading text-ink">Where the route unfolds</h2>
-                </div>
-                <div class="map-frame rounded-[32px] overflow-hidden border border-ink/10 bg-ink/5">
-                    {% if destination.latitude and destination.longitude %}
-                    <iframe
-                        src="https://www.google.com/maps?q={{ destination.latitude }},{{ destination.longitude }}&z=12&output=embed"
-                        allowfullscreen=""
-                        loading="lazy"></iframe>
+                    {% if wishlist_destination %}
+                    Remove Wishlist
                     {% else %}
-                    <div class="flex h-[420px] items-center justify-center text-center p-8 text-ink/70">Map coordinates are not available for this destination.</div>
+                    Save Wishlist
                     {% endif %}
+
+                </a>
+
+                {% else %}
+
+                <a href="{% url 'accounts:login' %}?next={{ request.path }}"
+                    class="rounded-full border border-white/20 bg-white/10 px-8 py-4 text-white backdrop-blur-xl transition hover:bg-white/20">
+
+                    Login to Save
+
+                </a>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Floating Stats -->
+
+            <div
+                class="hero-item mt-16 grid max-w-3xl grid-cols-2 gap-5 opacity-0 md:grid-cols-4">
+
+                <!-- Rating -->
+
+                <div
+                    class="rounded-3xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:bg-white/15">
+
+                    <p class="text-xs uppercase tracking-[0.25em] text-white/60">
+                        Rating
+                    </p>
+
+                    <h3 class="mt-3 text-3xl font-semibold text-[#d4b170]">
+
+                        {{ destination.rating }}
+
+                    </h3>
+
                 </div>
-                <div class="mt-8 grid gap-4 sm:grid-cols-2">
-                    <div class="info-card">
-                        <p class="text-sm uppercase tracking-[0.35em] text-gold-light">Temperature</p>
-                        <p class="mt-3 text-lg font-medium text-ink">{{ destination.weather|default:'TBA' }}</p>
+
+                <!-- Best Time -->
+
+                <div
+                    class="rounded-3xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:bg-white/15">
+
+                    <p class="text-xs uppercase tracking-[0.25em] text-white/60">
+                        Best Time
+                    </p>
+
+                    <h3 class="mt-3 text-lg text-white">
+
+                        {{ destination.best_time_to_travel|default:"All Year" }}
+
+                    </h3>
+
+                </div>
+
+                <!-- Nearby -->
+
+                <div
+                    class="rounded-3xl border border-white/10 bg-white/10 p-5 backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:bg-white/15">
+
+                    <p class="text-xs uppercase tracking-[0.25em] text-white/60">
+                        Nearby
+                    </p>
+
+                    <h3 class="mt-3 text-lg text-white">
+
+                        {{ destination.nearby_places|length }} Places
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+<!-- ===================================================== -->
+<!-- OVERVIEW -->
+<!-- ===================================================== -->
+
+<section id="overview" class="relative overflow-hidden bg-[#F8F3EA] py-28">
+
+    <!-- Background Decoration -->
+
+    <div class="absolute -left-40 top-20 h-96 w-96 rounded-full bg-[#d4b170]/10 blur-[120px]"></div>
+
+    <div class="absolute right-0 bottom-0 h-[420px] w-[420px] rounded-full bg-[#e7d3ae]/40 blur-[150px]"></div>
+
+    <div class="relative mx-auto max-w-[1450px] px-8 md:px-14 lg:px-24">
+
+        <!-- Section Heading -->
+
+        <!-- Section Heading -->
+        
+        <div class="scroll-reveal mb-24">
+        
+            <p class="mb-5 text-xs uppercase tracking-[0.45em] text-[#C6A46A]">
+        
+                Destination Overview
+        
+            </p>
+        
+            <h2
+                class="font-heading text-5xl font-light leading-tight text-[#181512] md:text-6xl">
+        
+                Discover
+                <span class="italic text-[#C6A46A]">
+        
+                    {{ destination.name }}
+        
+                </span>
+        
+            </h2>
+        
+        </div>
+
+        <!-- Main Grid -->
+
+        <div class="grid gap-20 lg:grid-cols-[1fr_520px]">
+
+            <!-- Left Side -->
+
+            <div class="space-y-10 scroll-reveal">
+
+                <div>
+
+                    <h3
+                        class="mb-6 font-heading text-3xl text-[#181512]">
+
+                        About this Destination
+
+                    </h3>
+
+                    <div
+                        class="space-y-6 text-lg leading-9 text-[#57524b]">
+
+                        <p>
+
+                            {{ destination.description }}
+
+                        </p>
+
+                        <p>
+
+                            Whether you're searching for adventure,
+                            relaxation, luxury escapes or unforgettable
+                            cultural experiences, {{ destination.name }}
+                            offers something extraordinary in every season.
+
+                        </p>
+
                     </div>
-                    <div class="info-card">
-                        <p class="text-sm uppercase tracking-[0.35em] text-gold-light">Best season</p>
-                        <p class="mt-3 text-lg font-medium text-ink">{{ destination.best_time_to_travel|default:'TBA' }}</p>
+
+                </div>
+
+                <!-- Travel Information -->
+
+                <!-- Travel Information (More Compact Cards) -->
+                <div class="grid gap-4 md:grid-cols-2">
+                
+                    <!-- Card 1: Country -->
+                    <div class="rounded-2xl border border-[#e6d7bf] bg-white/70 p-4 shadow-sm transition duration-500 hover:-translate-y-1 hover:shadow-xl">
+                        <p class="text-[10px] uppercase tracking-[0.25em] text-[#b39054]">
+                            Country
+                        </p>
+                        <h4 class="mt-2 text-lg font-semibold text-[#181512]">
+                            {{ destination.country }}
+                        </h4>
                     </div>
+                
+                    <!-- Card 2: Weather -->
+                    <div class="rounded-2xl border border-[#e6d7bf] bg-white/70 p-4 shadow-sm transition duration-500 hover:-translate-y-1 hover:shadow-xl">
+                        <p class="text-[10px] uppercase tracking-[0.25em] text-[#b39054]">
+                            Weather
+                        </p>
+                        <h4 class="mt-2 text-lg font-semibold text-[#181512]">
+                            {{ destination.weather|default:"Pleasant" }}
+                        </h4>
+                    </div>
+                
+                    <!-- Card 3: Best Time -->
+                    <div class="rounded-2xl border border-[#e6d7bf] bg-white/70 p-4 shadow-sm transition duration-500 hover:-translate-y-1 hover:shadow-xl">
+                        <p class="text-[10px] uppercase tracking-[0.25em] text-[#b39054]">
+                            Best Time
+                        </p>
+                        <h4 class="mt-2 text-lg font-semibold text-[#181512]">
+                            {{ destination.best_time_to_travel|default:"All Year" }}
+                        </h4>
+                    </div>
+                
+                    <!-- Card 4: Visitor Rating -->
+                    <div class="rounded-2xl border border-[#e6d7bf] bg-white/70 p-4 shadow-sm transition duration-500 hover:-translate-y-1 hover:shadow-xl">
+                        <p class="text-[10px] uppercase tracking-[0.25em] text-[#b39054]">
+                            Visitor Rating
+                        </p>
+                        <h4 class="mt-2 text-lg font-semibold text-[#181512]">
+                            ⭐ {{ destination.rating }}/5
+                        </h4>
+                    </div>
+                
+                </div>
+
+
+            </div>
+
+            <!-- Right Sticky Image -->
+            
+            <div class="scroll-reveal">
+            
+                <!-- The Sticky Wrapper -->
+                <!-- Added 'relative' and removed 'overflow-hidden' so the card can hang off the right side like the mockup -->
+                <div class="sticky top-28 relative rounded-[34px] shadow-2xl">
+            
+                    <!-- Background Image -->
+                    <!-- Moved 'overflow-hidden' here so the zoom effect stays clipped inside the image borders -->
+                    <div class="overflow-hidden rounded-[34px] h-[700px] w-full">
+                        <img
+                            src="{{ destination.image }}"
+                            alt="{{ destination.name }}"
+                            class="h-full w-full object-cover transition duration-[7000ms] hover:scale-110">
+                    </div>
+            
+                    <!-- 1. The Original Destination Name Card (Shifted down slightly to clear the top card) -->
+                    <div class="absolute bottom-8 left-8 right-8 rounded-3xl border border-white/20 bg-black/40 p-6 backdrop-blur-xl">
+                        <p class="text-xs uppercase tracking-[0.35em] text-white/70">
+                            {% if destination.is_featured %}
+                                Featured Destination
+                            {% endif %}
+                        </p>
+                        <h3 class="mt-3 text-3xl font-light text-white">
+                            {{ destination.name }}
+                        </h3>
+                        <p class="mt-3 leading-7 text-white/80">
+                            Experience breathtaking scenery, unforgettable adventures and timeless luxury.
+                        </p>
+                    </div>
+            
+                    <!-- 2. The "Why Visit?" White Card (Moved inside, styled to match the image mockup) -->
+                    <!-- Positioned at top-12 and hangs off the right edge by 24px (-right-6) -->
+                    <div class="absolute top-12 -right-6 w-[65%] rounded-[28px] border border-slate-100 bg-white p-8 shadow-2xl">
+                        <p class="text-xs uppercase tracking-[0.35em] text-[#C6A46A] font-semibold">
+                            Why Visit?
+                        </p>
+                        <p class="mt-4 text-xl font-serif text-slate-800 leading-snug">
+                            Travel that actually means something.
+                        </p>
+                        <p class="mt-3 text-sm leading-relaxed text-[#4f4942]">
+                            Every destination tells a different story. From breathtaking landscapes to authentic cultural experiences, discover a place where unforgettable memories begin.
+                        </p>
+                    </div>
+            
                 </div>
             </div>
-            <div class="glass-card scroll-reveal">
-                <div class="section-header mb-8">
-                    <p class="text-xs uppercase tracking-[0.35em] text-gold-light">nearby gems</p>
-                    <h2 class="text-4xl font-heading text-ink">Local favorites</h2>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- GALLERY -->
+<!-- ===================================================== -->
+
+<section class="bg-[#F4EEE4] py-28">
+
+    <div class="mx-auto max-w-[1450px] px-8 md:px-14 lg:px-24">
+
+        <div
+            class="scroll-reveal mb-16 flex items-end justify-between">
+
+            <div>
+
+                <p
+                    class="mb-4 text-xs uppercase tracking-[0.45em] text-[#C6A46A]">
+
+                    Visual Journey
+
+                </p>
+
+                <h2
+                    class="font-heading text-5xl font-light text-[#181512]">
+
+                    Explore the Gallery
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        {% if destination.gallery %}
+        
+        <div class="grid grid-cols-12 gap-6">
+        
+            <!-- Large Image -->
+            <div class="col-span-12 md:col-span-7">
+        
+                <img
+                    src="{{ destination.gallery.0 }}"
+                    class="gallery-image h-[650px] w-full cursor-zoom-in rounded-[34px] object-cover transition duration-700 hover:scale-[1.03]"
+                    alt="{{ destination.name }}">
+        
+            </div>
+        
+            <!-- Small Images -->
+            <div class="col-span-12 space-y-6 md:col-span-5">
+        
+                {% for image in destination.gallery|slice:"1:5" %}
+        
+                <div class="group overflow-hidden rounded-[28px] shadow-lg">
+        
+                    <img
+                        src="{{ image }}"
+                        class="gallery-image h-[154px] w-full cursor-zoom-in object-cover transition duration-700 group-hover:scale-110"
+                        alt="{{ destination.name }}">
+        
                 </div>
-                <div class="space-y-4">
-                    {% for place in destination.nearby_places %}
-                    <div class="place-card">
-                        <div>
-                            <p class="text-lg font-semibold text-ink">{{ place.name }}</p>
-                            <p class="mt-2 text-sm text-ink/70">{{ place.description }}</p>
-                        </div>
-                        <div class="text-right text-sm text-ink/70">Explore →</div>
+        
+                {% endfor %}
+        
+            </div>
+        
+        </div>
+        
+        {% endif %} 
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- NEARBY PLACES (Premium Text-Driven Layout) -->
+<!-- ===================================================== -->
+<section class="bg-[#F8F3EA] py-28">
+
+    <div class="mx-auto max-w-[1450px] px-8 md:px-14 lg:px-24">
+
+        <!-- Section Header Info -->
+        <div class="scroll-reveal mb-16">
+            <p class="mb-4 text-xs uppercase tracking-[0.45em] text-[#C6A46A]">
+                Explore More
+            </p>
+            <h2 class="font-heading text-5xl font-light text-[#181512]">
+                Nearby Attractions
+            </h2>
+        </div>
+
+        {% if destination.nearby_places %}
+        <!-- Dynamic Related Destinations Grid -->
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+
+            {% for place in destination.nearby_places %}
+            <div class="group relative flex flex-col justify-between rounded-[28px] border border-[#e8dbc6] bg-white p-8 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#C6A46A] hover:shadow-xl">
+                
+                <div>
+                    <!-- Top Badge & Dynamic Loop Counter Row -->
+                    <div class="flex items-center justify-between mb-8">
+                        <span class="rounded-full bg-[#F8F3EA] px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#b39054] group-hover:bg-[#C6A46A] group-hover:text-white transition-colors duration-300">
+                            {% if place.type %}{{ place.type }}{% else %}Must See{% endif %}
+                        </span>
+                        <!-- Uses Django's loop counter to output 01, 02, 03 dynamically -->
+                        <span class="text-xs font-serif italic text-slate-400">
+                            {% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}
+                        </span>
                     </div>
-                    {% endfor %}
-                    {% if destination.nearby_places|length == 0 %}
-                    <div class="place-card place-card-empty">Nearby attractions will appear here once available.</div>
-                    {% endif %}
+
+                    <!-- Attraction Dynamic Title -->
+                    <h3 class="text-2xl font-light tracking-wide font-heading text-[#181512] group-hover:text-[#b39054] transition-colors duration-300">
+                        {{ place.name }}
+                    </h3>
+
+                    <!-- Attraction Dynamic Description (Safely truncated at 3 lines if extra long) -->
+                    <p class="mt-4 text-sm leading-relaxed text-[#66615b] font-light line-clamp-3">
+                        {{ place.description }}
+                    </p>
                 </div>
+
+        
+            </div>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+        <!-- Clean Empty State Fallback Handler -->
+        <div class="rounded-[32px] border border-dashed border-[#d9c7ab] bg-white p-20 text-center scroll-reveal">
+            <h3 class="font-heading text-4xl text-[#181512]">
+                More places coming soon
+            </h3>
+            <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-[#6b655d]">
+                We are constantly updating our destination guides with nearby attractions, hidden gems and local recommendations.
+            </p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</section>
+
+<!-- ===================================================== -->
+<!-- RELATED EXPERIENCE TOURS -->
+<!-- ===================================================== -->
+<section class="bg-[#F8F3EA] py-28">
+    <div class="mx-auto max-w-[1450px] px-8 md:px-14 lg:px-24">
+
+        <!-- Section Header Info -->
+        <div class="scroll-reveal mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <div>
+                <p class="mb-4 text-xs uppercase tracking-[0.45em] text-[#C6A46A]">
+                    Continue Exploring
+                </p>
+                <h2 class="font-heading text-5xl font-light text-[#181512]">
+                    Adventures In {{ destination.name }}
+                </h2>
+            </div>
+            <div>
+                <a href="{% url 'core:destinations' %}"
+                   class="group inline-flex items-center gap-4 rounded-full bg-[#181512] px-8 py-4 text-sm text-white transition duration-300 hover:bg-[#C6A46A] hover:text-[#181512]">
+                    Browse All Destinations
+                    <svg class="h-4 w-4 transition group-hover:translate-x-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-5-5 5 5-5 5"/>
+                    </svg>
+                </a>
             </div>
         </div>
+
+        <!-- Introductory Info Card Banner -->
+        <div class="rounded-[36px] border border-[#e7d8bf] bg-white p-12 shadow-md mb-12 scroll-reveal">
+            <div class="max-w-4xl">
+                <h3 class="mb-4 text-2xl font-semibold text-[#181512]">
+                    Related Experiences
+                </h3>
+                <p class="text-lg leading-9 text-[#625c55]">
+                    {{ destination.related_tours_text|default:"Continue your journey with carefully selected itineraries offering breathtaking scenery, unforgettable adventures, luxury accommodations and authentic local experiences." }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Dynamic Related Tours Display Grid -->
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {% for tour in destination.tours.all %}
+                <div class="group relative h-[460px] overflow-hidden rounded-[32px] bg-[#181512] shadow-xl transition-all duration-500 hover:-translate-y-2 scroll-reveal">
+                    
+                    <!-- 1. Background Image Zoom View Layer -->
+                    <!-- Tries hero_image first, then fallback image field, then unspash stock fallback -->
+                    <img 
+                        src="{% if tour.hero_image %}{{ tour.hero_image }}{% elif tour.image %}{{ tour.image }}{% else %}https://unsplash.com{% endif %}" 
+                        alt="{{ tour.name }}" 
+                        class="absolute inset-0 h-full w-full object-cover transition duration-[5000ms] ease-out group-hover:scale-110"
+                    >
+
+                    <!-- 2. Dark Overlay Protection Shield for Copy readability -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/10 to-transparent transition duration-300 group-hover:via-black/40"></div>
+
+                    <!-- 3. Top Badges Row -->
+                    <div class="absolute top-6 inset-x-6 flex items-center justify-between">
+                        {% if tour.is_featured %}
+                            <span class="rounded-full bg-[#C6A46A] px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#181512]">
+                                Featured
+                            </span>
+                        {% else %}
+                            <div></div>
+                        {% endif %}
+                        <span class="rounded-full bg-white/20 px-4 py-1.5 text-[11px] font-medium text-white backdrop-blur-md">
+                            ⏱️ {{ tour.duration|default:tour.duration_days }}
+                        </span>
+                    </div>
+
+                    <!-- 4. Inside Layout Content Block -->
+                    <div class="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end">
+                        
+                        <!-- Mini Budget Category / Range tag -->
+                        <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#C6A46A] mb-2">
+                            {{ tour.budget_range|default:"Luxury Experience" }}
+                        </span>
+
+                        <!-- Tour Heading Title -->
+                        <h4 class="text-2xl font-light text-white tracking-wide leading-tight line-clamp-1 mb-2">
+                            {{ tour.name }}
+                        </h4>
+
+                        <!-- Dynamic Summary snippet text constrained visually to 2 maximum rows -->
+                        <p class="text-sm text-white/70 font-light leading-relaxed line-clamp-2 mb-5">
+                            {{ tour.summary|default:tour.overview }}
+                        </p>
+
+                        <!-- Price Split & Interactive Action Button Row Layout -->
+                        <div class="flex items-center justify-between border-t border-white/10 pt-4 mt-2">
+                            <div>
+                                <p class="text-[10px] uppercase tracking-wider text-white/40">From Per Person</p>
+                                <p class="text-xl font-semibold text-white">${{ tour.price_per_person }}</p>
+                            </div>
+                            
+                            <!-- Action Trigger Routing Anchor Links safely to direct Absolute URLs -->
+                            <a href="{{ tour.get_absolute_url }}" 
+                               class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-xs font-semibold text-[#181512] transition duration-300 hover:bg-[#C6A46A] hover:text-[#181512]">
+                                Explore Tour
+                                <svg class="h-3.5 w-3.5 transition transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5l6 6m0 0l-6 6m6-6H3.5"/>
+                                </svg>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            {% empty %}
+                <!-- Empty Fallback State handling if no tours happen to include this Destination link -->
+                <div class="col-span-full border border-dashed border-[#e7d8bf] rounded-2xl p-12 text-center text-slate-500">
+                    Custom tailored travel packages for {{ destination.name }} are launching soon.
+                </div>
+            {% endfor %}
+        </div>
+
     </div>
 </section>
 
-<section class="destination-section bg-ink py-20 text-white">
-    <div class="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
-        <div class="glass-card glass-alt scroll-reveal">
-            <div class="section-header mb-10">
-                <p class="text-xs uppercase tracking-[0.35em] text-gold-light">traveler reviews</p>
-                <h2 class="text-4xl font-heading">What visitors remember</h2>
+    
+    <!-- ===================================================== -->
+    <!-- CTA -->
+    <!-- ===================================================== -->
+    
+    <section
+        class="relative overflow-hidden bg-[#111111] py-32">
+    
+        <div
+            class="absolute -left-32 top-0 h-[500px] w-[500px] rounded-full bg-[#C6A46A]/20 blur-[180px]"></div>
+    
+        <div
+            class="absolute right-0 bottom-0 h-[450px] w-[450px] rounded-full bg-amber-400/10 blur-[150px]"></div>
+    
+        <div
+            class="relative mx-auto max-w-5xl px-8 text-center">
+    
+            <p
+                class="mb-6 text-xs uppercase tracking-[0.45em] text-[#C6A46A]">
+    
+                Your Journey Starts Here
+    
+            </p>
+    
+            <h2
+                class="font-heading text-5xl font-light leading-tight text-white md:text-6xl">
+    
+                Ready to Experience
+                <br>
+                {{ destination.name }}?
+    
+            </h2>
+    
+            <p
+                class="mx-auto mt-10 max-w-3xl text-xl leading-10 text-white/70">
+    
+                Let VOYAGE craft an unforgettable travel experience tailored
+                exclusively for you. Luxury, adventure and memories await.
+    
+            </p>
+    
+            <div
+                class="mt-14 flex flex-wrap justify-center gap-6">
+    
+                <a
+                    href="{% url 'core:contact' %}"
+                    class="rounded-full bg-[#C6A46A] px-10 py-5 font-semibold text-[#181512] transition duration-300 hover:scale-105 hover:bg-[#d7b983]">
+    
+                    Book Your Journey
+    
+                </a>
+    
+                <a
+                    href="{% url 'core:destinations' %}"
+                    class="rounded-full border border-white/20 bg-white/5 px-10 py-5 text-white backdrop-blur-xl transition hover:bg-white/10">
+    
+                    Explore More
+    
+                </a>
+    
             </div>
-            <div class="grid gap-6 lg:grid-cols-2">
-                {% for review in destination.reviews %}
-                <div class="review-card">
-                    <p class="text-base leading-7 text-white/90">"{{ review.text }}"</p>
-                    <div class="mt-5 flex items-center justify-between text-sm text-white/70">
-                        <span>{{ review.author }}</span>
-                        <span>{{ review.date }}</span>
-                    </div>
-                </div>
-                {% endfor %}
-                {% if destination.reviews|length == 0 %}
-                <div class="review-card review-card-empty">Reviews will appear here once travelers share their stories.</div>
-                {% endif %}
-            </div>
-            <div class="mt-12 text-center">
-                <a href="{% url 'booking:booking' %}" class="btn-primary"><span>Book Your Experience</span></a>
-            </div>
+    
         </div>
+    
+    </section>
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    
+        /* =====================================================
+           HERO PARALLAX
+        ===================================================== */
+    
+        const hero = document.getElementById("heroImage");
+    
+        window.addEventListener("scroll", () => {
+    
+            const scroll = window.pageYOffset;
+    
+            if (hero) {
+                hero.style.transform =
+                    `translateY(${scroll * 0.35}px) scale(1.12)`;
+            }
+    
+        });
+    
+
+        /* =====================================================
+           GALLERY LIGHTBOX
+        ===================================================== */
+        
+        const galleryImages = [...document.querySelectorAll(".gallery-image")];
+        
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImage = document.getElementById("lightboxImage");
+        const closeLightbox = document.getElementById("closeLightbox");
+        
+        const nextImage = document.getElementById("nextImage");
+        const prevImage = document.getElementById("prevImage");
+        
+        const imageCounter = document.getElementById("imageCounter");
+        
+        let currentIndex = 0;
+        
+        function openImage(index){
+        
+            currentIndex=index;
+        
+            lightbox.classList.remove("hidden");
+            lightbox.classList.add("flex");
+        
+            lightboxImage.src=galleryImages[currentIndex].src;
+        
+            imageCounter.innerHTML=`${currentIndex+1} / ${galleryImages.length}`;
+        
+            document.body.style.overflow="hidden";
+        
+        }
+        
+        galleryImages.forEach((img,index)=>{
+        
+            img.onclick=()=>openImage(index);
+        
+        });
+        
+        function showNext(){
+        
+            currentIndex=(currentIndex+1)%galleryImages.length;
+        
+            lightboxImage.src=galleryImages[currentIndex].src;
+        
+            imageCounter.innerHTML=`${currentIndex+1} / ${galleryImages.length}`;
+        
+        }
+        
+        function showPrev(){
+        
+            currentIndex=(currentIndex-1+galleryImages.length)%galleryImages.length;
+        
+            lightboxImage.src=galleryImages[currentIndex].src;
+        
+            imageCounter.innerHTML=`${currentIndex+1} / ${galleryImages.length}`;
+        
+        }
+        
+        nextImage.onclick=showNext;
+        
+        prevImage.onclick=showPrev;
+        
+        closeLightbox.onclick=closeGallery;
+        
+        function closeGallery(){
+        
+            lightbox.classList.remove("flex");
+            lightbox.classList.add("hidden");
+        
+            document.body.style.overflow="";
+        
+        }
+        
+        lightbox.onclick=(e)=>{
+        
+            if(e.target===lightbox){
+        
+                closeGallery();
+        
+            }
+        
+        };
+        
+        document.addEventListener("keydown",(e)=>{
+        
+            if(lightbox.classList.contains("hidden")) return;
+        
+            if(e.key==="ArrowRight") showNext();
+        
+            if(e.key==="ArrowLeft") showPrev();
+        
+            if(e.key==="Escape") closeGallery();
+        
+        });
+    
+    
+        /* =====================================================
+           HERO STAGGER
+        ===================================================== */
+    
+        const heroItems = document.querySelectorAll(".hero-item");
+    
+        heroItems.forEach((item, index) => {
+    
+            setTimeout(() => {
+    
+                item.style.opacity = "1";
+                item.style.transform = "translateY(0)";
+    
+            }, 180 * index);
+    
+        });
+    
+    
+        /* =====================================================
+           GALLERY HOVER
+        ===================================================== */
+    
+        document.querySelectorAll("img").forEach(img => {
+    
+            img.addEventListener("mousemove", (e) => {
+    
+                const rect = img.getBoundingClientRect();
+    
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+    
+                img.style.transformOrigin = `${x}px ${y}px`;
+    
+            });
+    
+        });
+    
+    });
+    </script>
+    
+    <style>
+    
+    
+    /* =====================================================
+       HERO ZOOM
+    ===================================================== */
+    
+    @keyframes heroZoom{
+    
+        from{
+    
+            transform:scale(1.08);
+    
+        }
+    
+        to{
+    
+            transform:scale(1.18);
+    
+        }
+    
+    }
+    
+    #heroImage{
+    
+        animation:heroZoom 20s ease-in-out infinite alternate;
+    
+    }
+    
+    /* =====================================================
+       HERO ITEMS
+    ===================================================== */
+    
+    .hero-item{
+    
+        opacity:0;
+    
+        transform:translateY(40px);
+    
+        transition:
+            opacity .9s ease,
+            transform .9s ease;
+    
+    }
+    
+    
+    /* =====================================================
+       CARD HOVER
+    ===================================================== */
+    
+    .rounded-3xl,
+    .rounded-\[30px\],
+    .rounded-\[32px\],
+    .rounded-\[34px\],
+    .rounded-\[36px\]{
+    
+        transition:
+    
+            transform .45s ease,
+    
+            box-shadow .45s ease;
+    
+    }
+    
+    .rounded-3xl:hover,
+    .rounded-\[30px\]:hover,
+    .rounded-\[32px\]:hover,
+    .rounded-\[34px\]:hover,
+    .rounded-\[36px\]:hover{
+    
+        transform:translateY(-8px);
+    
+    }
+    
+    /* =====================================================
+       IMAGES
+    ===================================================== */
+    
+    img{
+    
+        transition:
+    
+            transform .8s ease,
+    
+            filter .8s ease;
+    
+    }
+    
+    img:hover{
+    
+        filter:saturate(115%) contrast(105%);
+    
+    }
+    
+    /* =====================================================
+       BUTTONS
+    ===================================================== */
+    
+    a{
+    
+        transition:
+    
+            all .35s ease;
+    
+    }
+    
+    </style>
+
+    <!-- ===================================================== -->
+    <!-- IMAGE LIGHTBOX -->
+    <!-- ===================================================== -->
+    
+    <div id="lightbox"
+        class="fixed inset-0 z-[9980] hidden items-center justify-center bg-black/30 backdrop-blur-xl">
+    
+        <!-- Previous -->
+    
+        <button id="prevImage"
+            class="absolute left-6 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/10 text-white text-3xl hover:bg-[#C6A46A] hover:text-black">
+    
+            &#10094;
+    
+        </button>
+    
+        <!-- Image -->
+    
+        <img
+            id="lightboxImage"
+            src=""
+            class="max-h-[90vh] max-w-[90vw] rounded-2xl shadow-2xl transition-all duration-300">
+    
+        <!-- Next -->
+    
+        <button id="nextImage"
+            class="absolute right-6 top-1/2 -translate-y-1/2 h-14 w-14 rounded-full bg-white/10 text-white text-3xl hover:bg-[#C6A46A] hover:text-black">
+    
+            &#10095;
+    
+        </button>
+    
+        <!-- Close -->
+    
+        <button
+            id="closeLightbox"
+            class="absolute right-8 top-8 text-5xl text-white">
+    
+            &times;
+    
+        </button>
+    
+        <!-- Counter -->
+    
+        <div
+            id="imageCounter"
+            class="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-5 py-2 text-white">
+    
+            1 / 1
+    
+        </div>
+    
     </div>
-</section>
-{% endblock %}
+    {% endblock %}

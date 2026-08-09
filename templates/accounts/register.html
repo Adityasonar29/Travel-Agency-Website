@@ -1,59 +1,569 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
+
 {% block title %}Register — {{ site_settings.site_name|default:'VOYAGE' }}{% endblock %}
+
 {% block content %}
-<section class="snap-section min-h-screen flex items-center justify-center">
-  <div class="glass-card max-w-xl w-full">
-    <h2 class="section-header">Create Account</h2>
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
-      {% csrf_token %}
-      {% if form.non_field_errors %}
-        <div class="rounded-lg border border-rose-300 bg-rose-50 p-3 text-sm text-rose-700">
-          {{ form.non_field_errors }}
+
+<style>
+    /* =========================================================
+       VOYAGE REGISTER PAGE
+       ========================================================= */
+
+    .voyage-register {
+        --mouse-x: 0px;
+        --mouse-y: 0px;
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+    }
+
+    .voyage-register::before {
+        content: "";
+        position: absolute;
+        inset: -35px;
+        z-index: 0;
+        background:
+            linear-gradient(
+                115deg,
+                rgba(245, 235, 215, 0.08),
+                rgba(180, 145, 90, 0.05),
+                rgba(20, 18, 15, 0.40)
+            ),
+            linear-gradient(
+                90deg,
+                rgba(8, 12, 18, 0.70),
+                rgba(8, 12, 18, 0.48),
+                rgba(8, 12, 18, 0.76)
+            ),
+            url("https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2200&q=90")
+            center / cover no-repeat;
+        transform: translate3d(var(--mouse-x), var(--mouse-y), 0) scale(1.06);
+        transition: transform 0.15s ease-out;
+        pointer-events: none;
+    }
+
+    /* =========================================================
+       MAIN LAYOUT
+       ========================================================= */
+
+    .register-container {
+        width: 100%;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        position: relative;
+        z-index: 2;
+        background: transparent;
+    }
+
+    /* =========================================================
+       LEFT — REGISTER FORM
+       ========================================================= */
+
+    .register-panel {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 70px;
+        background: #f0eade;
+        overflow: hidden;
+        box-shadow: 25px 0 70px rgba(0, 0, 0, 0.10);
+    }
+
+    .register-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 12% 18%, rgba(196, 157, 91, 0.13), transparent 28%),
+            radial-gradient(circle at 90% 78%, rgba(190, 150, 82, 0.10), transparent 30%),
+            linear-gradient(135deg, rgba(255,255,255,0.24), transparent 42%, rgba(171, 135, 77, 0.05));
+        z-index: 0;
+    }
+
+    .register-panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.18;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.22'/%3E%3C/svg%3E");
+        background-size: 180px 180px;
+        mix-blend-mode: multiply;
+        z-index: 1;
+    }
+
+    .register-form-wrapper {
+        width: min(520px, 100%);
+        position: relative;
+        z-index: 2;
+    }
+
+    /* FORM HEADER */
+    .register-welcome {
+        margin-bottom: 32px;
+    }
+
+    .register-label {
+        display: block;
+        margin-bottom: 10px;
+        color: #9a805e;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .register-heading {
+        margin: 0;
+        color: #17191c;
+        font-size: 38px;
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+        font-weight: 600;
+    }
+
+    .register-subtitle {
+        margin-top: 12px;
+        color: #777;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    /* ERRORS */
+    .register-error-box {
+        margin-bottom: 20px;
+        padding: 13px 15px;
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+        background: #fff1f2;
+        color: #be123c;
+        font-size: 13px;
+    }
+
+    /* FORM FIELDS */
+    .register-field {
+        margin-bottom: 17px;
+    }
+
+    .register-field > label {
+        display: block;
+        margin-bottom: 7px;
+        color: #34363a;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .register-input {
+        width: 100%;
+        height: 49px;
+        padding: 0 15px;
+        border: 1px solid #dedede !important;
+        border-radius: 12px !important;
+        outline: none !important;
+        background: rgba(250,250,250,0.82) !important;
+        color: #1d1f22 !important;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .register-input::placeholder { color: #aaa; }
+    .register-input:hover { background: #fff !important; border-color: #cfcfcf !important; }
+    .register-input:focus {
+        background: #fff !important;
+        border-color: #9a805e !important;
+        box-shadow: 0 0 0 4px rgba(154,128,94,0.10) !important;
+    }
+
+    .register-field-error {
+        margin-top: 6px;
+        color: #e11d48;
+        font-size: 11px;
+    }
+
+    .register-name-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    /* TERMS */
+    .register-terms {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 8px 0 22px;
+    }
+
+    .register-terms input {
+        width: 15px;
+        height: 15px;
+        margin-top: 1px;
+        accent-color: #9a805e;
+        cursor: pointer;
+    }
+
+    .register-terms label {
+        color: #777;
+        font-size: 12px;
+        line-height: 1.5;
+        cursor: pointer;
+    }
+
+    /* SUBMIT BUTTON */
+    .register-submit {
+        width: 100%;
+        height: 54px;
+        border: none;
+        border-radius: 14px;
+        background: #17191c;
+        color: white;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .register-submit::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .register-submit:hover {
+        transform: translateY(-2px);
+        background: #25282c;
+        box-shadow: 0 14px 30px rgba(0,0,0,0.18);
+    }
+
+    .register-submit:hover::before { left: 100%; }
+    .register-submit span { position: relative; z-index: 2; }
+    .register-arrow { margin-left: 8px; transition: transform 0.25s ease; }
+    .register-submit:hover .register-arrow { transform: translateX(5px); }
+
+    /* LOGIN LINK */
+    .register-login-line {
+        margin-top: 23px;
+        padding-top: 21px;
+        border-top: 1px solid rgba(0,0,0,0.08);
+        text-align: center;
+        color: #888;
+        font-size: 12px;
+    }
+
+    .register-login-link {
+        color: #1d1f22;
+        font-weight: 700;
+        text-decoration: none;
+        margin-left: 4px;
+        position: relative;
+    }
+
+    .register-login-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -3px;
+        height: 1px;
+        background: #9a805e;
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.25s ease;
+    }
+
+    .register-login-link:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
+    /* =========================================================
+       RIGHT — TRAVEL STORY (FIXED MARGIN & GAP)
+       ========================================================= */
+
+    .register-story {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Center contents vertically */
+        gap: 36px; /* Gap between VOYAGE header & story text */
+        min-height: 100vh;
+        padding: 70px;
+        background: transparent;
+        border-left: 1px solid rgba(255,255,255,0.12);
+        z-index: 2;
+    }
+
+    .register-brand-large {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin: 0;
+        color: #ffffff;
+        font-size: clamp(42px, 5vw, 68px);
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        line-height: 0.9;
+        text-shadow: 0 10px 35px rgba(0,0,0,0.28);
+        animation: registerBrandReveal 1s ease both;
+    }
+
+    .register-brand-large span {
+        display: inline-block;
+        font-size: 0.42em;
+        opacity: 0.92;
+        transform: translateY(-2px);
+    }
+
+    .register-story-content {
+        max-width: 620px;
+        margin: 0;
+        padding: 0;
+        animation: registerTextReveal 1s 0.25s ease both;
+    }
+
+    .register-story-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+        color: rgba(255,255,255,0.78);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        animation: registerTextReveal 0.9s 0.15s ease both;
+    }
+
+    .register-story-eyebrow span {
+        width: 42px;
+        height: 1px;
+        display: block;
+        background: linear-gradient(90deg, rgba(255,255,255,0.75), rgba(255,255,255,0.15));
+    }
+
+    .register-story-title {
+        margin: 0;
+        color: #ffffff;
+        font-size: clamp(56px, 6.5vw, 94px);
+        line-height: 0.92;
+        letter-spacing: -0.055em;
+        font-weight: 500;
+    }
+
+    .register-story-title em {
+        display: block;
+        margin-top: 8px;
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 400;
+        font-style: italic;
+        color: rgba(255,255,255,0.78);
+    }
+
+    .register-story-description {
+        max-width: 480px;
+        margin-top: 32px;
+        color: rgba(255,255,255,0.68);
+        font-size: 15px;
+        line-height: 1.85;
+        letter-spacing: 0.01em;
+    }
+
+    @keyframes registerBrandReveal {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes registerTextReveal {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE MEDIA QUERIES */
+    @media (max-width: 1000px) {
+        .register-container { grid-template-columns: 1fr; }
+        .register-panel { min-height: auto; padding: 55px 35px; order: 1; }
+        .voyage-register::before { transform: scale(1.04); }
+        .register-story {
+            min-height: auto;
+            padding: 45px 35px;
+            order: 2;
+            border-left: none;
+            border-top: 1px solid rgba(255,255,255,0.12);
+        }
+    }
+
+    @media (max-width: 560px) {
+        .voyage-register { overflow: visible; }
+        .voyage-register::before { inset: -15px; transform: scale(1.03); }
+        .register-panel { padding: 45px 22px; }
+        .register-name-grid { grid-template-columns: 1fr; gap: 0; }
+        .register-story { padding: 35px 25px; }
+        .register-brand-large { font-size: 38px; }
+        .register-story-eyebrow { font-size: 10px; letter-spacing: 0.18em; }
+        .register-story-title { font-size: 48px; }
+        .register-story-description { font-size: 13px; line-height: 1.7; }
+        .register-heading { font-size: 32px; }
+    }
+</style>
+
+<section class="voyage-register">
+    <div class="register-container">
+
+        <!-- LEFT — REGISTER FORM -->
+        <div class="register-panel">
+            <div class="register-form-wrapper">
+                <div class="register-welcome">
+                    <span class="register-label">Start your journey</span>
+                    <h1 class="register-heading">Create your account.</h1>
+                    <p class="register-subtitle">
+                        Join VOYAGE and keep your trips, bookings and future adventures in one place.
+                    </p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="register-error-box">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <!-- First + Last Name -->
+                    <div class="register-name-grid">
+                        <div class="register-field">
+                            <label for="{{ form.first_name.id_for_label }}">First name</label>
+                            {{ form.first_name|add_class:"register-input" }}
+                            {% if form.first_name.errors %}
+                                <p class="register-field-error">{{ form.first_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="register-field">
+                            <label for="{{ form.last_name.id_for_label }}">Last name</label>
+                            {{ form.last_name|add_class:"register-input" }}
+                            {% if form.last_name.errors %}
+                                <p class="register-field-error">{{ form.last_name.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div class="register-field">
+                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        {{ form.username|add_class:"register-input" }}
+                        {% if form.username.errors %}
+                            <p class="register-field-error">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="register-field">
+                        <label for="{{ form.email.id_for_label }}">Email</label>
+                        {{ form.email|add_class:"register-input" }}
+                        {% if form.email.errors %}
+                            <p class="register-field-error">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="register-field">
+                        <label for="{{ form.phone.id_for_label }}">Phone</label>
+                        {{ form.phone|add_class:"register-input" }}
+                        {% if form.phone.errors %}
+                            <p class="register-field-error">{{ form.phone.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="register-field">
+                        <label for="{{ form.password1.id_for_label }}">Password</label>
+                        {{ form.password1|add_class:"register-input" }}
+                        {% if form.password1.errors %}
+                            <p class="register-field-error">{{ form.password1.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="register-field">
+                        <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+                        {{ form.password2|add_class:"register-input" }}
+                        {% if form.password2.errors %}
+                            <p class="register-field-error">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="register-terms">
+                        {{ form.agree }}
+                        <label for="{{ form.agree.id_for_label }}">I agree to the terms and conditions</label>
+                    </div>
+                    {% if form.agree.errors %}
+                        <p class="register-field-error">{{ form.agree.errors.0 }}</p>
+                    {% endif %}
+
+                    <!-- Submit -->
+                    <button class="register-submit" type="submit">
+                        <span>
+                            Create my account
+                            <span class="register-arrow">→</span>
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Login link -->
+                <div class="register-login-line">
+                    Already have an account?
+                    <a href="{% url 'accounts:login' %}" class="register-login-link">Login</a>
+                </div>
+            </div>
         </div>
-      {% endif %}
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label>First name</label>
-          {{ form.first_name|add_class:"form-input" }}
-          {% if form.first_name.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.first_name.errors.0 }}</p>{% endif %}
+
+        <!-- RIGHT — TRAVEL STORY -->
+        <div class="register-story">
+
+            <!-- Big VOYAGE branding -->
+            <div class="register-brand-large">
+                <span>✦</span>
+                {{ site_settings.site_name|default:'VOYAGE' }}
+            </div>
+
+            <div class="register-story-content">
+                <div class="register-story-eyebrow">
+                    <span></span>
+                    Begin your journey
+                </div>
+
+                <h2 class="register-story-title">
+                    Your next<br>
+                    <em>adventure.</em>
+                </h2>
+
+                <p class="register-story-description">
+                    Create your VOYAGE account and open the door to unforgettable destinations, carefully crafted journeys and memories waiting to be made.
+                </p>
+            </div>
+
         </div>
-        <div>
-          <label>Last name</label>
-          {{ form.last_name|add_class:"form-input" }}
-          {% if form.last_name.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.last_name.errors.0 }}</p>{% endif %}
-        </div>
-      </div>
-      <div>
-        <label>Username</label>
-        {{ form.username|add_class:"form-input" }}
-        {% if form.username.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.username.errors.0 }}</p>{% endif %}
-      </div>
-      <div>
-        <label>Email</label>
-        {{ form.email|add_class:"form-input" }}
-        {% if form.email.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.email.errors.0 }}</p>{% endif %}
-      </div>
-      <div>
-        <label>Phone</label>
-        {{ form.phone|add_class:"form-input" }}
-        {% if form.phone.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.phone.errors.0 }}</p>{% endif %}
-      </div>
-      <div>
-        <label>Password</label>
-        {{ form.password1|add_class:"form-input" }}
-        {% if form.password1.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.password1.errors.0 }}</p>{% endif %}
-      </div>
-      <div>
-        <label>Confirm Password</label>
-        {{ form.password2|add_class:"form-input" }}
-        {% if form.password2.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.password2.errors.0 }}</p>{% endif %}
-      </div>
-      <div class="flex items-center gap-3">{{ form.agree }} <label>I agree to the terms</label></div>
-      {% if form.agree.errors %}<p class="mt-1 text-sm text-rose-600">{{ form.agree.errors.0 }}</p>{% endif %}
-      <div><button class="btn-primary" type="submit">Create Account</button></div>
-    </form>
-    <p class="mt-4">Already have an account? <a href="{% url 'accounts:login' %}" class="link-arrow-light">Login</a></p>
-  </div>
+
+    </div>
 </section>
+
 {% endblock %}

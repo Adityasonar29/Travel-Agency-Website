@@ -1,288 +1,1702 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Book Your Journey — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block title %}Design Your Journey — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
 
 {% block content %}
-<section class="pt-32 pb-24 md:pt-40 md:pb-40 bg-cream">
-    <div class="max-w-[700px] mx-auto px-6 md:px-12">
-        <!-- Step Indicator -->
-        <div class="mb-12">
-            <div class="flex justify-between text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-4">
-                <span class="{% if step == '1' %}text-olive font-semibold{% endif %}">Step 1</span>
-                <span class="{% if step == '2' %}text-olive font-semibold{% endif %}">Step 2</span>
-                <span class="{% if step == '3' %}text-olive font-semibold{% endif %}">Step 3</span>
-                <span class="{% if step == '4' %}text-olive font-semibold{% endif %}">Step 4</span>
-            </div>
-            <div class="h-2 bg-cream-dark rounded-full overflow-hidden">
-                <div class="h-full bg-gold transition-all duration-300" style="width: {% if step == '1' %}25{% elif step == '2' %}50{% elif step == '3' %}75{% else %}100{% endif %}%;"></div>
-            </div>
-        </div>
 
-        <div class="text-center mb-12">
-            <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-4">START YOUR JOURNEY</p>
-            <h1 class="text-h1 font-heading font-light text-ink mb-4">Book Your Trip</h1>
-            <p class="text-base font-body text-ink-muted max-w-[50ch] mx-auto mb-8">
-                {% if step == '1' %}Select your destination and tour package{% elif step == '2' %}Tell us about your travel details{% elif step == '3' %}Set your preferences{% else %}Review and confirm your booking{% endif %}
+<section class="pt-28 pb-24 md:pt-36 md:pb-32 bg-cream">
+
+    <div class="max-w-5xl mx-auto px-6 md:px-12">
+
+        <!-- ========================================================= -->
+        <!-- PREMIUM HERO -->
+        <!-- ========================================================= -->
+
+        <div class="text-center mb-14">
+
+            <p class="text-xs font-body text-gold tracking-[0.25em] uppercase mb-5">
+                PRIVATE TRAVEL DESIGN
             </p>
+
+            <h1 class="text-5xl md:text-7xl font-heading font-light text-ink leading-[0.95] mb-7">
+                Design a Journey
+                <br>
+                <span class="italic text-olive">Made for You.</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-base md:text-lg font-body text-ink-muted leading-relaxed">
+                Tell us where you want to go, how you want to travel,
+                and what you want to experience. We'll shape the journey
+                around you.
+            </p>
+
+            <div class="flex items-center justify-center gap-3 mt-7 text-[10px] uppercase tracking-[0.2em] text-ink-muted">
+                <span class="w-10 h-px bg-gold"></span>
+                Personalised travel planning
+                <span class="w-10 h-px bg-gold"></span>
+            </div>
+
         </div>
 
-        <!-- Messages -->
+
+        <!-- ========================================================= -->
+        <!-- MESSAGES -->
+        <!-- ========================================================= -->
+
         {% if messages %}
         <div class="mb-8">
+
             {% for message in messages %}
-            <div class="p-4 rounded-lg text-sm font-body mb-3 {% if message.tags == 'success' %}bg-olive/10 text-olive border border-olive/20{% else %}bg-terracotta/10 text-terracotta border border-terracotta/20{% endif %}">
+
+            <div class="p-4 rounded-xl text-sm font-body mb-3
+                {% if message.tags == 'success' %}
+                    bg-olive/10 text-olive border border-olive/20
+                {% else %}
+                    bg-terracotta/10 text-terracotta border border-terracotta/20
+                {% endif %}
+            ">
                 {{ message }}
             </div>
+
             {% endfor %}
+
         </div>
         {% endif %}
 
-        <!-- Step Navigation -->
-        <form id="booking-form" method="post" class="space-y-8">
-            {% csrf_token %}
-            <input type="hidden" name="step" value="{{ step }}" />
-            {% comment %} Single form with all steps - using hidden fields for state {% endcomment %}
 
-            <!-- STEP 1: Tour Selection -->
-            <div id="step-1" class="step-section {% if step != '1' %}hidden{% endif %}">
-                <div class="bg-white rounded-xl p-8 shadow-sm">
-                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Choose Your Journey</h2>
-                    <p class="text-sm font-body text-ink-muted mb-6">Select a destination and tour package from our curated options.</p>
+        <!-- ========================================================= -->
+        <!-- BOOKING CARD -->
+        <!-- ========================================================= -->
 
-                    <div class="space-y-4">
+        <div class="bg-white rounded-[2rem] shadow-[0_25px_90px_rgba(0,0,0,0.07)] overflow-hidden p-8 md:p-12">
+
+            <form id="booking-form" method="post" class="space-y-8">
+                {% csrf_token %}
+                <input type="hidden" name="step" value="{{ step }}" />
+                <input type="hidden" name="request_type" id="request-type">
+
+                <!-- ===================================================== -->
+                <!-- STEP 1: Choose Your Journey -->
+                <!-- ===================================================== -->
+                <div id="step-1" class="step-section {% if step != '1' %}hidden{% endif %}">
+                    
+                    <div class="mb-8">
+                        <p class="text-xs font-body text-gold tracking-[0.15em] uppercase mb-3">
+                            STEP 01
+                        </p>
+
+                        <h2 class="text-2xl md:text-3xl font-heading font-light text-ink mb-3">
+                            How would you like to travel?
+                        </h2>
+
+                        <p class="text-sm md:text-base font-body text-ink-muted max-w-[55ch]">
+                            Choose one of our curated journeys, or let our travel designers
+                            create something completely around you.
+                        </p>
+                    </div>
+
+                    <!-- Booking Type -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+
+                        <!-- Curated Tour -->
+                        <button
+                            type="button"
+                            id="curated-option"
+                            onclick="selectBookingType('curated')"
+                            class="booking-type-card text-left p-6 rounded-xl border border-cream-dark transition-all duration-300 hover:border-gold"
+                        >
+                            <div class="flex items-start justify-between mb-5">
+                                <div class="w-11 h-11 rounded-full bg-cream flex items-center justify-center text-gold">
+                                    ✦
+                                </div>
+
+                                <span id="curated-check" class="hidden text-gold text-lg">
+                                    ✓
+                                </span>
+                            </div>
+
+                            <h3 class="text-lg font-heading text-ink mb-2">
+                                Explore a Curated Journey
+                            </h3>
+
+                            <p class="text-sm font-body text-ink-muted leading-relaxed">
+                                Choose one of our carefully designed destinations and tour packages.
+                            </p>
+                        </button>
+
+                        <!-- Personalized -->
+                        <button
+                            type="button"
+                            id="personalized-option"
+                            onclick="selectBookingType('personalized')"
+                            class="booking-type-card text-left p-6 rounded-xl border border-cream-dark transition-all duration-300 hover:border-gold"
+                        >
+                            <div class="flex items-start justify-between mb-5">
+                                <div class="w-11 h-11 rounded-full bg-cream flex items-center justify-center text-gold">
+                                    ✦
+                                </div>
+
+                                <span id="personalized-check" class="hidden text-gold text-lg">
+                                    ✓
+                                </span>
+                            </div>
+
+                            <h3 class="text-lg font-heading text-ink mb-2">
+                                Personalize My Journey
+                            </h3>
+
+                            <p class="text-sm font-body text-ink-muted leading-relaxed">
+                                Tell us what you want and we'll help design a journey
+                                around your interests, pace and preferences.
+                            </p>
+                        </button>
+
+                    </div>
+
+
+                    <!-- CURATED TOUR CONTENT -->
+                    <div id="curated-fields" class="space-y-5">
+
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Destination *</label>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">
+                                Destination
+                            </label>
+                        
                             {{ form.destination_name }}
-                            {% if form.destination_name.errors %}<p class="text-xs text-terracotta mt-1">{{ form.destination_name.errors.0 }}</p>{% endif %}
+
+                            <datalist id="destination-options">
+                                {% for destination in form.destination_suggestions %}
+                                    <option value="{{ destination }}">
+                                {% endfor %}
+                            </datalist>
+                        
+                            <p id="personalized-destination-help" class="hidden text-xs font-body text-ink-muted mt-2">
+                                Planning a personalized journey? Enter a destination you'd like to explore,
+                                or choose one from our destinations.
+                            </p>
+                        
+                            {% if form.destination_name.errors %}
+                                <p class="text-xs text-terracotta mt-1">
+                                    {{ form.destination_name.errors.0 }}
+                                </p>
+                            {% endif %}
                         </div>
 
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Tour Package *</label>
+                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">
+                                Tour Package
+                            </label>
+                            
                             {{ form.tour }}
-                            {% if form.tour.errors %}<p class="text-xs text-terracotta mt-1">{{ form.tour.errors.0 }}</p>{% endif %}
+                            
+                            <p id="personalized-tour-help" class="hidden text-xs font-body text-ink-muted mt-2">
+                                No package needed — our travel designer will create a journey around your preferences.
+                            </p>
+
+                            {% if form.tour.errors %}
+                                <p class="text-xs text-terracotta mt-1">
+                                    {{ form.tour.errors.0 }}
+                                </p>
+                            {% endif %}
                         </div>
+
                     </div>
 
-                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
-                        <button type="button" onclick="goToStep(2)" class="btn-secondary">
+
+                    <!-- PERSONALIZED JOURNEY CONTENT -->
+                    <div id="personalized-fields" class="hidden">
+
+                        <div class="rounded-xl bg-cream/60 border border-cream-dark p-6">
+
+                            <div class="flex items-start gap-4">
+
+                                <div class="w-10 h-10 rounded-full bg-white flex-shrink-0 flex items-center justify-center text-gold">
+                                    ✦
+                                </div>
+
+                                <div class="w-full">
+                                    <h3 class="text-base font-heading font-medium text-ink mb-1">
+                                        Where would you like to go?
+                                    </h3>
+
+                                    <p class="text-sm font-body text-ink-muted mb-5">
+                                        Have a destination in mind? Tell us. If you're still
+                                        deciding, you can simply write
+                                        <span class="text-ink font-medium">"I'm not sure yet."</span>
+                                    </p>
+
+                                    <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">
+                                        Your Destination
+                                    </label>
+
+                                    {{ form.destination_name }}
+
+                                    {% if form.destination_name.errors %}
+                                        <p class="text-xs text-terracotta mt-1">
+                                            {{ form.destination_name.errors.0 }}
+                                        </p>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Continue -->
+                    <div class="mt-8 pt-6 border-t border-cream flex justify-end">
+
+                        <button
+                            type="button"
+                            onclick="goToStep(2)"
+                            class="btn-primary"
+                        >
                             <span>Continue</span>
                             <span>→</span>
                         </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- STEP 2: Traveler Details -->
-            <div id="step-2" class="step-section {% if step != '2' %}hidden{% endif %}">
-                <div class="bg-white rounded-xl p-8 shadow-sm">
-                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Travel Details</h2>
-                    <p class="text-sm font-body text-ink-muted mb-6">Tell us about your trip plans.</p>
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 2 -->
+                <!-- ================================================= -->
+
+                <div
+                    id="step-2"
+                    class="step-section {% if step != '2' %}hidden{% endif %}"
+                >
+
+                    <div class="mb-10">
+
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-gold mb-3">
+                            02 — TRAVELERS
+                        </p>
+
+                        <h2 class="text-3xl md:text-4xl font-heading font-light text-ink">
+                            Tell us about your trip.
+                        </h2>
+
+                        <p class="text-sm text-ink-muted mt-3">
+                            These details help us understand who we're designing
+                            the journey for.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Contact -->
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Full Name *</label>
+                            <label class="premium-label">
+                                Full Name *
+                            </label>
+
                             {{ form.full_name }}
-                            {% if form.full_name.errors %}<p class="text-xs text-terracotta mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
+
+                            {% if form.full_name.errors %}
+                            <p class="form-error">{{ form.full_name.errors.0 }}</p>
+                            {% endif %}
                         </div>
+
+
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Email *</label>
+                            <label class="premium-label">
+                                Email *
+                            </label>
+
                             {{ form.email }}
-                            {% if form.email.errors %}<p class="text-xs text-terracotta mt-1">{{ form.email.errors.0 }}</p>{% endif %}
+
+                            {% if form.email.errors %}
+                            <p class="form-error">{{ form.email.errors.0 }}</p>
+                            {% endif %}
                         </div>
+
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Phone *</label>
+
+                            <label class="premium-label">
+                                Phone *
+                            </label>
+
                             {{ form.phone }}
-                            {% if form.phone.errors %}<p class="text-xs text-terracotta mt-1">{{ form.phone.errors.0 }}</p>{% endif %}
+
+                            {% if form.phone.errors %}
+                            <p class="form-error">{{ form.phone.errors.0 }}</p>
+                            {% endif %}
+
                         </div>
+
+
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Start Date *</label>
-                            {{ form.travel_date }}
-                            {% if form.travel_date.errors %}<p class="text-xs text-terracotta mt-1">{{ form.travel_date.errors.0 }}</p>{% endif %}
-                            <p class="text-xs font-body text-ink-muted mt-2">Select your preferred start date; we will use this as your trip start date.</p>
+
+                            <label class="premium-label">
+                                Travelling From
+                            </label>
+
+                            {{ form.origin }}
+
                         </div>
+
                     </div>
 
-                    <div class="mt-4">
-                        <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Number of Travelers *</label>
-                        {{ form.num_travelers }}
-                        {% if form.num_travelers.errors %}<p class="text-xs text-terracotta mt-1">{{ form.num_travelers.errors.0 }}</p>{% endif %}
+
+                    <!-- Dates -->
+
+                    <div class="mt-10">
+
+                        <p class="text-xs uppercase tracking-[0.16em] text-ink mb-4">
+                            When are you travelling?
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <div>
+
+                                <label class="premium-label">
+                                    Start Date
+                                </label>
+
+                                {{ form.travel_date }}
+
+                                {% if form.travel_date.errors %}
+                                <p class="form-error">
+                                    {{ form.travel_date.errors.0 }}
+                                </p>
+                                {% endif %}
+
+                            </div>
+
+
+                            <div>
+
+                                <label class="premium-label">
+                                    Return Date
+                                </label>
+
+                                {{ form.return_date }}
+
+                                {% if form.return_date.errors %}
+                                <p class="form-error">
+                                    {{ form.return_date.errors.0 }}
+                                </p>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="flex items-center gap-3 mt-4 cursor-pointer">
+
+                            {{ form.flexible_dates }}
+
+                            <span class="text-xs text-ink-muted">
+                                My dates are flexible
+                            </span>
+
+                        </label>
+
                     </div>
 
-                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
-                        <button type="button" onclick="goToStep(1)" class="btn-secondary">
-                            <span>Back</span>
+
+                    <!-- Travelers -->
+
+                    <div class="mt-10">
+
+                        <p class="text-xs uppercase tracking-[0.16em] text-ink mb-4">
+                            Who's travelling?
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                            <div>
+
+                                <label class="premium-label">
+                                    Total Travelers
+                                </label>
+
+                                {{ form.num_travelers }}
+
+                            </div>
+
+
+                            <div>
+
+                                <label class="premium-label">
+                                    Adults
+                                </label>
+
+                                {{ form.adults }}
+
+                            </div>
+
+
+                            <div>
+
+                                <label class="premium-label">
+                                    Children
+                                </label>
+
+                                {{ form.children }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Purpose -->
+
+                    <div class="mt-10">
+
+                        <label class="premium-label">
+                            What is this trip for?
+                        </label>
+
+                        {{ form.trip_purpose }}
+
+                    </div>
+
+
+                    <!-- Navigation -->
+
+                    <div class="mt-10 pt-7 border-t border-cream flex justify-between">
+
+                        <button
+                            type="button"
+                            onclick="goToStep(1)"
+                            class="btn-secondary"
+                        >
+                            ← Back
                         </button>
-                        <button type="button" onclick="goToStep(3)" class="btn-primary">
+
+                        <button
+                            type="button"
+                            onclick="goToStep(3)"
+                            class="btn-primary"
+                        >
                             <span>Continue</span>
                             <span>→</span>
                         </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- STEP 3: Preferences -->
-            <div id="step-3" class="step-section {% if step != '3' %}hidden{% endif %}">
-                <div class="bg-white rounded-xl p-8 shadow-sm">
-                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Your Preferences</h2>
-                    <p class="text-sm font-body text-ink-muted mb-6">Tell us about your travel style and budget.</p>
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 3 -->
+                <!-- ================================================= -->
+
+                <div
+                    id="step-3"
+                    class="step-section {% if step != '3' %}hidden{% endif %}"
+                >
+
+                    <div class="mb-10">
+
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-gold mb-3">
+                            03 — YOUR STYLE
+                        </p>
+
+                        <h2 class="text-3xl md:text-4xl font-heading font-light text-ink">
+                            Make it feel like you.
+                        </h2>
+
+                        <p class="text-sm text-ink-muted mt-3 max-w-xl">
+                            This is where we move beyond a standard package.
+                            Tell us what makes a great trip for you.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Style / Budget -->
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                         <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Budget Range</label>
-                            {{ form.budget_range }}
-                        </div>
-                        <div>
-                            <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Travel Style</label>
+
+                            <label class="premium-label">
+                                Travel Style
+                            </label>
+
                             {{ form.travel_style }}
+
                         </div>
+
+
+                        <div>
+
+                            <label class="premium-label">
+                                Budget
+                            </label>
+
+                            {{ form.budget_range }}
+
+                        </div>
+
                     </div>
 
-                    <div class="mt-4">
-                        <label class="text-xs font-body text-ink-muted tracking-[0.1em] uppercase mb-2 block">Special Requests</label>
+
+                    <!-- Accommodation -->
+
+                    <div class="mt-8">
+
+                        <label class="premium-label review-accommodation">
+                            Accommodation
+                        </label>
+
+                        {{ form.accommodation }}
+
+                    </div>
+
+
+                    <!-- Transport -->
+
+                    <div class="mt-8">
+
+                        <label class="premium-label">
+                            How would you like to get around?
+                        </label>
+
+                        {{ form.transport_preferences }}
+
+                    </div>
+
+
+                    <!-- Experiences -->
+
+                    <div class="mt-8">
+
+                        <label class="premium-label">
+                            What would you love to experience?
+                        </label>
+
+                        {{ form.experience_preferences }}
+
+                    </div>
+
+
+                    <!-- Dietary / Accessibility -->
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+
+                        <div>
+
+                            <label class="premium-label">
+                                Dietary Requirements
+                            </label>
+
+                            {{ form.dietary_requirements }}
+
+                        </div>
+
+
+                        <div>
+
+                            <label class="premium-label">
+                                Accessibility Requirements
+                            </label>
+
+                            {{ form.accessibility_requirements }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Special Requests -->
+
+                    <div class="mt-8">
+
+                        <label class="premium-label review-special-requests">
+                            Special Requests
+                        </label>
+
                         {{ form.special_requests }}
+
                     </div>
 
-                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
-                        <button type="button" onclick="goToStep(2)" class="btn-secondary">
-                            <span>Back</span>
+
+                    <!-- Main Story -->
+
+                    <div class="mt-8 p-6 md:p-7 rounded-2xl bg-cream border border-gold/20">
+
+                        <label class="premium-label">
+                            Tell us about your ideal journey
+                        </label>
+
+                        {{ form.additional_notes }}
+
+                        <p class="text-xs text-ink-muted mt-3 leading-relaxed">
+                            Don't worry about getting the wording perfect.
+                            Tell us everything you'd normally tell a travel
+                            designer — places you'd love to see, things you
+                            don't want to do, your preferred pace, celebrations,
+                            hotel ideas, or anything else on your mind.
+                        </p>
+
+                    </div>
+
+
+                    <!-- Contact Preference -->
+
+                    <div class="mt-8">
+
+                        <label class="premium-label">
+                            How should our travel designer contact you?
+                        </label>
+
+                        {{ form.contact_preference }}
+
+                    </div>
+
+
+                    <!-- Navigation -->
+
+                    <div class="mt-10 pt-7 border-t border-cream flex justify-between">
+
+                        <button
+                            type="button"
+                            onclick="goToStep(2)"
+                            class="btn-secondary"
+                        >
+                            ← Back
                         </button>
-                        <button type="button" onclick="goToStep(4)" class="btn-primary">
-                            <span>Continue</span>
+
+                        <button
+                            type="button"
+                            onclick="goToStep(4)"
+                            class="btn-primary"
+                        >
+                            <span>Review Journey</span>
                             <span>→</span>
                         </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- STEP 4: Review & Confirm -->
-            <div id="step-4" class="step-section {% if step != '4' %}hidden{% endif %}">
-                <div class="bg-white rounded-xl p-8 shadow-sm">
-                    <h2 class="text-xl font-heading font-medium text-ink mb-2">Review Your Booking</h2>
-                    <p class="text-sm font-body text-ink-muted mb-6">Please review your details before confirming.</p>
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 4 -->
+                <!-- ================================================= -->
+
+                <div
+                    id="step-4"
+                    class="step-section {% if step != '4' %}hidden{% endif %}"
+                >
+
+                    <div class="mb-10">
+
+                        <p class="text-[10px] uppercase tracking-[0.2em] text-gold mb-3">
+                            04 — REVIEW
+                        </p>
+
+                        <h2 class="text-3xl md:text-4xl font-heading font-light text-ink">
+                            Your journey, at a glance.
+                        </h2>
+
+                        <p class="text-sm text-ink-muted mt-3">
+                            Take a final look before sending your request.
+                        </p>
+
+                    </div>
+
 
                     <div class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-cream/50 rounded-lg p-4">
-                                <label class="text-xs font-body text-ink-muted uppercase">Tour Package</label>
-                                <p id="review-tour" class="text-sm font-body text-ink mt-1">—</p>
-                            </div>
-                            <div class="bg-cream/50 rounded-lg p-4">
-                                <label class="text-xs font-body text-ink-muted uppercase">Travel Date</label>
-                                <p id="review-date" class="text-sm font-body text-ink mt-1">—</p>
-                            </div>
+
+                        <!-- Destination -->
+
+                        <div class="review-card">
+
+                            <span class="review-label">
+                                Destination
+                            </span>
+
+                            <span
+                                id="review-destination"
+                                class="review-value"
+                            >
+                                —
+                            </span>
+
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-cream/50 rounded-lg p-4">
-                                <label class="text-xs font-body text-ink-muted uppercase">Full Name</label>
-                                <p id="review-name" class="text-sm font-body text-ink mt-1">—</p>
-                            </div>
-                            <div class="bg-cream/50 rounded-lg p-4">
-                                <label class="text-xs font-body text-ink-muted uppercase">Travelers</label>
-                                <p id="review-travelers" class="text-sm font-body text-ink mt-1">—</p>
-                            </div>
+
+
+                        <!-- Tour -->
+
+                        <div class="review-card">
+
+                            <span class="review-label">
+                                Tour Package
+                            </span>
+
+                            <span
+                                id="review-tour"
+                                class="review-value"
+                            >
+                                Personalised Journey
+                            </span>
+
                         </div>
+
+
+                        <!-- Dates -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="review-card">
+                            
+                                <span class="review-label">
+                                    Travel Dates
+                                </span>
+                            
+                                <div class="grid grid-cols-2 gap-6 mt-3">
+                            
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-wider text-ink-muted">
+                                            Departure
+                                        </p>
+                            
+                                        <span
+                                            id="review-date"
+                                            class="review-value"
+                                        >
+                                            —
+                                        </span>
+                                    </div>
+                            
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-wider text-ink-muted">
+                                            Return
+                                        </p>
+                            
+                                        <span
+                                            id="review-return-date"
+                                            class="review-value"
+                                        >
+                                            —
+                                        </span>
+                                    </div>
+                            
+                                </div>
+                            </div>
+                            
+
+
+                            <div class="review-card">
+
+                                <span class="review-label">
+                                    Travelers
+                                </span>
+
+                                <span
+                                    id="review-travelers"
+                                    class="review-value"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Traveler -->
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div class="review-card">
+
+                                <span class="review-label">
+                                    Name
+                                </span>
+
+                                <span
+                                    id="review-name"
+                                    class="review-value"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+
+                            <div class="review-card">
+
+                                <span class="review-label">
+                                    Travel Style
+                                </span>
+
+                                <span
+                                    id="review-style"
+                                    class="review-value"
+                                >
+                                    —
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Preferences -->
+
+                        <div class="review-card">
+
+                            <span class="review-label">
+                                Accommodation
+                            </span>
+
+                            <span
+                                id="review-accommodation"
+                                class="review-value"
+                            >
+                                —
+                            </span>
+
+                        </div>
+
+
+                        <div class="review-card">
+
+                            <span class="review-label">
+                                Budget
+                            </span>
+
+                            <span
+                                id="review-budget"
+                                class="review-value"
+                            >
+                                —
+                            </span>
+
+                        </div>
+
+
+                        <!-- Notes -->
+
+                        <div class="review-card review-special-request">
+
+                            <span class="review-label">
+                                Your Request
+                            </span>
+
+                            <p
+                                id="review-notes"
+                                class="text-sm text-ink-muted leading-relaxed  mt-2 whitespace-pre-line"
+                            >
+                                —
+                            </p>
+
+                        </div>
+
                     </div>
 
-                    <div class="mt-6 pt-6 border-t border-cream flex justify-between">
-                        <button type="button" onclick="goToStep(3)" class="btn-secondary">
-                            <span>Back</span>
+
+                    <!-- Trust -->
+
+                    <div class="mt-8 p-6 rounded-2xl bg-cream border border-cream-dark">
+
+                        <div class="flex gap-4">
+
+                            <div class="text-gold text-xl">
+                                ✦
+                            </div>
+
+                            <div>
+
+                                <h3 class="font-heading text-lg text-ink">
+                                    Your request is personally reviewed.
+                                </h3>
+
+                                <p class="text-xs text-ink-muted mt-1 leading-relaxed">
+                                    This isn't an automated package generator.
+                                    Our travel team will review your preferences
+                                    and contact you to refine the journey.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Final navigation -->
+
+                    <div class="mt-10 pt-7 border-t border-cream flex justify-between">
+
+                        <button
+                            type="button"
+                            onclick="goToStep(3)"
+                            class="btn-secondary"
+                        >
+                            ← Back
                         </button>
-                        <button type="submit" class="btn-primary">
-                            <span>Confirm Booking</span>
+
+                        <button
+                            type="submit"
+                            class="btn-primary"
+                        >
+                            <span>Send My Journey Request</span>
                             <span>→</span>
                         </button>
+
                     </div>
+
                 </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- PREMIUM TRUST STRIP -->
+        <!-- ========================================================= -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-14 text-center">
+
+            <div>
+
+                <div class="text-gold text-xl mb-3">
+                    ✦
+                </div>
+
+                <h3 class="font-heading text-lg text-ink">
+                    Human Designed
+                </h3>
+
+                <p class="text-xs text-ink-muted mt-2 leading-relaxed">
+                    Your request is reviewed by a real travel designer.
+                </p>
+
             </div>
-        </form>
+
+
+            <div>
+
+                <div class="text-gold text-xl mb-3">
+                    ◌
+                </div>
+
+                <h3 class="font-heading text-lg text-ink">
+                    Built Around You
+                </h3>
+
+                <p class="text-xs text-ink-muted mt-2 leading-relaxed">
+                    Your pace, preferences and priorities come first.
+                </p>
+
+            </div>
+
+
+            <div>
+
+                <div class="text-gold text-xl mb-3">
+                    ∞
+                </div>
+
+                <h3 class="font-heading text-lg text-ink">
+                    No Generic Itineraries
+                </h3>
+
+                <p class="text-xs text-ink-muted mt-2 leading-relaxed">
+                    We shape the journey instead of forcing you into a template.
+                </p>
+
+            </div>
+
+        </div>
+
     </div>
+
 </section>
 
+
+<!-- ============================================================= -->
+<!-- PAGE-SPECIFIC STYLES -->
+<!-- ============================================================= -->
+
+<style>
+
+    .premium-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        font-family: inherit;
+        font-size: 0.68rem;
+        line-height: 1rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #77746b;
+    }
+
+    .form-error {
+        margin-top: 0.35rem;
+        font-size: 0.72rem;
+        color: #a85c4a;
+    }
+
+    .review-card {
+        padding: 1rem 1.15rem;
+        border-radius: 0.9rem;
+        background: rgba(247, 243, 235, 0.65);
+        border: 1px solid rgba(38, 38, 32, 0.06);
+    }
+
+    .review-label {
+        display: block;
+        font-size: 0.62rem;
+        line-height: 1rem;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: #89857b;
+        margin-bottom: 0.25rem;
+    }
+
+    .review-value {
+        display: block;
+        font-size: 0.9rem;
+        color: #282821;
+    }
+
+</style>
+
+
+<!-- ============================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================= -->
+
 <script>
+
     let currentStep = {{ step|default:"1" }};
 
+
     function setStep(step) {
+
         const parsedStep = parseInt(step, 10) || 1;
+
         currentStep = parsedStep;
-        document.querySelector('[name="step"]').value = parsedStep;
+
+        const stepInput = document.querySelector('[name="step"]');
+
+        if (stepInput) {
+            stepInput.value = parsedStep;
+        }
+
 
         document.querySelectorAll('.step-section').forEach((section, index) => {
-            section.classList.toggle('hidden', index + 1 !== parsedStep);
+
+            section.classList.toggle(
+                'hidden',
+                index + 1 !== parsedStep
+            );
+
         });
 
-        document.querySelectorAll('.flex.justify-between.text-xs.font-body.text-ink-muted span').forEach((span, index) => {
-            const active = index + 1 === parsedStep;
-            span.classList.toggle('text-olive', active);
-            span.classList.toggle('font-semibold', active);
-        });
 
-        const progress = document.querySelector('.h-2.bg-cream-dark .bg-gold');
+        const progress = document.getElementById('booking-progress');
+
         if (progress) {
-            progress.style.width = `${parsedStep === 1 ? 25 : parsedStep === 2 ? 50 : parsedStep === 3 ? 75 : 100}%`;
+
+            const widths = {
+                1: '25%',
+                2: '50%',
+                3: '75%',
+                4: '100%'
+            };
+
+            progress.style.width =
+                widths[parsedStep] || '25%';
+
         }
+
 
         if (parsedStep === 4) {
             updateReview();
         }
+
     }
 
+
     function goToStep(step) {
+        // Step 1 validation
+        if (currentStep === 1 && step === 2) {
+            const destinationSelect = document.querySelector('[name="destination_name"]');
+            const tourSelect = document.querySelector('[name="tour"]');
+    
+            const destination = destinationSelect?.value.trim() || '';
+            const tour = tourSelect?.value || '';
+    
+            // Detect whether this is a personalized request
+            const requestType =
+                document.querySelector('[name="request_type"]')?.value || '';
+    
+            // ==========================================
+            // PERSONALIZED BOOKING
+            // ==========================================
+            // Destination and tour are both optional.
+            // The user can continue even without selecting either.
+            if (requestType === 'personalized') {
+    
+                // If no destination was entered, show the helpful message
+                // but DO NOT stop the user from continuing.
+                if (!destination) {
+                    const help = document.getElementById(
+                        'personalized-destination-help'
+                    );
+    
+                    if (help) {
+                        help.classList.remove('hidden');
+                        help.classList.add('text-terracotta');
+                    }
+                }
+    
+                // Continue normally
+                setStep(step);
+                return;
+            }
+    
+            // ==========================================
+            // CURATED BOOKING
+            // ==========================================
+            // Both destination and tour are required.
+            if (requestType === 'curated') {
+    
+                if (!destination) {
+                    destinationSelect?.focus();
+                    return;
+                }
+    
+                if (!tour) {
+                    tourSelect?.focus();
+                    return;
+                }
+            }
+        }
+        if (step === 4) {
+                updateReview();
+            }
         setStep(step);
     }
 
+
+    function getSelectedText(name) {
+
+        const field = document.querySelector(`[name="${name}"]`);
+
+        if (!field) {
+            return '—';
+        }
+
+        if (field.tagName === 'SELECT') {
+
+            return field.options[field.selectedIndex]?.text || '—';
+
+        }
+
+        return field.value || '—';
+
+    }
+
+    
+
+
     function updateReview() {
         const tourSelect = document.querySelector('[name="tour"]');
+        const destinationInputs =
+            document.querySelectorAll('[name="destination_name"]');
+        
+        let destinationInput = null;
+        
+        for (const input of destinationInputs) {
+            if (input.value.trim()) {
+                destinationInput = input;
+                break;
+            }
+        }
+        
+        // If none has a value, keep the first destination field
+        // so the rest of the function doesn't break.
+        if (!destinationInput) {
+            destinationInput = destinationInputs[0] || null;
+        }
+
+        const destination =
+            destinationInput?.value?.trim() || 'Not specified';
+        
         const dateInput = document.querySelector('[name="travel_date"]');
+        const returnDateInput = document.querySelector('[name="return_date"]');
         const nameInput = document.querySelector('[name="full_name"]');
         const travelersInput = document.querySelector('[name="num_travelers"]');
+        const adultsInput = document.querySelector('[name="adults"]');
+        const childrenInput = document.querySelector('[name="children"]');
+    
+        const styleInput = document.querySelector('[name="travel_style"]');
+        const budgetInput = document.querySelector('[name="budget_range"]');
+        const purposeInput = document.querySelector('[name="trip_purpose"]');
+    
+        const accommodationInput =
+            document.querySelector('[name="accommodation"]');
+    
+        const specialRequestsInput =
+            document.querySelector('[name="special_requests"]');
+    
+        const requestType =
+            document.querySelector('[name="request_type"]')?.value || '';
+    
+        // -------------------------
+        // BASIC DETAILS
+        // -------------------------
 
-        document.getElementById('review-tour').textContent = tourSelect ? tourSelect.options[tourSelect.selectedIndex]?.text || '—' : '—';
-        document.getElementById('review-date').textContent = dateInput ? dateInput.value : '—';
-        document.getElementById('review-name').textContent = nameInput ? nameInput.value || '—' : '—';
-        document.getElementById('review-travelers').textContent = travelersInput ? travelersInput.value : '—';
+        let tour = 'Personalized Journey';
+    
+        if (tourSelect && tourSelect.value) {
+            tour =
+                tourSelect.options[tourSelect.selectedIndex]?.text ||
+                'Selected Tour';
+        } else if (requestType === 'personalized') {
+            tour = 'Personalized Journey';
+        }
+    
+        const travelDate =
+            dateInput?.value?.trim() || 'Not specified';
+    
+        const returnDate =
+            returnDateInput?.value?.trim() || '';
+    
+        const name =
+            nameInput?.value?.trim() || 'Not specified';
+    
+        const travelers =
+            travelersInput?.value?.trim() || '1';
+    
+        const adults =
+            adultsInput?.value?.trim() || travelers;
+    
+        const children =
+            childrenInput?.value?.trim() || '0';
+    
+        // -------------------------
+        // SELECT FIELDS
+        // -------------------------
+    
+        const style =
+            styleInput?.value
+                ? styleInput.options[styleInput.selectedIndex]?.text
+                : 'Not specified';
+    
+        const budget =
+            budgetInput?.value
+                ? budgetInput.options[budgetInput.selectedIndex]?.text
+                : 'Not specified';
+    
+        const purpose =
+            purposeInput?.value
+                ? purposeInput.options[purposeInput.selectedIndex]?.text
+                : 'Not specified';
+    
+        const accommodation =
+            accommodationInput?.value
+                ? accommodationInput.options[accommodationInput.selectedIndex]?.text
+                : 'Not specified';
+    
+        const specialRequests =
+            specialRequestsInput?.value?.trim() || 'No special requests';
+    
+        // -------------------------
+        // REVIEW ELEMENTS
+        // -------------------------
+    
+        const reviewTour =
+            document.getElementById('review-tour');
+    
+        const reviewDestination =
+            document.getElementById('review-destination');
+    
+        const reviewDate =
+            document.getElementById('review-date');
+    
+        const reviewReturnDate =
+            document.getElementById('review-return-date');
+    
+        const reviewName =
+            document.getElementById('review-name');
+    
+        const reviewTravelers =
+            document.getElementById('review-travelers');
+    
+        const reviewAdults =
+            document.getElementById('review-adults');
+    
+        const reviewChildren =
+            document.getElementById('review-children');
+    
+        const reviewStyle =
+            document.getElementById('review-style');
+    
+        const reviewBudget =
+            document.getElementById('review-budget');
+    
+        const reviewPurpose =
+            document.getElementById('review-purpose');
+    
+        const reviewAccommodation =
+            document.getElementById('review-accommodation');
+    
+        // IMPORTANT:
+        // Your HTML uses id="review-notes"
+        const reviewSpecialRequests =
+            document.getElementById('review-notes');
+    
+        // -------------------------
+        // UPDATE REVIEW
+        // -------------------------
+    
+        if (reviewTour) {
+            reviewTour.textContent = tour;
+        }
+    
+        if (reviewDestination) {
+            reviewDestination.textContent = destination;
+        }
+    
+        if (reviewDate) {
+            reviewDate.textContent = travelDate;
+        }
+    
+        if (reviewReturnDate) {
+            reviewReturnDate.textContent =
+                returnDate || 'Not specified';
+        }
+    
+        if (reviewName) {
+            reviewName.textContent = name;
+        }
+    
+        if (reviewTravelers) {
+            reviewTravelers.textContent =
+                `${travelers} traveler${travelers == 1 ? '' : 's'}`;
+        }
+    
+        if (reviewAdults) {
+            reviewAdults.textContent = adults;
+        }
+    
+        if (reviewChildren) {
+            reviewChildren.textContent = children;
+        }
+    
+        if (reviewStyle) {
+            reviewStyle.textContent = style;
+        }
+    
+        if (reviewBudget) {
+            reviewBudget.textContent = budget;
+        }
+    
+        if (reviewPurpose) {
+            reviewPurpose.textContent = purpose;
+        }
+    
+        if (reviewAccommodation) {
+            reviewAccommodation.textContent = accommodation;
+        }
+    
+        if (reviewSpecialRequests) {
+            reviewSpecialRequests.textContent = specialRequests;
+        }
     }
 
     function filterToursByDestination() {
-        const destinationSelect = document.querySelector('[name="destination_name"]');
+        const destinationInputs = document.querySelectorAll('[name="destination_name"]');
+        
+        const destinationInput = Array.from(destinationInputs).find(input => {
+            return !input.closest('.hidden') && input.offsetParent !== null;
+        });
         const tourSelect = document.querySelector('[name="tour"]');
-        if (!destinationSelect || !tourSelect) return;
-
-        const destination = destinationSelect.value;
+    
+        if (!destinationInput || !tourSelect) return;
+    
+        const destination = destinationInput.value.trim().toLowerCase();
+    
         tourSelect.querySelectorAll('option').forEach((option) => {
+            // Always show the placeholder
             if (!option.value) {
                 option.hidden = false;
                 return;
             }
+    
             const text = option.text.toLowerCase();
-            option.hidden = destination ? !text.includes(`— ${destination.toLowerCase()}`) : false;
-        });
-
-        if (destination) {
-            if (tourSelect.value && tourSelect.options[tourSelect.selectedIndex].hidden) {
-                tourSelect.value = '';
+    
+            // If no destination is entered, show all tours
+            if (!destination) {
+                option.hidden = false;
+                return;
             }
+    
+            // Existing destination → show matching tours
+            option.hidden = !text.includes(`— ${destination}`);
+        });
+    
+        // If the currently selected tour no longer matches,
+        // clear it so we don't submit an invalid combination.
+        if (
+            tourSelect.value &&
+            tourSelect.options[tourSelect.selectedIndex]?.hidden
+        ) {
+            tourSelect.value = '';
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        setStep(currentStep);
-
-        const destinationSelect = document.querySelector('[name="destination_name"]');
-        destinationSelect?.addEventListener('change', () => {
+    let bookingType = 'curated';
+    
+    function selectBookingType(type) {
+        bookingType = type;
+    
+        const curatedFields = document.getElementById('curated-fields');
+        const personalizedFields = document.getElementById('personalized-fields');
+    
+        const curatedOption = document.getElementById('curated-option');
+        const personalizedOption = document.getElementById('personalized-option');
+    
+        const curatedCheck = document.getElementById('curated-check');
+        const personalizedCheck = document.getElementById('personalized-check');
+    
+        // Select the destination inputs inside each section
+        const curatedDestination = curatedFields ? curatedFields.querySelector('[name="destination_name"]') : null;
+        const personalizedDestination = personalizedFields ? personalizedFields.querySelector('[name="destination_name"]') : null;
+    
+        const tourSelect = document.querySelector('[name="tour"]');
+    
+        if (type === 'personalized') {
+    
+            curatedFields.classList.add('hidden');
+            personalizedFields.classList.remove('hidden');
+    
+            // Disable curated input so it won't submit blank data
+            if (curatedDestination) curatedDestination.disabled = true;
+            if (personalizedDestination) personalizedDestination.disabled = false;
+    
+            curatedOption.classList.remove('border-gold', 'bg-cream/40');
+            personalizedOption.classList.add('border-gold', 'bg-cream/40');
+    
+            curatedCheck.classList.add('hidden');
+            personalizedCheck.classList.remove('hidden');
+    
+            if (tourSelect) {
+                tourSelect.value = '';
+            }
+    
+        } else {
+    
+            personalizedFields.classList.add('hidden');
+            curatedFields.classList.remove('hidden');
+    
+            // Disable personalized input so it won't submit blank data
+            if (curatedDestination) curatedDestination.disabled = false;
+            if (personalizedDestination) personalizedDestination.disabled = true;
+    
+            personalizedOption.classList.remove('border-gold', 'bg-cream/40');
+            curatedOption.classList.add('border-gold', 'bg-cream/40');
+    
+            personalizedCheck.classList.add('hidden');
+            curatedCheck.classList.remove('hidden');
+    
             filterToursByDestination();
+        }
+    
+        updateBookingRequestType();
+        updateReview();
+    }
+    
+    
+    function updateBookingRequestType() {
+        let requestType = document.querySelector('[name="request_type"]');
+    
+        if (!requestType) {
+            requestType = document.createElement('input');
+            requestType.type = 'hidden';
+            requestType.name = 'request_type';
+            document.getElementById('booking-form').appendChild(requestType);
+        }
+    
+        requestType.value = bookingType;
+    }
+
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+            selectBookingType('curated');
+            setStep(currentStep);
+
+
+            const destinationInput = document.querySelector('[name="destination_name"]');
+            
+            destinationInput?.addEventListener('input', () => {
+                filterToursByDestination();
+                updateReview();
+            });
+            
+            destinationInput?.addEventListener('change', () => {
+                filterToursByDestination();
+                updateReview();
+            });
+
+
+            document.querySelector(
+                '[name="tour"]'
+            )?.addEventListener(
+                'change',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="travel_date"]'
+            )?.addEventListener(
+                'change',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="return_date"]'
+            )?.addEventListener(
+                'change',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="full_name"]'
+            )?.addEventListener(
+                'input',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="num_travelers"]'
+            )?.addEventListener(
+                'input',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="adults"]'
+            )?.addEventListener(
+                'input',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="children"]'
+            )?.addEventListener(
+                'input',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="additional_notes"]'
+            )?.addEventListener(
+                'input',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="travel_style"]'
+            )?.addEventListener(
+                'change',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="budget_range"]'
+            )?.addEventListener(
+                'change',
+                updateReview
+            );
+
+
+            document.querySelector(
+                '[name="accommodation"]'
+            )?.addEventListener(
+                'change',
+                updateReview
+            );
+
+
+            filterToursByDestination();
+
+        }
+    );
+
+    function updateTravelerCounts() {
+        const adultsInput = document.querySelector('[name="adults"]');
+        const childrenInput = document.querySelector('[name="children"]');
+        const totalInput = document.querySelector('[name="num_travelers"]');
+    
+        if (!adultsInput || !childrenInput || !totalInput) return;
+    
+        // Remove any non-numeric characters (e.g., 'O', 'a', '-', etc.)
+        adultsInput.value = adultsInput.value.replace(/[^0-9]/g, '');
+        childrenInput.value = childrenInput.value.replace(/[^0-9]/g, '');
+    
+        // Convert to integer or default to 0 if empty
+        const adults = parseInt(adultsInput.value, 10) || 0;
+        const children = parseInt(childrenInput.value, 10) || 0;
+    
+        // Calculate total
+        totalInput.value = adults + children;
+    
+        // Update review step if function exists
+        if (typeof updateReview === 'function') {
             updateReview();
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const adultsInput = document.querySelector('[name="adults"]');
+        const childrenInput = document.querySelector('[name="children"]');
+        const totalInput = document.querySelector('[name="num_travelers"]');
+    
+        if (totalInput) {
+            totalInput.setAttribute('readonly', 'true');
+        }
+    
+        // Sanitize and calculate on input & change events
+        ['input', 'change', 'keyup'].forEach(eventType => {
+            adultsInput?.addEventListener(eventType, updateTravelerCounts);
+            childrenInput?.addEventListener(eventType, updateTravelerCounts);
         });
-
-        document.querySelector('[name="tour"]')?.addEventListener('change', updateReview);
-        document.querySelector('[name="travel_date"]')?.addEventListener('change', updateReview);
-        document.querySelector('[name="full_name"]')?.addEventListener('input', updateReview);
-        document.querySelector('[name="num_travelers"]')?.addEventListener('input', updateReview);
-
-        filterToursByDestination();
+    
+        updateTravelerCounts();
     });
+
 </script>
+
 {% endblock %}

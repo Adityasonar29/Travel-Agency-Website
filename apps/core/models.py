@@ -231,6 +231,18 @@ class Destination(models.Model):
         slug = self.slug or slugify(self.name)
         return reverse('core:destination_detail', args=[slug])
 
+class FunFact(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(upload_to='funfacts/')
+    emoji = models.CharField(max_length=10, blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
 
 class Tour(models.Model):
     name = models.CharField(max_length=200)
@@ -300,18 +312,6 @@ class Experience(models.Model):
         return self.title
 
 
-class FunFact(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    image = models.ImageField(upload_to='funfacts/')
-    emoji = models.CharField(max_length=10, blank=True)
-    order = models.IntegerField(default=0)
-
-    class Meta:
-        ordering = ['order']
-
-    def __str__(self):
-        return self.title
 
 
 class Testimonial(models.Model):

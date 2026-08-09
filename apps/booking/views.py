@@ -54,30 +54,61 @@ def booking_page(request, tour_pk=None):
         form = BookingForm(request.POST, initial_tour=initial_tour)
         if form.is_valid():
             booking = form.save(commit=False)
-
+        
+            request_type = form.cleaned_data.get('request_type')
+        
+            if request_type == 'personalized':
+                if not booking.destination_name:
+                    booking.destination_name = ''
+        
+            if booking.tour and not booking.destination_name:
+                dests = booking.tour.destinations.first()
+                booking.destination_name = dests.name if dests else ''
+        
             if request.user.is_authenticated:
                 booking.user = request.user
+
                 if not booking.full_name:
-                    booking.full_name = request.user.get_full_name() or request.user.username
+                    booking.full_name = (
+                        request.user.get_full_name()
+                        or request.user.username
+                    )
+
                 if not booking.email:
                     booking.email = request.user.email
+
                 booking.status = 'pending'
                 booking.save()
 
-                if booking.tour and not booking.destination_name:
-                    dests = booking.tour.destinations.first()
-                    booking.destination_name = dests.name if dests else ''
-                    booking.save()
+                messages.success(
+                    request,
+                    f"Booking confirmed! Your booking ID is {booking.booking_id}"
+                )
 
-                messages.success(request, f"Booking confirmed! Your booking ID is {booking.booking_id}")
                 _send_booking_emails(request, booking)
-                return redirect(reverse('booking:booking_confirmation', args=[booking.booking_id]))
+
+                return redirect(
+                    reverse(
+                        'booking:booking_confirmation',
+                        args=[booking.booking_id]
+                    )
+                )
 
             booking.status = 'pending'
             booking.save()
+
             request.session['draft_booking_id'] = booking.pk
-            messages.info(request, "Please log in or register to continue your booking.")
-            return redirect(f"{settings.LOGIN_URL}?next={reverse('booking:claim_draft')}")
+
+            messages.info(
+                request,
+                "Please log in or register to continue your booking."
+            )
+
+            return redirect(
+                f"{settings.LOGIN_URL}?next="
+                f"{reverse('booking:claim_draft')}"
+            )
+
 
         if not request.user.is_authenticated and 'draft_booking_id' in request.session:
             del request.session['draft_booking_id']

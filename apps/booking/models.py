@@ -1,4 +1,5 @@
 import uuid
+
 from django.db import models
 from django.utils import timezone
 
@@ -37,9 +38,45 @@ INVOICE_STATUS_CHOICES = [
     ('failed', 'Failed'),
 ]
 
+
+TRIP_PURPOSE_CHOICES = [
+    ('leisure', 'Leisure'),
+    ('honeymoon', 'Honeymoon'),
+    ('family', 'Family Holiday'),
+    ('anniversary', 'Anniversary'),
+    ('birthday', 'Birthday'),
+    ('adventure', 'Adventure'),
+    ('business', 'Business'),
+    ('other', 'Other'),
+]
+
+ACCOMMODATION_CHOICES = [
+    ('budget', 'Comfortable & Practical'),
+    ('4star', 'Premium 4-Star'),
+    ('5star', 'Luxury 5-Star'),
+    ('boutique', 'Boutique & Character'),
+    ('villa', 'Private Villa / Residence'),
+    ('flexible', 'Open to Recommendations'),
+]
+
+CONTACT_PREFERENCE_CHOICES = [
+    ('email', 'Email'),
+    ('phone', 'Phone Call'),
+    ('whatsapp', 'WhatsApp'),
+]
+
+
 class Booking(models.Model):
 
     booking_id = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    request_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("curated", "Curated Package"),
+            ("personalized", "Personalized Journey"),
+        ],
+        default="curated",
+    )
     user = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     tour = models.ForeignKey('core.Tour', on_delete=models.SET_NULL, null=True, blank=True)
     destination_name = models.CharField(max_length=200, blank=True)
@@ -51,6 +88,66 @@ class Booking(models.Model):
     budget_range = models.CharField(max_length=50, blank=True)
     travel_style = models.CharField(max_length=100, blank=True)
     special_requests = models.TextField(blank=True)
+    # Personalized journey details
+    origin = models.CharField(
+        max_length=200,
+        blank=True
+    )
+
+    return_date = models.DateField(
+        blank=True,
+        null=True
+    )
+
+    flexible_dates = models.BooleanField(
+        default=False
+    )
+
+    adults = models.PositiveIntegerField(
+        default=1
+    )
+
+    children = models.PositiveIntegerField(
+        default=0
+    )
+
+    trip_purpose = models.CharField(
+        max_length=50,
+        choices=TRIP_PURPOSE_CHOICES,
+        blank=True
+    )
+
+    accommodation = models.CharField(
+        max_length=50,
+        choices=ACCOMMODATION_CHOICES,
+        blank=True
+    )
+
+    transport_preferences = models.TextField(
+        blank=True
+    )
+
+    experience_preferences = models.TextField(
+        blank=True
+    )
+
+    dietary_requirements = models.TextField(
+        blank=True
+    )
+
+    accessibility_requirements = models.TextField(
+        blank=True
+    )
+
+    additional_notes = models.TextField(
+        blank=True
+    )
+
+    contact_preference = models.CharField(
+        max_length=20,
+        choices=CONTACT_PREFERENCE_CHOICES,
+        default='email'
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -99,8 +196,9 @@ class Booking(models.Model):
             raise e
 
     def send_invoice(self):
-        from apps.core.utils import mailer
         from django.conf import settings
+
+        from apps.core.utils import mailer
 
         if not self.email:
             return False

@@ -36,6 +36,7 @@ class SiteSettings(models.Model):
     address = models.TextField(blank=True, default='Mumbai, Maharashtra, India')
     instagram = models.URLField(blank=True)
     facebook = models.URLField(blank=True)
+    youtube = models.URLField(blank=True)
     twitter = models.URLField(blank=True)
 
     class Meta:
@@ -297,6 +298,8 @@ class Tour(models.Model):
         return self.seats_available > 0
 
 
+
+
 class Experience(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
@@ -364,3 +367,8 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.title
+
+
+  # Change this path to match your Destination model location
+
+

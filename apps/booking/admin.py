@@ -16,11 +16,13 @@ class BookingAdmin(admin.ModelAdmin):
         'payment_status',
         'invoice_status',
         'created_at',
+        'total_amount'
     )
 
     list_filter = (
         'status',
         'payment_status',
+        'payment_method',
         'invoice_status',
         'trip_purpose',
         'travel_style',

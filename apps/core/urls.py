@@ -11,4 +11,6 @@ urlpatterns = [
     path('tours/<slug:slug>/', views.tour_detail, name='tour_detail'),
     path('about/', views.about_page, name='about'),
     path('contact/', views.contact_page, name='contact'),
+    path('privacy-policy/', views.privacy_policy_page, name='privacy_policy'),
+    path('terms-and-conditions/', views.terms_page, name='terms'),
 ]

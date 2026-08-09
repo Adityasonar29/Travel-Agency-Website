@@ -6,6 +6,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.urls import reverse
 from .forms import RegisterForm, LoginForm, ProfileForm
 from apps.booking.models import Booking
+from apps.booking.views import _update_completed_bookings
 from apps.accounts.models import WishlistItem
 from apps.core.models import Destination, Tour
 
@@ -87,7 +88,13 @@ def profile_view(request):
     user = request.user
     profile_form = ProfileForm(request.POST or None, request.FILES or None, instance=user)
     password_form = PasswordChangeForm(user=user, data=request.POST or None)
+
+    _update_completed_bookings(request.user)
+    
     bookings = user.bookings.select_related('tour').all()
+    
+    for booking in bookings:
+        booking.update_completion_status()
     wishlist_items = user.wishlist_items.select_related('destination', 'tour').all()
 
     if request.method == 'POST':

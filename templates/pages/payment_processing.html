@@ -1,0 +1,760 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Processing Payment — {{ site_settings.site_name|default:"VOYAGE" }}
+{% endblock %}
+
+
+{% block content %}
+
+<section
+    class="min-h-screen bg-[#F8F5F0] text-[#1A1A1A]"
+    id="payment-processing-page"
+>
+
+    <div class="mx-auto flex min-h-screen max-w-[1100px] items-center justify-center px-6 py-24 md:px-10">
+
+        <div class="w-full max-w-[720px] text-center">
+
+
+            <!-- =================================================
+                 TOP LABEL
+            ================================================== -->
+
+            <p class="mb-6 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#A8874D]">
+                Payment processing
+            </p>
+
+
+            <!-- =================================================
+                 HEADING
+            ================================================== -->
+
+            <h1
+                id="processing-heading"
+                class="font-heading text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em]"
+            >
+                Verifying your
+                <br>
+                <em class="text-[#C8A96E]">payment.</em>
+            </h1>
+
+
+            <!-- =================================================
+                 DESCRIPTION
+            ================================================== -->
+
+            <p
+                id="processing-description"
+                class="mx-auto mt-7 max-w-lg text-sm leading-7 text-[#6B6B6B]"
+            >
+                Please keep this window open while we complete
+                the payment verification for your journey.
+            </p>
+
+
+
+            <!-- =================================================
+                 PAYMENT STATUS CARD
+            ================================================== -->
+
+            <div class="mx-auto mt-14 max-w-[560px] border border-[#D8CFC3] bg-white/60 px-7 py-10 md:px-10">
+
+
+                <!-- =============================================
+                     ANIMATED PROCESSING INDICATOR
+                ============================================== -->
+
+                <div
+                    id="processing-indicator"
+                    class="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full border border-[#D8CFC3]"
+                >
+
+                    <div class="payment-spinner"></div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     COUNTDOWN
+                ============================================== -->
+
+                <div id="countdown-container">
+
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#9A9288]">
+                        Estimated verification time
+                    </p>
+
+
+                    <div
+                        id="countdown"
+                        class="mt-4 font-heading text-7xl leading-none text-[#C8A96E] md:text-8xl"
+                    >
+                        10
+                    </div>
+
+
+                    <p class="mt-4 text-xs text-[#8F887F]">
+                        seconds remaining
+                    </p>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     PROGRESS
+                ============================================== -->
+
+                <div class="mx-auto mt-10 max-w-sm">
+
+                    <div class="mb-3 flex items-center justify-between">
+
+                        <span class="text-[9px] uppercase tracking-[0.18em] text-[#9A9288]">
+                            Verification
+                        </span>
+
+                        <span
+                            id="progress-percent"
+                            class="text-[9px] font-semibold tracking-[0.12em] text-[#8F887F]"
+                        >
+                            0%
+                        </span>
+
+                    </div>
+
+
+                    <div class="h-[2px] w-full overflow-hidden bg-[#DDD6CC]">
+
+                        <div
+                            id="progress-bar"
+                            class="h-full w-0 bg-[#C8A96E] transition-all duration-1000 ease-linear"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     CURRENT STEP
+                ============================================== -->
+
+                <div
+                    id="processing-step"
+                    class="mt-8 text-[10px] uppercase tracking-[0.18em] text-[#77716A]"
+                >
+                    Initialising secure verification
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BOOKING INFO
+            ================================================== -->
+
+            <div class="mx-auto mt-8 grid max-w-[560px] grid-cols-1 border border-[#DDD6CC] sm:grid-cols-2">
+
+                <div class="border-b border-[#DDD6CC] px-5 py-5 sm:border-b-0 sm:border-r">
+
+                    <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                        Booking
+                    </p>
+
+                    <p class="text-sm font-medium tracking-[0.1em]">
+                        {{ booking.booking_id }}
+                    </p>
+
+                </div>
+
+
+                <div class="px-5 py-5">
+
+                    <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                        Amount
+                    </p>
+
+                    <p class="text-sm font-medium">
+                        ₹{{ booking.total_amount|floatformat:2 }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SECURITY MESSAGE
+            ================================================== -->
+
+            <div class="mx-auto mt-8 max-w-lg">
+
+                <p class="text-[10px] leading-5 text-[#918A82]">
+                    This is a simulated payment environment.
+                    No real payment or money transfer is taking place.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<style>
+
+    /* =========================================================
+       PAYMENT SPINNER
+    ========================================================= */
+
+    .payment-spinner {
+
+        width: 28px;
+        height: 28px;
+
+        border: 2px solid #D8CFC3;
+        border-top-color: #C8A96E;
+
+        border-radius: 50%;
+
+        animation: paymentSpin 0.9s linear infinite;
+
+    }
+
+
+    @keyframes paymentSpin {
+
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+
+    }
+
+
+
+    /* =========================================================
+       COMPLETED INDICATOR
+    ========================================================= */
+
+    .payment-success-mark {
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        width: 28px;
+        height: 28px;
+
+        border: 1.5px solid #6E8B68;
+
+        border-radius: 50%;
+
+        color: #6E8B68;
+
+        font-size: 15px;
+
+        animation: successAppear 0.4s ease forwards;
+
+    }
+
+
+    @keyframes successAppear {
+
+        from {
+
+            opacity: 0;
+            transform: scale(0.7);
+
+        }
+
+        to {
+
+            opacity: 1;
+            transform: scale(1);
+
+        }
+
+    }
+
+</style>
+
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    /*
+     * =========================================================
+     * PAYMENT PROCESSING
+     * =========================================================
+     *
+     * IMPORTANT:
+     *
+     * The countdown itself does NOT confirm the booking.
+     *
+     * After the countdown reaches zero, JavaScript sends a POST
+     * request to:
+     *
+     *     payment_complete
+     *
+     * The Django view is responsible for:
+     *
+     *     payment_status = paid
+     *     status = confirmed
+     *     transaction ID
+     *     payment date
+     *
+     * and then redirects to the final confirmation page.
+     *
+     * =========================================================
+     */
+
+
+    const countdownElement =
+        document.getElementById('countdown');
+
+    const progressBar =
+        document.getElementById('progress-bar');
+
+    const progressPercent =
+        document.getElementById('progress-percent');
+
+    const processingStep =
+        document.getElementById('processing-step');
+
+    const processingHeading =
+        document.getElementById('processing-heading');
+
+    const processingDescription =
+        document.getElementById('processing-description');
+
+    const processingIndicator =
+        document.getElementById('processing-indicator');
+
+    const countdownContainer =
+        document.getElementById('countdown-container');
+
+
+    /*
+     * Django URL generated safely on the server.
+     */
+
+    const completeUrl =
+        "{% url 'booking:payment_complete' booking.booking_id %}";
+
+
+    /*
+     * CSRF token.
+     */
+
+    const csrfToken =
+        document.querySelector(
+            '[name=csrfmiddlewaretoken]'
+        );
+
+
+    /*
+     * We don't have a form on this page, so obtain the CSRF
+     * cookie instead.
+     */
+
+    function getCookie(name) {
+
+        let cookieValue = null;
+
+        if (document.cookie && document.cookie !== '') {
+
+            const cookies =
+                document.cookie.split(';');
+
+            for (
+                let i = 0;
+                i < cookies.length;
+                i++
+            ) {
+
+                const cookie =
+                    cookies[i].trim();
+
+                if (
+                    cookie.substring(
+                        0,
+                        name.length + 1
+                    ) === (name + '=')
+                ) {
+
+                    cookieValue =
+                        decodeURIComponent(
+                            cookie.substring(
+                                name.length + 1
+                            )
+                        );
+
+                    break;
+                }
+
+            }
+
+        }
+
+        return cookieValue;
+    }
+
+
+    const csrftoken =
+        getCookie('csrftoken');
+
+
+    /*
+     * =========================================================
+     * PAYMENT STEPS
+     * =========================================================
+     */
+
+    const steps = [
+
+        'Initialising secure verification',
+
+        'Connecting to payment gateway',
+
+        'Verifying payment details',
+
+        'Authorising transaction',
+
+        'Confirming payment',
+
+        'Finalising your booking'
+
+    ];
+
+
+    /*
+     * =========================================================
+     * COUNTDOWN
+     * =========================================================
+     */
+
+    let remaining = 10;
+
+    let elapsed = 0;
+
+
+    countdownElement.textContent = remaining;
+
+
+    const timer = setInterval(function () {
+
+        elapsed += 1;
+
+        remaining -= 1;
+
+
+        /*
+         * Update countdown.
+         */
+
+        countdownElement.textContent =
+            Math.max(remaining, 0);
+
+
+        /*
+         * Update progress.
+         */
+
+        const progress =
+            Math.min(
+                elapsed * 10,
+                100
+            );
+
+
+        progressBar.style.width =
+            progress + '%';
+
+        progressPercent.textContent =
+            progress + '%';
+
+
+        /*
+         * Change processing message.
+         */
+
+        const stepIndex =
+            Math.min(
+                Math.floor(elapsed / 2),
+                steps.length - 1
+            );
+
+
+        processingStep.textContent =
+            steps[stepIndex];
+
+
+        /*
+         * Countdown finished.
+         */
+
+        if (remaining <= 0) {
+
+            clearInterval(timer);
+
+            finishPayment();
+
+        }
+
+    }, 1000);
+
+
+
+    /*
+     * =========================================================
+     * FINISH PAYMENT
+     * =========================================================
+     */
+
+    async function finishPayment() {
+
+        /*
+         * Update UI before server request.
+         */
+
+        countdownContainer.innerHTML = `
+
+            <p class="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#6E8B68]">
+                Verification complete
+            </p>
+
+            <div class="mt-4 font-heading text-5xl text-[#6E8B68]">
+                ✓
+            </div>
+
+        `;
+
+
+        processingStep.textContent =
+            'Payment verified — confirming your booking';
+
+
+        progressBar.style.width =
+            '100%';
+
+        progressPercent.textContent =
+            '100%';
+
+
+        /*
+         * Replace spinner with success indicator.
+         */
+
+        processingIndicator.innerHTML = `
+
+            <div class="payment-success-mark">
+                ✓
+            </div>
+
+        `;
+
+
+        /*
+         * Give the user a very short visual confirmation
+         * before making the final server request.
+         */
+
+        await new Promise(function (resolve) {
+
+            setTimeout(resolve, 700);
+
+        });
+
+
+        /*
+         * =====================================================
+         * SERVER-SIDE PAYMENT COMPLETION
+         * =====================================================
+         */
+
+        try {
+
+            const response = await fetch(
+                completeUrl,
+                {
+                    method: 'POST',
+
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json'
+                    },
+
+                    credentials: 'same-origin'
+                }
+            );
+
+
+            /*
+             * If Django returns JSON, handle it.
+             */
+
+            const contentType =
+                response.headers.get(
+                    'content-type'
+                );
+
+
+            if (
+                contentType &&
+                contentType.includes(
+                    'application/json'
+                )
+            ) {
+
+                const data =
+                    await response.json();
+
+
+                if (data.success && data.redirect_url) {
+
+                    processingHeading.innerHTML = `
+                        Payment
+                        <br>
+                        <em class="text-[#C8A96E]">
+                            confirmed.
+                        </em>
+                    `;
+
+
+                    processingDescription.textContent =
+                        'Your journey has been successfully confirmed.';
+
+
+                    setTimeout(function () {
+
+                        window.location.href =
+                            data.redirect_url;
+
+                    }, 800);
+
+
+                    return;
+
+                }
+
+            }
+
+
+            /*
+             * If the Django view responds with a redirect,
+             * follow it manually.
+             */
+
+            if (response.redirected) {
+
+                window.location.href =
+                    response.url;
+
+                return;
+
+            }
+
+
+            /*
+             * Fallback.
+             */
+
+            window.location.href =
+                "{% url 'booking:booking_confirmed' booking.booking_id %}";
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                'Payment completion error:',
+                error
+            );
+
+
+            /*
+             * Do NOT pretend payment succeeded if the server
+             * could not confirm it.
+             */
+
+            processingHeading.innerHTML = `
+                Payment
+                <br>
+                <em class="text-[#A85C5C]">
+                    could not be confirmed.
+                </em>
+            `;
+
+
+            processingDescription.textContent =
+                'We could not complete the booking confirmation. Please try again.';
+
+
+            processingStep.textContent =
+                'Server verification failed';
+
+
+            progressBar.style.width =
+                '100%';
+
+            progressBar.style.backgroundColor =
+                '#A85C5C';
+
+
+            processingIndicator.innerHTML = `
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        width:28px;
+                        height:28px;
+                        border:1.5px solid #A85C5C;
+                        border-radius:50%;
+                        color:#A85C5C;
+                    "
+                >
+                    !
+                </div>
+
+            `;
+
+
+            countdownContainer.innerHTML = `
+
+                <a
+                    href="{% url 'booking:payment' booking.booking_id %}"
+                    class="mt-4 inline-flex bg-[#C8A96E] px-6 py-4 text-[9px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-[#A8874D]"
+                >
+                    Return to payment
+                </a>
+
+            `;
+
+        }
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

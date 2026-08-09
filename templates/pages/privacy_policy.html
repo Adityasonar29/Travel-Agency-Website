@@ -1,0 +1,1496 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       VOYAGE — PRIVACY POLICY
+       Self-contained page styling
+    ========================================================= */
+
+    .voyage-privacy {
+        --cream: #f4efe6;
+        --cream-light: #faf7f1;
+        --ink: #1d1b18;
+        --ink-soft: #34312c;
+        --muted: #756f65;
+        --gold: #b69a63;
+        --gold-light: #d1bd91;
+        --line: rgba(29, 27, 24, 0.12);
+
+        background: var(--cream);
+        color: var(--ink);
+        min-height: 100vh;
+        font-family: "DM Sans", sans-serif;
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+
+    .voyage-privacy-hero {
+        position: relative;
+        min-height: 58vh;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+
+        background:
+            radial-gradient(
+                circle at 78% 25%,
+                rgba(182, 154, 99, 0.16),
+                transparent 32%
+            ),
+            linear-gradient(
+                135deg,
+                #1d1b18 0%,
+                #28251f 55%,
+                #353027 100%
+            );
+    }
+
+    .voyage-privacy-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(20, 18, 15, 0.92),
+                rgba(20, 18, 15, 0.45),
+                rgba(20, 18, 15, 0.7)
+            );
+
+        pointer-events: none;
+    }
+
+    .voyage-privacy-hero::after {
+        content: "PRIVACY";
+
+        position: absolute;
+        right: -30px;
+        bottom: -55px;
+
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(8rem, 20vw, 20rem);
+        font-weight: 300;
+        line-height: 0.7;
+        letter-spacing: -0.06em;
+
+        color: rgba(255, 255, 255, 0.035);
+
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .voyage-privacy-hero-inner {
+        position: relative;
+        z-index: 2;
+
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+
+        padding: 120px 24px 80px;
+    }
+
+    .voyage-privacy-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        margin-bottom: 22px;
+
+        color: var(--gold-light);
+
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .voyage-privacy-eyebrow::before {
+        content: "";
+
+        width: 42px;
+        height: 1px;
+
+        background: var(--gold);
+    }
+
+    .voyage-privacy-title {
+        margin: 0;
+
+        max-width: 900px;
+
+        color: #fff;
+
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(4rem, 8vw, 8.5rem);
+        font-weight: 300;
+        line-height: 0.88;
+        letter-spacing: -0.045em;
+    }
+
+    .voyage-privacy-intro {
+        max-width: 650px;
+
+        margin-top: 30px;
+
+        color: rgba(255, 255, 255, 0.68);
+
+        font-size: 15px;
+        line-height: 1.9;
+    }
+
+
+    /* =========================================================
+       MAIN LAYOUT
+    ========================================================= */
+
+    .voyage-privacy-main {
+        max-width: 1240px;
+        margin: 0 auto;
+
+        padding: 90px 24px 120px;
+    }
+
+    .voyage-privacy-layout {
+        display: grid;
+
+        grid-template-columns: 250px minmax(0, 760px);
+
+        gap: 90px;
+
+        align-items: start;
+    }
+
+
+    /* =========================================================
+       SIDE NAVIGATION
+    ========================================================= */
+
+    .voyage-privacy-nav {
+        position: sticky;
+        top: 110px;
+    }
+
+    .voyage-privacy-nav-label {
+        margin-bottom: 22px;
+
+        color: var(--gold);
+
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .voyage-privacy-nav-list {
+        list-style: none;
+
+        margin: 0;
+        padding: 0;
+
+        border-left: 1px solid var(--line);
+    }
+
+    .voyage-privacy-nav-list li {
+        margin: 0;
+    }
+
+    .voyage-privacy-nav-list a {
+        display: block;
+
+        padding: 8px 0 8px 18px;
+
+        margin-left: -1px;
+
+        border-left: 1px solid transparent;
+
+        color: var(--muted);
+
+        font-size: 12px;
+        line-height: 1.4;
+
+        text-decoration: none;
+
+        transition:
+            color 0.25s ease,
+            border-color 0.25s ease,
+            padding-left 0.25s ease;
+    }
+
+    .voyage-privacy-nav-list a:hover {
+        color: var(--ink);
+
+        border-left-color: var(--gold);
+
+        padding-left: 23px;
+    }
+
+
+    /* =========================================================
+       CONTENT
+    ========================================================= */
+
+    .voyage-privacy-content {
+        min-width: 0;
+    }
+
+    .voyage-privacy-updated {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+
+        margin-bottom: 48px;
+        padding: 9px 14px;
+
+        border: 1px solid var(--line);
+
+        color: var(--muted);
+
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .voyage-privacy-updated span {
+        color: var(--gold);
+    }
+
+    .voyage-privacy-section {
+        padding: 0 0 48px;
+
+        margin-bottom: 48px;
+
+        border-bottom: 1px solid var(--line);
+    }
+
+    .voyage-privacy-section:last-child {
+        border-bottom: 0;
+    }
+
+    .voyage-privacy-section-number {
+        display: block;
+
+        margin-bottom: 10px;
+
+        color: var(--gold);
+
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+    }
+
+    .voyage-privacy-section h2 {
+        margin: 0 0 20px;
+
+        color: var(--ink);
+
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        font-weight: 500;
+        line-height: 1;
+
+        letter-spacing: -0.02em;
+    }
+
+    .voyage-privacy-section p {
+        margin: 0 0 16px;
+
+        color: var(--ink-soft);
+
+        font-size: 14px;
+        line-height: 1.95;
+    }
+
+    .voyage-privacy-section p:last-child {
+        margin-bottom: 0;
+    }
+
+    .voyage-privacy-section a {
+        color: var(--gold);
+
+        text-decoration: none;
+
+        border-bottom: 1px solid rgba(182, 154, 99, 0.4);
+
+        transition: border-color 0.25s ease;
+    }
+
+    .voyage-privacy-section a:hover {
+        border-color: var(--ink);
+    }
+
+
+    /* =========================================================
+       LISTS
+    ========================================================= */
+
+    .voyage-privacy-list {
+        margin: 20px 0 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .voyage-privacy-list li {
+        position: relative;
+
+        padding: 8px 0 8px 22px;
+
+        color: var(--ink-soft);
+
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .voyage-privacy-list li::before {
+        content: "";
+
+        position: absolute;
+        left: 0;
+        top: 17px;
+
+        width: 6px;
+        height: 6px;
+
+        border-radius: 50%;
+
+        background: var(--gold);
+    }
+
+
+    /* =========================================================
+       IMPORTANT NOTICE
+    ========================================================= */
+
+    .voyage-privacy-notice {
+        position: relative;
+
+        margin-bottom: 55px;
+
+        padding: 28px 30px 28px 34px;
+
+        background: var(--ink);
+
+        overflow: hidden;
+    }
+
+    .voyage-privacy-notice::before {
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+        top: 0;
+        bottom: 0;
+
+        width: 3px;
+
+        background: var(--gold);
+    }
+
+    .voyage-privacy-notice::after {
+        content: "✦";
+
+        position: absolute;
+
+        right: 22px;
+        top: 15px;
+
+        color: rgba(182, 154, 99, 0.15);
+
+        font-size: 70px;
+        line-height: 1;
+    }
+
+    .voyage-privacy-notice-label {
+        margin-bottom: 8px;
+
+        color: var(--gold-light);
+
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+    }
+
+    .voyage-privacy-notice p {
+        position: relative;
+        z-index: 1;
+
+        max-width: 650px;
+
+        margin: 0;
+
+        color: rgba(255, 255, 255, 0.68);
+
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+
+    /* =========================================================
+       INFORMATION CARDS
+    ========================================================= */
+
+    .voyage-privacy-info-grid {
+        display: grid;
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+
+        margin: 25px 0 10px;
+    }
+
+    .voyage-privacy-info-card {
+        padding: 22px;
+
+        background: var(--cream-light);
+
+        border: 1px solid var(--line);
+    }
+
+    .voyage-privacy-info-card span {
+        display: block;
+
+        margin-bottom: 8px;
+
+        color: var(--gold);
+
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+    }
+
+    .voyage-privacy-info-card p {
+        margin: 0;
+
+        color: var(--ink-soft);
+
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+
+    /* =========================================================
+       CONTACT CARD
+    ========================================================= */
+
+    .voyage-privacy-contact {
+        margin-top: 35px;
+
+        padding: 55px;
+
+        background: var(--cream-light);
+
+        border: 1px solid var(--line);
+
+        text-align: center;
+    }
+
+    .voyage-privacy-contact-label {
+        margin-bottom: 12px;
+
+        color: var(--gold);
+
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .voyage-privacy-contact h3 {
+        margin: 0;
+
+        color: var(--ink);
+
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    .voyage-privacy-contact p {
+        max-width: 500px;
+
+        margin: 18px auto 25px;
+
+        color: var(--muted);
+
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .voyage-privacy-contact-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 13px 22px;
+
+        background: var(--ink);
+
+        color: #fff !important;
+
+        border: 1px solid var(--ink);
+
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+
+        text-decoration: none !important;
+
+        transition:
+            background 0.25s ease,
+            color 0.25s ease;
+    }
+
+    .voyage-privacy-contact-button:hover {
+        background: var(--gold);
+
+        border-color: var(--gold);
+
+        color: #fff !important;
+    }
+
+    .voyage-privacy-contact-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 900px) {
+
+        .voyage-privacy-layout {
+            grid-template-columns: 1fr;
+
+            gap: 50px;
+        }
+
+        .voyage-privacy-nav {
+            position: static;
+
+            padding-bottom: 25px;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .voyage-privacy-nav-list {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            border-left: 0;
+
+            gap: 4px 20px;
+        }
+
+        .voyage-privacy-nav-list a {
+            padding: 7px 0;
+
+            border-left: 0;
+        }
+
+        .voyage-privacy-nav-list a:hover {
+            padding-left: 0;
+
+            border-left: 0;
+
+            color: var(--gold);
+        }
+    }
+
+
+    @media (max-width: 640px) {
+
+        .voyage-privacy-hero {
+            min-height: 62vh;
+        }
+
+        .voyage-privacy-hero-inner {
+            padding: 100px 20px 60px;
+        }
+
+        .voyage-privacy-title {
+            font-size: clamp(3.5rem, 17vw, 5.5rem);
+        }
+
+        .voyage-privacy-intro {
+            font-size: 14px;
+        }
+
+        .voyage-privacy-main {
+            padding: 65px 20px 80px;
+        }
+
+        .voyage-privacy-nav-list {
+            grid-template-columns: 1fr;
+        }
+
+        .voyage-privacy-section {
+            padding-bottom: 38px;
+
+            margin-bottom: 38px;
+        }
+
+        .voyage-privacy-section h2 {
+            font-size: 2.2rem;
+        }
+
+        .voyage-privacy-section p,
+        .voyage-privacy-list li {
+            font-size: 13.5px;
+        }
+
+        .voyage-privacy-notice {
+            padding: 24px 22px 24px 26px;
+        }
+
+        .voyage-privacy-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .voyage-privacy-contact {
+            padding: 38px 22px;
+        }
+    }
+</style>
+
+
+<div class="voyage-privacy">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="voyage-privacy-hero">
+
+        <div class="voyage-privacy-hero-inner">
+
+            <div class="voyage-privacy-eyebrow">
+                Your Privacy
+            </div>
+
+            <h1 class="voyage-privacy-title">
+                Privacy<br>
+                Policy
+            </h1>
+
+            <p class="voyage-privacy-intro">
+                Your journey is yours.
+                Here's how {{ site_settings.site_name|default:"VOYAGE" }}
+                collects, uses and protects the information you share
+                with us.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="voyage-privacy-main">
+
+        <div class="voyage-privacy-layout">
+
+
+            <!-- =================================================
+                 SIDE NAVIGATION
+            ================================================== -->
+
+            <aside class="voyage-privacy-nav">
+
+                <div class="voyage-privacy-nav-label">
+                    On this page
+                </div>
+
+                <ul class="voyage-privacy-nav-list">
+
+                    <li>
+                        <a href="#introduction">
+                            Introduction
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#information">
+                            Information We Collect
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#use">
+                            How We Use Information
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#bookings">
+                            Booking Information
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#payments">
+                            Payments
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#cookies">
+                            Cookies
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#sharing">
+                            Sharing Information
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#security">
+                            Data Security
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#retention">
+                            Data Retention
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#rights">
+                            Your Rights
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#children">
+                            Children
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#updates">
+                            Policy Updates
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#contact">
+                            Contact
+                        </a>
+                    </li>
+
+                </ul>
+
+            </aside>
+
+
+            <!-- =================================================
+                 CONTENT
+            ================================================== -->
+
+            <article class="voyage-privacy-content">
+
+
+                <!-- UPDATED -->
+
+                <div class="voyage-privacy-updated">
+                    <span>●</span>
+                    Last updated — 9 August 2026
+                </div>
+
+
+                <!-- NOTICE -->
+
+                <div class="voyage-privacy-notice">
+
+                    <div class="voyage-privacy-notice-label">
+                        Your information matters
+                    </div>
+
+                    <p>
+                        We believe privacy should be simple and transparent.
+                        This policy explains what information we collect,
+                        why we collect it, how it may be used and the choices
+                        available to you.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     01
+                ================================================== -->
+
+                <section
+                    id="introduction"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        01 — INTRODUCTION
+                    </span>
+
+                    <h2>
+                        A little clarity before we begin
+                    </h2>
+
+                    <p>
+                        This Privacy Policy explains how
+                        {{ site_settings.site_name|default:"VOYAGE" }}
+                        handles information collected through our website,
+                        accounts, enquiries, bookings and related services.
+                    </p>
+
+                    <p>
+                        By using our website or submitting information to us,
+                        you acknowledge that your information may be handled
+                        as described in this policy.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     02
+                ================================================== -->
+
+                <section
+                    id="information"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        02 — INFORMATION
+                    </span>
+
+                    <h2>
+                        Information We Collect
+                    </h2>
+
+                    <p>
+                        Depending on how you interact with VOYAGE,
+                        we may collect information such as:
+                    </p>
+
+                    <ul class="voyage-privacy-list">
+
+                        <li>
+                            Your name and contact details.
+                        </li>
+
+                        <li>
+                            Account information such as your email address
+                            and login-related information.
+                        </li>
+
+                        <li>
+                            Traveller details provided during a booking.
+                        </li>
+
+                        <li>
+                            Destination, tour and booking preferences.
+                        </li>
+
+                        <li>
+                            Messages, enquiries and feedback you send to us.
+                        </li>
+
+                        <li>
+                            Payment-related information required to process
+                            or verify a transaction.
+                        </li>
+
+                        <li>
+                            Technical information about how you use our website,
+                            where applicable.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- =================================================
+                     03
+                ================================================== -->
+
+                <section
+                    id="use"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        03 — PURPOSE
+                    </span>
+
+                    <h2>
+                        How We Use Your Information
+                    </h2>
+
+                    <p>
+                        We may use information we collect to provide,
+                        maintain and improve our services.
+                    </p>
+
+                    <ul class="voyage-privacy-list">
+
+                        <li>
+                            Create and manage your account.
+                        </li>
+
+                        <li>
+                            Process and manage bookings.
+                        </li>
+
+                        <li>
+                            Send booking confirmations and important updates.
+                        </li>
+
+                        <li>
+                            Respond to questions, enquiries and support requests.
+                        </li>
+
+                        <li>
+                            Improve our website, services and user experience.
+                        </li>
+
+                        <li>
+                            Detect, prevent or investigate misuse and
+                            security issues.
+                        </li>
+
+                        <li>
+                            Meet applicable legal or administrative obligations.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- =================================================
+                     04
+                ================================================== -->
+
+                <section
+                    id="bookings"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        04 — BOOKINGS
+                    </span>
+
+                    <h2>
+                        Your Booking Information
+                    </h2>
+
+                    <p>
+                        When you make a booking, we need certain information
+                        to identify the traveller, manage the reservation
+                        and provide the requested travel service.
+                    </p>
+
+                    <p>
+                        This may include names, contact information,
+                        travel dates, selected tours, traveller counts
+                        and other details necessary to complete your booking.
+                    </p>
+
+                    <p>
+                        Please make sure that information submitted during
+                        the booking process is accurate and belongs to you
+                        or that you are authorised to provide it.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     05
+                ================================================== -->
+
+                <section
+                    id="payments"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        05 — PAYMENTS
+                    </span>
+
+                    <h2>
+                        Payment Information
+                    </h2>
+
+                    <p>
+                        Payments may be processed through third-party
+                        payment providers.
+                    </p>
+
+                    <p>
+                        Depending on the payment method used, payment
+                        information may be collected and processed directly
+                        by the relevant payment provider rather than being
+                        stored by VOYAGE.
+                    </p>
+
+                    <p>
+                        Payment providers may have their own privacy policies
+                        and terms governing how payment information is handled.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     06
+                ================================================== -->
+
+                <section
+                    id="cookies"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        06 — COOKIES
+                    </span>
+
+                    <h2>
+                        Cookies & Similar Technologies
+                    </h2>
+
+                    <p>
+                        Our website may use cookies or similar technologies
+                        to support essential functionality, remember
+                        preferences and understand how visitors interact
+                        with the website.
+                    </p>
+
+                    <p>
+                        Some cookies may be provided by third-party services
+                        used by the website.
+                    </p>
+
+                    <p>
+                        Your browser may provide controls for managing or
+                        restricting cookies. Disabling certain cookies may
+                        affect parts of the website.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     07
+                ================================================== -->
+
+                <section
+                    id="sharing"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        07 — SHARING
+                    </span>
+
+                    <h2>
+                        When Information May Be Shared
+                    </h2>
+
+                    <p>
+                        We do not treat your personal information as something
+                        to casually share. Information may be shared when
+                        reasonably necessary to provide our services.
+                    </p>
+
+                    <ul class="voyage-privacy-list">
+
+                        <li>
+                            With travel suppliers involved in fulfilling
+                            your booking.
+                        </li>
+
+                        <li>
+                            With payment providers when processing transactions.
+                        </li>
+
+                        <li>
+                            With service providers supporting our website,
+                            communications or operations.
+                        </li>
+
+                        <li>
+                            When required by applicable law or a valid
+                            legal request.
+                        </li>
+
+                        <li>
+                            Where necessary to protect the security,
+                            rights or property of VOYAGE or others.
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <!-- =================================================
+                     08
+                ================================================== -->
+
+                <section
+                    id="security"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        08 — SECURITY
+                    </span>
+
+                    <h2>
+                        Keeping Your Information Safe
+                    </h2>
+
+                    <p>
+                        We take reasonable measures to protect information
+                        against unauthorised access, alteration, disclosure
+                        or destruction.
+                    </p>
+
+                    <p>
+                        However, no online service or method of electronic
+                        transmission can be guaranteed to be completely secure.
+                        You should therefore avoid sending sensitive information
+                        through unsecured communication channels.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     09
+                ================================================== -->
+
+                <section
+                    id="retention"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        09 — RETENTION
+                    </span>
+
+                    <h2>
+                        How Long We Keep Information
+                    </h2>
+
+                    <p>
+                        We retain information for as long as reasonably
+                        necessary to provide our services, maintain records,
+                        resolve disputes, meet legal obligations and protect
+                        our legitimate interests.
+                    </p>
+
+                    <p>
+                        The exact retention period may depend on the type
+                        of information and the reason it was collected.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     10
+                ================================================== -->
+
+                <section
+                    id="rights"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        10 — YOUR CHOICES
+                    </span>
+
+                    <h2>
+                        Your Rights & Choices
+                    </h2>
+
+                    <p>
+                        Depending on applicable law, you may have rights
+                        concerning the personal information we hold about you.
+                    </p>
+
+                    <ul class="voyage-privacy-list">
+
+                        <li>
+                            Request access to certain personal information.
+                        </li>
+
+                        <li>
+                            Request correction of inaccurate information.
+                        </li>
+
+                        <li>
+                            Request deletion where legally applicable.
+                        </li>
+
+                        <li>
+                            Ask questions about how your information is used.
+                        </li>
+
+                        <li>
+                            Withdraw consent where processing is based on consent,
+                            subject to applicable limitations.
+                        </li>
+
+                    </ul>
+
+                    <p style="margin-top: 20px;">
+                        To make a privacy-related request, please contact us
+                        using the details provided at the end of this policy.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     11
+                ================================================== -->
+
+                <section
+                    id="children"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        11 — CHILDREN
+                    </span>
+
+                    <h2>
+                        Children's Privacy
+                    </h2>
+
+                    <p>
+                        Our services are intended to be used with appropriate
+                        involvement of a parent, guardian or responsible adult
+                        where required by applicable law.
+                    </p>
+
+                    <p>
+                        We do not knowingly seek to collect personal information
+                        from children in circumstances where such collection
+                        is not permitted.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     12
+                ================================================== -->
+
+                <section class="voyage-privacy-section">
+
+                    <span class="voyage-privacy-section-number">
+                        12 — THIRD PARTIES
+                    </span>
+
+                    <h2>
+                        Links to Other Websites
+                    </h2>
+
+                    <p>
+                        Our website may contain links to third-party websites,
+                        including travel suppliers, social platforms and
+                        payment services.
+                    </p>
+
+                    <p>
+                        We are not responsible for the privacy practices,
+                        security or content of third-party websites.
+                        We recommend reviewing their respective privacy
+                        policies before providing personal information.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     13
+                ================================================== -->
+
+                <section class="voyage-privacy-section">
+
+                    <span class="voyage-privacy-section-number">
+                        13 — COMMUNICATIONS
+                    </span>
+
+                    <h2>
+                        Emails & Service Communications
+                    </h2>
+
+                    <p>
+                        We may send transactional communications relating
+                        to your account, enquiries, bookings, payments or
+                        other services you have requested.
+                    </p>
+
+                    <p>
+                        These communications are important to the operation
+                        of your booking and may still be sent even if you
+                        choose not to receive optional promotional messages.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     14
+                ================================================== -->
+
+                <section
+                    id="updates"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        14 — UPDATES
+                    </span>
+
+                    <h2>
+                        Changes to This Policy
+                    </h2>
+
+                    <p>
+                        We may update this Privacy Policy from time to time
+                        to reflect changes in our services, technology,
+                        legal requirements or privacy practices.
+                    </p>
+
+                    <p>
+                        When changes are made, the updated version will be
+                        published on this page together with a revised
+                        "Last updated" date.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     15
+                ================================================== -->
+
+                <section
+                    id="contact"
+                    class="voyage-privacy-section"
+                >
+
+                    <span class="voyage-privacy-section-number">
+                        15 — CONTACT
+                    </span>
+
+                    <h2>
+                        Questions About Your Privacy?
+                    </h2>
+
+                    <p>
+                        If you have a question about this Privacy Policy
+                        or how your information is handled, we're happy
+                        to help.
+                    </p>
+
+                    <p>
+                        Email us at
+
+                        <a
+                            href="mailto:{{ site_settings.email|default:'hello@voyagetravel.com' }}"
+                        >
+                            {{ site_settings.email|default:"hello@voyagetravel.com" }}
+                        </a>
+
+                        {% if site_settings.phone %}
+
+                            or call us at
+
+                            <a href="tel:{{ site_settings.phone }}">
+                                {{ site_settings.phone }}
+                            </a>.
+
+                        {% endif %}
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     CONTACT CARD
+                ================================================== -->
+
+                <div class="voyage-privacy-contact">
+
+                    <div class="voyage-privacy-contact-label">
+                        Privacy should feel simple
+                    </div>
+
+                    <h3>
+                        Have a question?<br>
+                        Talk to us.
+                    </h3>
+
+                    <p>
+                        If something about your information or privacy
+                        isn't clear, reach out and our team will help.
+                    </p>
+
+                    <a
+                        href="{% url 'core:contact' %}"
+                        class="voyage-privacy-contact-button"
+                    >
+                        Contact VOYAGE
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        >
+                            <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

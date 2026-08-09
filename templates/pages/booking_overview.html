@@ -1,0 +1,839 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Journey Overview — {{ site_settings.site_name|default:"VOYAGE" }}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="min-h-screen bg-[#F8F5F0] text-[#1A1A1A]">
+
+    <!-- =====================================================
+         TOP HEADER
+    ====================================================== -->
+
+    <div class="mx-auto max-w-[1380px] px-6 md:px-10 lg:px-16 pt-32 pb-12">
+
+        <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+
+            <div>
+
+                <p class="mb-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#A8874D]">
+                    Booking overview
+                </p>
+
+                <h1 class="font-heading text-[clamp(3rem,6vw,6rem)] leading-[0.9] tracking-[-0.03em]">
+                    Your journey
+                    <br>
+                    <em class="text-[#C8A96E]">starts here.</em>
+                </h1>
+
+            </div>
+
+
+            <div class="md:max-w-sm">
+
+                <p class="text-sm leading-7 text-[#6B6B6B]">
+                    Review every detail of your journey before
+                    continuing to the secure payment step.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         BOOKING REFERENCE
+    ====================================================== -->
+
+    <div class="mx-auto max-w-[1380px] px-6 md:px-10 lg:px-16">
+
+        <div class="border-y border-[#DDD6CC] py-7">
+
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3 md:items-center">
+
+                <!-- Reference -->
+
+                <div>
+
+                    <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#9A9288]">
+                        Booking reference
+                    </p>
+
+                    <p class="font-body text-lg font-medium tracking-[0.12em]">
+                        {{ booking.booking_id }}
+                    </p>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div>
+
+                    <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#9A9288]">
+                        Booking status
+                    </p>
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="h-2 w-2 rounded-full
+                            {% if booking.status == 'confirmed' %}
+                                bg-[#6E8B68]
+                            {% elif booking.status == 'cancelled' %}
+                                bg-[#A85C5C]
+                            {% else %}
+                                bg-[#C8A96E]
+                            {% endif %}
+                        "></span>
+
+                        <span class="text-sm capitalize">
+                            {{ booking.status }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Payment -->
+
+                <div class="md:text-right">
+
+                    <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#9A9288]">
+                        Payment
+                    </p>
+
+                    <p class="text-sm capitalize">
+                        {{ booking.get_payment_status_display }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <div class="mx-auto max-w-[1380px] px-6 md:px-10 lg:px-16 py-16 lg:py-24">
+
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_380px]">
+
+
+            <!-- =================================================
+                 LEFT — JOURNEY DETAILS
+            ================================================== -->
+
+            <div class="space-y-10">
+
+
+                <!-- =============================================
+                     DESTINATION / TOUR
+                ============================================== -->
+
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+
+                    <div class="mb-10 flex items-start justify-between gap-6">
+
+                        <div>
+
+                            <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                                01 — Journey
+                            </p>
+
+                            <h2 class="font-heading text-4xl md:text-5xl">
+                                {% if booking.destination_name %}
+                                    {{ booking.destination_name }}
+                                {% elif booking.tour %}
+                                    {{ booking.tour.name }}
+                                {% else %}
+                                    Your journey
+                                {% endif %}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+
+
+                        <!-- Tour -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[#9A9288]">
+                                Tour package
+                            </p>
+
+                            <p class="text-sm leading-6 text-[#2D2D2D]">
+                                {% if booking.tour %}
+                                    {{ booking.tour.name }}
+                                {% else %}
+                                    Personalized journey
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Destination -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[#9A9288]">
+                                Destination
+                            </p>
+
+                            <p class="text-sm leading-6 text-[#2D2D2D]">
+                                {% if booking.destination_name %}
+                                    {{ booking.destination_name }}
+                                {% else %}
+                                    To be decided
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Travel date -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[#9A9288]">
+                                Departure
+                            </p>
+
+                            <p class="text-sm leading-6 text-[#2D2D2D]">
+
+                                {% if booking.travel_date %}
+                                    {{ booking.travel_date|date:"F d, Y" }}
+                                {% else %}
+                                    Flexible
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- Return -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[#9A9288]">
+                                Return
+                            </p>
+
+                            <p class="text-sm leading-6 text-[#2D2D2D]">
+
+                                {% if booking.return_date %}
+                                    {{ booking.return_date|date:"F d, Y" }}
+                                {% elif booking.flexible_dates %}
+                                    Flexible
+                                {% else %}
+                                    Not specified
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     TRAVELLERS
+                ============================================== -->
+
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+
+                    <div class="mb-10">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                            02 — Travellers
+                        </p>
+
+                        <h2 class="font-heading text-3xl md:text-4xl">
+                            Who is travelling.
+                        </h2>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Total
+                            </p>
+
+                            <p class="font-heading text-3xl">
+                                {{ booking.num_travelers }}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Adults
+                            </p>
+
+                            <p class="font-heading text-3xl">
+                                {{ booking.adults|default:"—" }}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Children
+                            </p>
+
+                            <p class="font-heading text-3xl">
+                                {{ booking.children|default:"0" }}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                From
+                            </p>
+
+                            <p class="text-sm leading-6">
+                                {{ booking.origin|default:"Not specified" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     PERSONAL PREFERENCES
+                ============================================== -->
+
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+
+                    <div class="mb-10">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                            03 — Preferences
+                        </p>
+
+                        <h2 class="font-heading text-3xl md:text-4xl">
+                            Your way of travelling.
+                        </h2>
+
+                    </div>
+
+
+                    <div class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
+
+
+                        <!-- Trip purpose -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Trip purpose
+                            </p>
+
+                            <p class="text-sm">
+                                {{ booking.get_trip_purpose_display|default:"Not specified" }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Travel style -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Travel style
+                            </p>
+
+                            <p class="text-sm">
+                                {{ booking.get_travel_style_display|default:"Not specified" }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Budget -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Budget
+                            </p>
+
+                            <p class="text-sm">
+                                {{ booking.get_budget_range_display|default:"Not specified" }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Accommodation -->
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Accommodation
+                            </p>
+
+                            <p class="text-sm">
+                                {{ booking.get_accommodation_display|default:"Not specified" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     EXPERIENCE + TRANSPORT
+                ============================================== -->
+
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+
+                    <div class="mb-10">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                            04 — Experience
+                        </p>
+
+                        <h2 class="font-heading text-3xl md:text-4xl">
+                            The details that matter.
+                        </h2>
+
+                    </div>
+
+
+                    <div class="space-y-8">
+
+
+                        {% if booking.transport_preferences %}
+
+                        <div>
+
+                            <p class="mb-3 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Transport preferences
+                            </p>
+
+                            <p class="max-w-3xl whitespace-pre-line text-sm leading-7 text-[#4A4A4A]">
+                                {{ booking.transport_preferences }}
+                            </p>
+
+                        </div>
+
+                        {% endif %}
+
+
+                        {% if booking.experience_preferences %}
+
+                        <div>
+
+                            <p class="mb-3 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Experience preferences
+                            </p>
+
+                            <p class="max-w-3xl whitespace-pre-line text-sm leading-7 text-[#4A4A4A]">
+                                {{ booking.experience_preferences }}
+                            </p>
+
+                        </div>
+
+                        {% endif %}
+
+
+                        {% if booking.dietary_requirements %}
+
+                        <div>
+
+                            <p class="mb-3 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Dietary requirements
+                            </p>
+
+                            <p class="max-w-3xl whitespace-pre-line text-sm leading-7 text-[#4A4A4A]">
+                                {{ booking.dietary_requirements }}
+                            </p>
+
+                        </div>
+
+                        {% endif %}
+
+
+                        {% if booking.accessibility_requirements %}
+
+                        <div>
+
+                            <p class="mb-3 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Accessibility
+                            </p>
+
+                            <p class="max-w-3xl whitespace-pre-line text-sm leading-7 text-[#4A4A4A]">
+                                {{ booking.accessibility_requirements }}
+                            </p>
+
+                        </div>
+
+                        {% endif %}
+
+
+                        {% if not booking.transport_preferences and not booking.experience_preferences and not booking.dietary_requirements and not booking.accessibility_requirements %}
+
+                        <p class="text-sm italic text-[#8B857D]">
+                            No additional preferences were provided.
+                        </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =============================================
+                     NOTES
+                ============================================== -->
+
+                {% if booking.special_requests or booking.additional_notes %}
+
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+
+                    <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        05 — Notes
+                    </p>
+
+                    <h2 class="mb-8 font-heading text-3xl md:text-4xl">
+                        Your words.
+                    </h2>
+
+
+                    {% if booking.special_requests %}
+
+                    <div class="mb-8">
+
+                        <p class="mb-3 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                            Special requests
+                        </p>
+
+                        <p class="whitespace-pre-line text-sm leading-7 text-[#4A4A4A]">
+                            {{ booking.special_requests }}
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if booking.additional_notes %}
+
+                    <div>
+
+                        <p class="mb-3 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                            Additional notes
+                        </p>
+
+                        <p class="whitespace-pre-line text-sm leading-7 text-[#4A4A4A]">
+                            {{ booking.additional_notes }}
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- =============================================
+                     CONTACT
+                ============================================== -->
+
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+
+                    <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        06 — Contact
+                    </p>
+
+                    <h2 class="mb-10 font-heading text-3xl md:text-4xl">
+                        We'll stay in touch.
+                    </h2>
+
+
+                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Name
+                            </p>
+
+                            <p class="text-sm">
+                                {{ booking.full_name|default:"—" }}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Email
+                            </p>
+
+                            <p class="break-all text-sm">
+                                {{ booking.email|default:"—" }}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Phone
+                            </p>
+
+                            <p class="text-sm">
+                                {{ booking.phone|default:"—" }}
+                            </p>
+
+                        </div>
+
+
+                        <div>
+
+                            <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#9A9288]">
+                                Preferred contact
+                            </p>
+
+                            <p class="text-sm capitalize">
+                                {{ booking.get_contact_preference_display|default:"Email" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RIGHT — PAYMENT SUMMARY
+            ================================================== -->
+
+            <aside class="lg:sticky lg:top-28 lg:self-start">
+
+
+                <div class="border border-[#D8CFC3] bg-[#EEE9E1] p-7 md:p-8">
+
+                    <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        Final step
+                    </p>
+
+                    <h2 class="font-heading text-3xl md:text-4xl">
+                        Complete your journey.
+                    </h2>
+
+
+                    <div class="my-8 h-px bg-[#D5CDC2]"></div>
+
+
+                    <!-- Tour price -->
+
+                    {% if booking.tour %}
+
+                    <div class="flex items-start justify-between gap-5 py-3">
+
+                        <div>
+
+                            <p class="text-sm text-[#2D2D2D]">
+                                {{ booking.tour.name }}
+                            </p>
+
+                            <p class="mt-1 text-[10px] uppercase tracking-[0.16em] text-[#9A9288]">
+                                {{ booking.num_travelers }} traveller{% if booking.num_travelers != 1 %}s{% endif %}
+                            </p>
+
+                        </div>
+
+
+                        <p class="text-sm whitespace-nowrap">
+                            ₹{{ booking.total_amount|floatformat:2 }}
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="my-6 h-px bg-[#D5CDC2]"></div>
+
+
+                    <!-- Total -->
+
+                    <div class="flex items-end justify-between gap-5">
+
+                        <div>
+
+                            <p class="text-[9px] uppercase tracking-[0.2em] text-[#8F887F]">
+                                Total journey cost
+                            </p>
+
+                            <p class="mt-2 font-heading text-4xl">
+                                ₹{{ booking.total_amount|floatformat:2 }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Payment status -->
+
+                    <div class="mt-7 flex items-center gap-3 border border-[#D8CFC3] bg-[#F8F5F0]/70 px-4 py-3">
+
+                        <span class="h-2 w-2 rounded-full bg-[#C8A96E]"></span>
+
+                        <div>
+
+                            <p class="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#8F887F]">
+                                Payment status
+                            </p>
+
+                            <p class="mt-1 text-xs capitalize">
+                                {{ booking.get_payment_status_display }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CTA -->
+
+                    {% if can_pay %}
+
+                    <a
+                        href="{% url 'booking:payment' booking.booking_id %}"
+                        class="group mt-7 flex w-full items-center justify-between bg-[#C8A96E] px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#A8874D]"
+                    >
+
+                        <span>
+                            Continue to payment
+                        </span>
+
+                        <span class="text-lg transition-transform duration-300 group-hover:translate-x-1">
+                            →
+                        </span>
+
+                    </a>
+
+                    {% elif booking.status == 'confirmed' %}
+
+                    <a
+                        href="{% url 'booking:booking_confirmed' booking.booking_id %}"
+                        class="group mt-7 flex w-full items-center justify-between bg-[#6E8B68] px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white"
+                    >
+
+                        <span>
+                            View confirmed journey
+                        </span>
+
+                        <span class="text-lg">
+                            →
+                        </span>
+
+                    </a>
+
+                    {% elif booking.status == 'cancelled' %}
+
+                    <div class="mt-7 border border-[#C9AAAA] bg-[#F3E7E5] px-5 py-4">
+
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8A5555]">
+                            This booking has been cancelled.
+                        </p>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="mt-7 border border-[#D8CFC3] bg-[#F8F5F0]/70 px-5 py-4">
+
+                        <p class="text-[10px] uppercase tracking-[0.18em] text-[#8F887F]">
+                            Payment is not currently available.
+                        </p>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <p class="mt-5 text-center text-[10px] leading-5 text-[#8F887F]">
+                        Your payment is simulated securely for this
+                        experience. No real money will be transferred.
+                    </p>
+
+                </div>
+
+
+                <!-- Back -->
+
+                <a
+                    href="{% url 'accounts:profile' %}"
+                    class="mt-5 flex items-center justify-center gap-2 py-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#7A746D] transition hover:text-[#1A1A1A]"
+                >
+                    ← Back to your journeys
+                </a>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

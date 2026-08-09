@@ -42,6 +42,11 @@ def send_contact_auto_reply(to_email, context):
     template = 'emails/contact_auto_reply.html'
     _send_html_email(subject, to_email, template, context)
 
+def send_welcome_email(to_email, context):
+    subject = context.get('subject', 'Welcome to Voyage')
+    template = 'emails/welcome.html'
+    _send_html_email(subject, to_email, template, context)
+
 
 # Generic helper for other notifications
 def send_generic_notification(to_email, subject, template_path, context=None, attachments=None):

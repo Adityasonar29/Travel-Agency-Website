@@ -1,0 +1,1147 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Terms & Conditions — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       VOYAGE — TERMS & CONDITIONS
+       Self-contained page styling
+    ========================================================= */
+
+    .voyage-terms {
+        --cream: #f4efe6;
+        --cream-light: #faf7f1;
+        --ink: #1d1b18;
+        --ink-soft: #34312c;
+        --muted: #756f65;
+        --gold: #b69a63;
+        --gold-light: #d1bd91;
+        --line: rgba(29, 27, 24, 0.12);
+
+        background: var(--cream);
+        color: var(--ink);
+        min-height: 100vh;
+        font-family: "DM Sans", sans-serif;
+    }
+
+    /* ---------------------------------------------------------
+       HERO
+    --------------------------------------------------------- */
+
+    .voyage-terms-hero {
+        position: relative;
+        min-height: 58vh;
+        display: flex;
+        align-items: flex-end;
+        overflow: hidden;
+        background:
+            radial-gradient(
+                circle at 78% 25%,
+                rgba(182, 154, 99, 0.16),
+                transparent 32%
+            ),
+            linear-gradient(
+                135deg,
+                #1d1b18 0%,
+                #28251f 55%,
+                #353027 100%
+            );
+    }
+
+    .voyage-terms-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(20, 18, 15, 0.92),
+                rgba(20, 18, 15, 0.45),
+                rgba(20, 18, 15, 0.7)
+            );
+        pointer-events: none;
+    }
+
+    .voyage-terms-hero::after {
+        content: "VOYAGE";
+        position: absolute;
+        right: -30px;
+        bottom: -55px;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(8rem, 20vw, 20rem);
+        font-weight: 300;
+        line-height: 0.7;
+        letter-spacing: -0.06em;
+        color: rgba(255, 255, 255, 0.035);
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .voyage-terms-hero-inner {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 120px 24px 80px;
+    }
+
+    .voyage-terms-eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+        color: var(--gold-light);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .voyage-terms-eyebrow::before {
+        content: "";
+        width: 42px;
+        height: 1px;
+        background: var(--gold);
+    }
+
+    .voyage-terms-title {
+        margin: 0;
+        max-width: 900px;
+        color: #fff;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(4rem, 8vw, 8.5rem);
+        font-weight: 300;
+        line-height: 0.88;
+        letter-spacing: -0.045em;
+    }
+
+    .voyage-terms-intro {
+        max-width: 650px;
+        margin-top: 30px;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 15px;
+        line-height: 1.9;
+    }
+
+    /* ---------------------------------------------------------
+       MAIN LAYOUT
+    --------------------------------------------------------- */
+
+    .voyage-terms-main {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 90px 24px 120px;
+    }
+
+    .voyage-terms-layout {
+        display: grid;
+        grid-template-columns: 250px minmax(0, 760px);
+        gap: 90px;
+        align-items: start;
+    }
+
+    /* ---------------------------------------------------------
+       SIDE NAV
+    --------------------------------------------------------- */
+
+    .voyage-terms-nav {
+        position: sticky;
+        top: 110px;
+    }
+
+    .voyage-terms-nav-label {
+        margin-bottom: 22px;
+        color: var(--gold);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .voyage-terms-nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-left: 1px solid var(--line);
+    }
+
+    .voyage-terms-nav-list li {
+        margin: 0;
+    }
+
+    .voyage-terms-nav-list a {
+        display: block;
+        padding: 8px 0 8px 18px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
+        text-decoration: none;
+        transition:
+            color 0.25s ease,
+            border-color 0.25s ease,
+            padding-left 0.25s ease;
+        border-left: 1px solid transparent;
+        margin-left: -1px;
+    }
+
+    .voyage-terms-nav-list a:hover {
+        color: var(--ink);
+        border-left-color: var(--gold);
+        padding-left: 23px;
+    }
+
+    /* ---------------------------------------------------------
+       CONTENT
+    --------------------------------------------------------- */
+
+    .voyage-terms-content {
+        min-width: 0;
+    }
+
+    .voyage-terms-updated {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 48px;
+        padding: 9px 14px;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .voyage-terms-updated span {
+        color: var(--gold);
+    }
+
+    .voyage-terms-section {
+        padding: 0 0 48px;
+        margin-bottom: 48px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .voyage-terms-section:last-child {
+        border-bottom: 0;
+    }
+
+    .voyage-terms-section-number {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--gold);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+    }
+
+    .voyage-terms-section h2 {
+        margin: 0 0 20px;
+        color: var(--ink);
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.02em;
+    }
+
+    .voyage-terms-section p {
+        margin: 0 0 16px;
+        color: var(--ink-soft);
+        font-size: 14px;
+        line-height: 1.95;
+    }
+
+    .voyage-terms-section p:last-child {
+        margin-bottom: 0;
+    }
+
+    .voyage-terms-section a {
+        color: var(--gold);
+        text-decoration: none;
+        border-bottom: 1px solid rgba(182, 154, 99, 0.4);
+        transition: border-color 0.25s ease;
+    }
+
+    .voyage-terms-section a:hover {
+        border-color: var(--ink);
+    }
+
+    /* ---------------------------------------------------------
+       IMPORTANT NOTICE
+    --------------------------------------------------------- */
+
+    .voyage-terms-notice {
+        position: relative;
+        margin-bottom: 55px;
+        padding: 28px 30px 28px 34px;
+        background: var(--ink);
+        overflow: hidden;
+    }
+
+    .voyage-terms-notice::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--gold);
+    }
+
+    .voyage-terms-notice::after {
+        content: "✦";
+        position: absolute;
+        right: 22px;
+        top: 15px;
+        color: rgba(182, 154, 99, 0.15);
+        font-size: 70px;
+        line-height: 1;
+    }
+
+    .voyage-terms-notice-label {
+        margin-bottom: 8px;
+        color: var(--gold-light);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+    }
+
+    .voyage-terms-notice p {
+        position: relative;
+        z-index: 1;
+        max-width: 650px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.68);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    /* ---------------------------------------------------------
+       BOTTOM CTA
+    --------------------------------------------------------- */
+
+    .voyage-terms-contact {
+        margin-top: 35px;
+        padding: 55px;
+        background: var(--cream-light);
+        border: 1px solid var(--line);
+        text-align: center;
+    }
+
+    .voyage-terms-contact-label {
+        margin-bottom: 12px;
+        color: var(--gold);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .voyage-terms-contact h3 {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    .voyage-terms-contact p {
+        max-width: 500px;
+        margin: 18px auto 25px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .voyage-terms-contact-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 22px;
+        background: var(--ink);
+        color: #fff !important;
+        border: 1px solid var(--ink);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        text-decoration: none !important;
+        transition:
+            background 0.25s ease,
+            color 0.25s ease;
+    }
+
+    .voyage-terms-contact-button:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: #fff !important;
+    }
+
+    .voyage-terms-contact-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* ---------------------------------------------------------
+       RESPONSIVE
+    --------------------------------------------------------- */
+
+    @media (max-width: 900px) {
+
+        .voyage-terms-layout {
+            grid-template-columns: 1fr;
+            gap: 50px;
+        }
+
+        .voyage-terms-nav {
+            position: static;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .voyage-terms-nav-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            border-left: 0;
+            gap: 4px 20px;
+        }
+
+        .voyage-terms-nav-list a {
+            padding: 7px 0;
+            border-left: 0;
+        }
+
+        .voyage-terms-nav-list a:hover {
+            padding-left: 0;
+            border-left: 0;
+            color: var(--gold);
+        }
+    }
+
+    @media (max-width: 640px) {
+
+        .voyage-terms-hero {
+            min-height: 62vh;
+        }
+
+        .voyage-terms-hero-inner {
+            padding: 100px 20px 60px;
+        }
+
+        .voyage-terms-title {
+            font-size: clamp(3.5rem, 17vw, 5.5rem);
+        }
+
+        .voyage-terms-intro {
+            font-size: 14px;
+        }
+
+        .voyage-terms-main {
+            padding: 65px 20px 80px;
+        }
+
+        .voyage-terms-nav-list {
+            grid-template-columns: 1fr;
+        }
+
+        .voyage-terms-section {
+            padding-bottom: 38px;
+            margin-bottom: 38px;
+        }
+
+        .voyage-terms-section h2 {
+            font-size: 2.2rem;
+        }
+
+        .voyage-terms-section p {
+            font-size: 13.5px;
+        }
+
+        .voyage-terms-notice {
+            padding: 24px 22px 24px 26px;
+        }
+
+        .voyage-terms-contact {
+            padding: 38px 22px;
+        }
+    }
+</style>
+
+
+<div class="voyage-terms">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="voyage-terms-hero">
+
+        <div class="voyage-terms-hero-inner">
+
+            <div class="voyage-terms-eyebrow">
+                Legal
+            </div>
+
+            <h1 class="voyage-terms-title">
+                Terms &<br>
+                Conditions
+            </h1>
+
+            <p class="voyage-terms-intro">
+                Every journey begins with clarity.
+                Please take a moment to understand the terms that
+                govern your use of {{ site_settings.site_name|default:"VOYAGE" }}
+                and our travel services.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="voyage-terms-main">
+
+        <div class="voyage-terms-layout">
+
+
+            <!-- =================================================
+                 SIDE NAVIGATION
+            ================================================== -->
+
+            <aside class="voyage-terms-nav">
+
+                <div class="voyage-terms-nav-label">
+                    On this page
+                </div>
+
+                <ul class="voyage-terms-nav-list">
+
+                    <li>
+                        <a href="#about">
+                            About These Terms
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#information">
+                            Travel Information
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#bookings">
+                            Bookings
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#payments">
+                            Prices & Payments
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#cancellations">
+                            Cancellations
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#responsibilities">
+                            Traveller Responsibilities
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#documents">
+                            Travel Documents
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#suppliers">
+                            Travel Suppliers
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#website">
+                            Website Use
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#intellectual">
+                            Intellectual Property
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#liability">
+                            Liability
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#contact">
+                            Contact
+                        </a>
+                    </li>
+
+                </ul>
+
+            </aside>
+
+
+            <!-- =================================================
+                 CONTENT
+            ================================================== -->
+
+            <article class="voyage-terms-content">
+
+
+                <!-- UPDATED -->
+                <div class="voyage-terms-updated">
+                    <span>●</span>
+                    Last updated — 9 August 2026
+                </div>
+
+
+                <!-- NOTICE -->
+                <div class="voyage-terms-notice">
+
+                    <div class="voyage-terms-notice-label">
+                        Important
+                    </div>
+
+                    <p>
+                        These Terms & Conditions explain the rules for using
+                        the {{ site_settings.site_name|default:"VOYAGE" }}
+                        website and our travel services. Please read them
+                        carefully before making a booking.
+                    </p>
+
+                </div>
+
+
+                <!-- 01 -->
+                <section id="about" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        01 — INTRODUCTION
+                    </span>
+
+                    <h2>
+                        About These Terms
+                    </h2>
+
+                    <p>
+                        These Terms & Conditions govern your use of the
+                        {{ site_settings.site_name|default:"VOYAGE" }}
+                        website and the travel-related services made
+                        available through it.
+                    </p>
+
+                    <p>
+                        By accessing or using our website, submitting an
+                        enquiry, creating an account or making a booking,
+                        you agree to these terms.
+                    </p>
+
+                </section>
+
+
+                <!-- 02 -->
+                <section id="information" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        02 — TRAVEL INFORMATION
+                    </span>
+
+                    <h2>
+                        Travel Information & Availability
+                    </h2>
+
+                    <p>
+                        We aim to keep destination descriptions,
+                        photographs, itineraries, prices and availability
+                        as accurate and current as reasonably possible.
+                    </p>
+
+                    <p>
+                        However, travel information may change due to
+                        supplier availability, seasonal conditions,
+                        operational requirements or other circumstances.
+                    </p>
+
+                    <p>
+                        Displaying a tour or travel experience on our
+                        website does not guarantee availability until
+                        your booking has been accepted and confirmed.
+                    </p>
+
+                </section>
+
+
+                <!-- 03 -->
+                <section id="bookings" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        03 — BOOKINGS
+                    </span>
+
+                    <h2>
+                        Making a Booking
+                    </h2>
+
+                    <p>
+                        When making a booking, you agree to provide
+                        accurate, complete and up-to-date information
+                        about yourself and all travellers included
+                        in the booking.
+                    </p>
+
+                    <p>
+                        A booking becomes confirmed only after the
+                        required booking process has been completed
+                        and {{ site_settings.site_name|default:"VOYAGE" }}
+                        has issued a booking confirmation.
+                    </p>
+
+                    <p>
+                        We may contact you if additional information
+                        or clarification is required before your
+                        booking can be confirmed.
+                    </p>
+
+                </section>
+
+
+                <!-- 04 -->
+                <section id="payments" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        04 — PAYMENT
+                    </span>
+
+                    <h2>
+                        Prices & Payments
+                    </h2>
+
+                    <p>
+                        Prices are displayed in the currency and format
+                        shown on the relevant booking page unless
+                        otherwise stated.
+                    </p>
+
+                    <p>
+                        Taxes, service charges, optional experiences or
+                        other applicable fees may apply where specified
+                        during the booking process.
+                    </p>
+
+                    <p>
+                        Payments may be processed through third-party
+                        payment providers. Their own terms, conditions
+                        and privacy policies may also apply.
+                    </p>
+
+                </section>
+
+
+                <!-- 05 -->
+                <section id="cancellations" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        05 — CHANGES
+                    </span>
+
+                    <h2>
+                        Changes & Cancellations
+                    </h2>
+
+                    <p>
+                        Cancellation, amendment and refund conditions
+                        may vary depending on the tour, accommodation,
+                        transport provider, activity or other travel
+                        service included in your booking.
+                    </p>
+
+                    <p>
+                        The cancellation and refund conditions applicable
+                        to your specific booking will be communicated
+                        during the booking process or in your confirmation.
+                    </p>
+
+                    <p>
+                        Where a third-party supplier applies
+                        non-refundable charges, those charges may affect
+                        the amount available for refund.
+                    </p>
+
+                </section>
+
+
+                <!-- 06 -->
+                <section id="responsibilities" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        06 — YOUR JOURNEY
+                    </span>
+
+                    <h2>
+                        Traveller Responsibilities
+                    </h2>
+
+                    <p>
+                        Travellers are responsible for providing correct
+                        information and complying with the requirements
+                        of their destination and travel providers.
+                    </p>
+
+                    <p>
+                        You are also responsible for behaving responsibly,
+                        following local laws and regulations, and respecting
+                        accommodation providers, guides, transport operators
+                        and other travellers.
+                    </p>
+
+                </section>
+
+
+                <!-- 07 -->
+                <section id="documents" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        07 — DOCUMENTATION
+                    </span>
+
+                    <h2>
+                        Passports, Visas & Documents
+                    </h2>
+
+                    <p>
+                        Travellers are responsible for ensuring that they
+                        possess valid passports, visas, permits and any
+                        other documents required for their journey.
+                    </p>
+
+                    <p>
+                        Travel and entry requirements can change.
+                        You should verify the latest requirements with
+                        the relevant government authorities before travelling.
+                    </p>
+
+                </section>
+
+
+                <!-- 08 -->
+                <section id="suppliers" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        08 — PARTNERS
+                    </span>
+
+                    <h2>
+                        Third-Party Travel Suppliers
+                    </h2>
+
+                    <p>
+                        Certain services may be provided by independent
+                        airlines, hotels, transport companies, guides,
+                        activity providers and other travel suppliers.
+                    </p>
+
+                    <p>
+                        These suppliers may have their own terms,
+                        restrictions, safety requirements and cancellation
+                        policies, which may apply to your booking.
+                    </p>
+
+                </section>
+
+
+                <!-- 09 -->
+                <section id="website" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        09 — WEBSITE
+                    </span>
+
+                    <h2>
+                        Acceptable Website Use
+                    </h2>
+
+                    <p>
+                        You agree not to misuse our website, interfere
+                        with its operation, attempt unauthorised access,
+                        submit fraudulent information or introduce
+                        malicious software or content.
+                    </p>
+
+                    <p>
+                        You must also use the website in accordance with
+                        applicable laws and the rights of other users.
+                    </p>
+
+                </section>
+
+
+                <!-- 10 -->
+                <section id="intellectual" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        10 — OWNERSHIP
+                    </span>
+
+                    <h2>
+                        Intellectual Property
+                    </h2>
+
+                    <p>
+                        Unless otherwise stated, the content, design,
+                        branding, graphics, text, photographs and original
+                        materials appearing on this website are owned by
+                        or licensed to {{ site_settings.site_name|default:"VOYAGE" }}.
+                    </p>
+
+                    <p>
+                        You may not reproduce, redistribute, modify or
+                        commercially exploit this content without
+                        appropriate permission.
+                    </p>
+
+                </section>
+
+
+                <!-- 11 -->
+                <section id="liability" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        11 — RESPONSIBILITY
+                    </span>
+
+                    <h2>
+                        Liability & Unforeseen Events
+                    </h2>
+
+                    <p>
+                        To the extent permitted by applicable law,
+                        {{ site_settings.site_name|default:"VOYAGE" }}
+                        will not be responsible for circumstances outside
+                        our reasonable control.
+                    </p>
+
+                    <p>
+                        These circumstances may include severe weather,
+                        natural disasters, government actions, strikes,
+                        transport disruption, supplier failures,
+                        technical failures or other unforeseen events.
+                    </p>
+
+                    <p>
+                        Nothing in these terms is intended to exclude
+                        rights or liabilities that cannot legally be excluded.
+                    </p>
+
+                </section>
+
+
+                <!-- 12 -->
+                <section id="complaints" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        12 — SUPPORT
+                    </span>
+
+                    <h2>
+                        Complaints & Support
+                    </h2>
+
+                    <p>
+                        If something goes wrong during your booking or
+                        travel experience, please contact us as soon as
+                        reasonably possible.
+                    </p>
+
+                    <p>
+                        We will make reasonable efforts to understand
+                        the issue and, where appropriate, work with the
+                        relevant travel supplier to find a solution.
+                    </p>
+
+                </section>
+
+
+                <!-- 13 -->
+                <section class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        13 — PRIVACY
+                    </span>
+
+                    <h2>
+                        Your Privacy
+                    </h2>
+
+                    <p>
+                        Your use of this website is also subject to our
+                        <a href="{% url 'core:privacy_policy' %}">
+                            Privacy Policy
+                        </a>.
+                    </p>
+
+                    <p>
+                        The Privacy Policy explains what information we
+                        collect, why we use it and how it may be handled.
+                    </p>
+
+                </section>
+
+
+                <!-- 14 -->
+                <section class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        14 — UPDATES
+                    </span>
+
+                    <h2>
+                        Changes to These Terms
+                    </h2>
+
+                    <p>
+                        We may update these Terms & Conditions from time
+                        to time to reflect changes to our services,
+                        website or applicable requirements.
+                    </p>
+
+                    <p>
+                        The updated version will be published on this page
+                        together with a revised update date.
+                    </p>
+
+                </section>
+
+
+                <!-- 15 -->
+                <section class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        15 — GOVERNING LAW
+                    </span>
+
+                    <h2>
+                        Governing Law
+                    </h2>
+
+                    <p>
+                        These terms are intended to be interpreted in
+                        accordance with the laws applicable to the
+                        jurisdiction in which
+                        {{ site_settings.site_name|default:"VOYAGE" }}
+                        operates, subject to applicable consumer and
+                        travel laws.
+                    </p>
+
+                    <p>
+                        The final governing-law and jurisdiction details
+                        should be completed using the actual registered
+                        business information before production launch.
+                    </p>
+
+                </section>
+
+
+                <!-- 16 -->
+                <section id="contact" class="voyage-terms-section">
+
+                    <span class="voyage-terms-section-number">
+                        16 — CONTACT
+                    </span>
+
+                    <h2>
+                        Questions About These Terms?
+                    </h2>
+
+                    <p>
+                        If you have questions about these Terms &
+                        Conditions, your booking or our services,
+                        we're here to help.
+                    </p>
+
+                    <p>
+                        Email us at
+                        <a href="mailto:{{ site_settings.email|default:'hello@voyagetravel.com' }}">
+                            {{ site_settings.email|default:"hello@voyagetravel.com" }}
+                        </a>
+                        {% if site_settings.phone %}
+                            or call us at
+                            <a href="tel:{{ site_settings.phone }}">
+                                {{ site_settings.phone }}
+                            </a>.
+                        {% endif %}
+                    </p>
+
+                </section>
+
+
+                <!-- =================================================
+                     CONTACT CARD
+                ================================================== -->
+
+                <div class="voyage-terms-contact">
+
+                    <div class="voyage-terms-contact-label">
+                        Still have a question?
+                    </div>
+
+                    <h3>
+                        Let's talk before<br>
+                        you travel.
+                    </h3>
+
+                    <p>
+                        Our team is happy to help with questions about
+                        bookings, destinations and your journey.
+                    </p>
+
+                    <a
+                        href="{% url 'core:contact' %}"
+                        class="voyage-terms-contact-button"
+                    >
+                        Contact VOYAGE
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        >
+                            <path
+                                d="M5 12h14M13 6l6 6-6 6"
+                            />
+                        </svg>
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}

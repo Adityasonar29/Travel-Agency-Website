@@ -810,6 +810,122 @@
 
 
 /* =========================================================
+   JOURNEY PROCESS BUTTON
+========================================================= */
+
+.journey-process-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+
+    min-width: 190px;
+
+    padding: 12px 15px;
+
+    border: 1px solid #d8cfc3;
+
+    background: #f8f5f0;
+
+    color: #756f67;
+
+    text-decoration: none;
+
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+
+.journey-process-button:hover {
+    background: #c8a96e;
+
+    border-color: #c8a96e;
+
+    color: #ffffff;
+
+    transform: translateX(3px);
+}
+
+
+.journey-process-arrow {
+    font-size: 16px;
+    line-height: 1;
+
+    transition: transform 0.3s ease;
+}
+
+
+.journey-process-button:hover .journey-process-arrow {
+    transform: translateX(4px);
+}
+
+
+/* =========================================================
+   CONFIRMED
+========================================================= */
+
+.journey-confirmed-button {
+    border-color: #bfcdbb;
+    color: #63725f;
+}
+
+
+.journey-confirmed-button:hover {
+    background: #6e8b68;
+    border-color: #6e8b68;
+}
+
+
+/* =========================================================
+   STATUS LABELS
+========================================================= */
+
+.journey-status-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+
+    color: #a8874d;
+}
+
+
+.journey-status-cancelled {
+    color: #8a5555;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .journey-process-button {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .journey-status {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
    EMPTY STATE
    ========================================================= */
 
@@ -1791,7 +1907,7 @@
                         <div>
 
                             <p class="journey-booking">
-                                Booking #{{ booking.id }}
+                                Booking #{{ booking.booking_id }}
                             </p>
 
                             <h3 class="journey-name">
@@ -1826,7 +1942,66 @@
 
 
                         <div class="journey-status">
-                            {{ booking.status }}
+                        
+                            {% if booking.status == 'pending' %}
+                        
+                                <a
+                                    href="{% url 'booking:booking_overview' booking.booking_id %}"
+                                    class="journey-process-button"
+                                >
+                                    <span>
+                                        Complete the process
+                                    </span>
+                        
+                                    <span class="journey-process-arrow">
+                                        →
+                                    </span>
+                                </a>
+                        
+                            {% elif booking.status == 'confirmed' %}
+                        
+                                <a
+                                    href="{% url 'booking:booking_confirmed' booking.booking_id %}"
+                                    class="journey-process-button journey-confirmed-button"
+                                >
+                                    <span>
+                                        View journey
+                                    </span>
+                        
+                                    <span class="journey-process-arrow">
+                                        →
+                                    </span>
+                                </a>
+                        
+                            {% elif booking.status == 'completed' %}
+                        
+                                <a
+                                    href="{% url 'booking:review_page' booking.booking_id %}"
+                                    class="journey-process-button"
+                                >
+                                    <span>
+                                        Leave a review
+                                    </span>
+                        
+                                    <span class="journey-process-arrow">
+                                        →
+                                    </span>
+                                </a>
+                        
+                            {% elif booking.status == 'cancelled' %}
+                        
+                                <span class="journey-status-label journey-status-cancelled">
+                                    Cancelled
+                                </span>
+                        
+                            {% else %}
+                        
+                                <span class="journey-status-label">
+                                    {{ booking.get_status_display }}
+                                </span>
+                        
+                            {% endif %}
+                        
                         </div>
 
                     </article>
@@ -1961,10 +2136,13 @@
                                 </span>
 
 
-                                <div>
-
+                                
+                                <a 
+                                    href="{% if item.destination %}{{ item.destination.get_absolute_url }}{% elif item.tour %}{{ item.tour.get_absolute_url }}{% else %}#{% endif %}" 
+                                    class="wishlist-details-link"
+                                >
+                                
                                     <p class="wishlist-type">
-
                                         {% if item.destination %}
                                             Destination
                                         {% elif item.tour %}
@@ -1972,12 +2150,9 @@
                                         {% else %}
                                             Saved
                                         {% endif %}
-
                                     </p>
-
-
+                                
                                     <h3 class="wishlist-name">
-
                                         {% if item.destination %}
                                             {{ item.destination.name }}
                                         {% elif item.tour %}
@@ -1985,22 +2160,18 @@
                                         {% else %}
                                             Saved item
                                         {% endif %}
-
                                     </h3>
-
-
+                                
                                     <p class="wishlist-location">
-
                                         {% if item.destination %}
                                             {{ item.destination.country }}
                                         {% elif item.tour %}
                                             {{ item.tour.summary|truncatechars:90 }}
                                         {% endif %}
-
                                     </p>
-
-                                </div>
-
+                                
+                                
+                                </a>
 
                                 <a
                                     href="{% url 'accounts:remove_wishlist_item' item.pk %}?next={{ request.path }}"

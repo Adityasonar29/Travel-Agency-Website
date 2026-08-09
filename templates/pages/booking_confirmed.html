@@ -1,0 +1,529 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Booking Confirmed — {{ site_settings.site_name|default:"VOYAGE" }}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="min-h-screen bg-[#F8F5F0] text-[#1A1A1A]">
+
+    <div class="mx-auto flex min-h-screen max-w-[1180px] items-center px-6 py-24 md:px-10 lg:px-16">
+
+        <div class="w-full">
+
+
+            <!-- =================================================
+                 CONFIRMATION HEADER
+            ================================================== -->
+
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_420px] lg:items-end">
+
+
+                <!-- LEFT -->
+
+                <div>
+
+                    <div
+                        class="mb-8 flex h-16 w-16 items-center justify-center rounded-full border border-[#6E8B68] text-[#6E8B68]"
+                    >
+
+                        <svg
+                            width="25"
+                            height="25"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                        >
+                            <path
+                                d="M5 12.5l4.5 4.5L19 7.5"
+                            />
+                        </svg>
+
+                    </div>
+
+
+                    <p class="mb-5 text-[10px] font-semibold uppercase tracking-[0.3em] text-[#A8874D]">
+                        Journey confirmed
+                    </p>
+
+
+                    <h1 class="font-heading text-[clamp(3.5rem,7vw,7rem)] leading-[0.88] tracking-[-0.04em]">
+
+                        You're
+                        <br>
+
+                        <em class="text-[#C8A96E]">
+                            going.
+                        </em>
+
+                    </h1>
+
+
+                    <p class="mt-8 max-w-xl text-sm leading-7 text-[#6B6B6B]">
+
+                        Your payment has been successfully processed
+                        and your journey is officially confirmed.
+
+                        <br>
+
+                        Everything you need for your trip will be
+                        available from your account.
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- RIGHT — BOOKING REFERENCE -->
+
+                <div class="border border-[#D8CFC3] bg-white/60 p-7 md:p-9">
+
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        Booking reference
+                    </p>
+
+
+                    <p class="mt-4 break-all font-heading text-3xl tracking-[0.04em]">
+                        {{ booking.booking_id }}
+                    </p>
+
+
+                    <div class="my-7 h-px bg-[#DDD6CC]"></div>
+
+
+                    <div class="flex items-center justify-between gap-5">
+
+                        <div>
+
+                            <p class="text-[9px] uppercase tracking-[0.18em] text-[#9A9288]">
+                                Status
+                            </p>
+
+                            <p class="mt-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#6E8B68]">
+                                Confirmed
+                            </p>
+
+                        </div>
+
+
+                        <div class="text-right">
+
+                            <p class="text-[9px] uppercase tracking-[0.18em] text-[#9A9288]">
+                                Payment
+                            </p>
+
+                            <p class="mt-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#6E8B68]">
+                                Paid
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 JOURNEY DETAILS
+            ================================================== -->
+
+            <div class="mt-16 border-y border-[#D8CFC3]">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+
+
+                    <!-- DESTINATION -->
+
+                    <div class="border-b border-[#D8CFC3] px-6 py-7 md:border-r lg:border-b-0">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A9288]">
+                            Destination
+                        </p>
+
+                        <p class="font-heading text-2xl">
+
+                            {% if booking.destination_name %}
+                                {{ booking.destination_name }}
+
+                            {% elif booking.tour %}
+                                {{ booking.tour.name }}
+
+                            {% else %}
+                                Your journey
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- DATE -->
+
+                    <div class="border-b border-[#D8CFC3] px-6 py-7 lg:border-r lg:border-b-0">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A9288]">
+                            Departure
+                        </p>
+
+                        <p class="text-sm">
+
+                            {% if booking.travel_date %}
+
+                                {{ booking.travel_date|date:"F d, Y" }}
+
+                            {% else %}
+
+                                Flexible dates
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- TRAVELLERS -->
+
+                    <div class="border-b border-[#D8CFC3] px-6 py-7 md:border-r md:border-b-0">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A9288]">
+                            Travellers
+                        </p>
+
+                        <p class="text-sm">
+
+                            {{ booking.num_travelers }}
+
+                            {% if booking.num_travelers == 1 %}
+                                traveller
+                            {% else %}
+                                travellers
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- TOTAL -->
+
+                    <div class="px-6 py-7">
+
+                        <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A9288]">
+                            Paid
+                        </p>
+
+                        <p class="font-heading text-2xl">
+                            ₹{{ booking.total_amount|floatformat:2 }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PAYMENT DETAILS
+            ================================================== -->
+
+            <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2">
+
+
+                <!-- PAYMENT -->
+
+                <div class="border border-[#D8CFC3] bg-[#EEE9E1] p-7 md:p-8">
+
+                    <p class="mb-6 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        Payment details
+                    </p>
+
+
+                    <div class="space-y-5">
+
+
+                        <div class="flex justify-between gap-5">
+
+                            <span class="text-xs text-[#8F887F]">
+                                Method
+                            </span>
+
+                            <span class="text-xs font-medium uppercase">
+                                {% if booking.payment_method == 'upi' %}
+                                    UPI
+                                {% else %}
+                                    Card
+                                {% endif %}
+                            </span>
+
+                        </div>
+
+
+                        <div class="flex justify-between gap-5">
+
+                            <span class="text-xs text-[#8F887F]">
+                                Payment status
+                            </span>
+
+                            <span class="text-xs font-medium text-[#6E8B68]">
+                                Paid
+                            </span>
+
+                        </div>
+
+
+                        {% if booking.payment_date %}
+
+                        <div class="flex justify-between gap-5">
+
+                            <span class="text-xs text-[#8F887F]">
+                                Payment date
+                            </span>
+
+                            <span class="text-xs">
+                                {{ booking.payment_date|date:"M d, Y · g:i A" }}
+                            </span>
+
+                        </div>
+
+                        {% endif %}
+
+
+                        {% if booking.payment_transaction_id %}
+
+                        <div class="flex justify-between gap-5">
+
+                            <span class="text-xs text-[#8F887F]">
+                                Transaction
+                            </span>
+
+                            <span class="max-w-[220px] break-all text-right text-[10px] tracking-[0.08em]">
+                                {{ booking.payment_transaction_id }}
+                            </span>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- INVOICE -->
+
+                <!-- INVOICE -->
+                
+                <div class="border border-[#D8CFC3] bg-white/60 p-7 md:p-8">
+                
+                    <p class="mb-6 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        Your invoice
+                    </p>
+                
+                    {% if booking.invoice_number %}
+                
+                        <div class="mb-6">
+                
+                            <p class="text-[9px] uppercase tracking-[0.18em] text-[#9A9288]">
+                                Invoice number
+                            </p>
+                
+                            <p class="mt-2 text-sm font-medium tracking-[0.08em]">
+                                {{ booking.invoice_number }}
+                            </p>
+                
+                        </div>
+                
+                    {% endif %}
+                
+                    {% if invoice_url %}
+                
+                        <a
+                            href="{{ invoice_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group flex items-center justify-between border border-[#D8CFC3] bg-[#F8F5F0] px-5 py-4 text-[9px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#C8A96E] hover:bg-[#EEE9E1]"
+                        >
+                
+                            <span>
+                                View invoice
+                            </span>
+                
+                            <span class="text-lg transition-transform duration-300 group-hover:translate-x-1">
+                                ↗
+                            </span>
+                
+                        </a>
+                
+                    {% else %}
+                
+                        <p class="text-xs leading-6 text-[#77716A]">
+                            Your invoice has not been generated yet.
+                        </p>
+                
+                    {% endif %}
+                
+                </div>
+            </div>
+
+
+
+            <!-- =================================================
+                 NEXT STEPS
+            ================================================== -->
+
+            <div class="mt-16 border border-[#D8CFC3] bg-white/60 p-7 md:p-10">
+
+                <div class="grid grid-cols-1 gap-10 lg:grid-cols-[220px_1fr]">
+
+
+                    <div>
+
+                        <p class="text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                            What's next
+                        </p>
+
+                        <h2 class="mt-3 font-heading text-3xl">
+                            Your journey
+                            <br>
+                            begins here.
+                        </h2>
+
+                    </div>
+
+
+
+                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+
+
+                        <!-- STEP 01 -->
+
+                        <div>
+
+                            <span class="text-[10px] tracking-[0.15em] text-[#C8A96E]">
+                                01
+                            </span>
+
+                            <h3 class="mt-3 text-sm font-semibold">
+                                Confirmation
+                            </h3>
+
+                            <p class="mt-2 text-xs leading-6 text-[#77716A]">
+                                Your booking and payment have
+                                been successfully recorded.
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- STEP 02 -->
+
+                        <div>
+
+                            <span class="text-[10px] tracking-[0.15em] text-[#C8A96E]">
+                                02
+                            </span>
+
+                            <h3 class="mt-3 text-sm font-semibold">
+                                Prepare
+                            </h3>
+
+                            <p class="mt-2 text-xs leading-6 text-[#77716A]">
+                                Keep an eye on your account for
+                                upcoming journey information.
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- STEP 03 -->
+
+                        <div>
+
+                            <span class="text-[10px] tracking-[0.15em] text-[#C8A96E]">
+                                03
+                            </span>
+
+                            <h3 class="mt-3 text-sm font-semibold">
+                                Travel
+                            </h3>
+
+                            <p class="mt-2 text-xs leading-6 text-[#77716A]">
+                                Your next unforgettable chapter
+                                is waiting.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACTIONS
+            ================================================== -->
+
+            <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+
+
+                <a
+                    href="{% url 'accounts:profile' %}"
+                    class="group inline-flex items-center justify-between bg-[#1A1A1A] px-7 py-5 text-[9px] font-bold uppercase tracking-[0.2em] text-white transition hover:bg-[#333333]"
+                >
+
+                    <span>
+                        Go to my journeys
+                    </span>
+
+                    <span class="ml-8 text-lg transition-transform duration-300 group-hover:translate-x-1">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a
+                    href="{% url 'core:home' %}"
+                    class="inline-flex items-center justify-center px-7 py-5 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#77716A] transition hover:text-[#1A1A1A]"
+                >
+                    Back to home
+                </a>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SMALL FOOTNOTE
+            ================================================== -->
+
+            <p class="mt-12 text-[9px] uppercase tracking-[0.16em] text-[#A09A92]">
+                Thank you for choosing {{ site_settings.site_name|default:"VOYAGE" }}.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

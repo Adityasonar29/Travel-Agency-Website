@@ -1,0 +1,659 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Payment — {{ site_settings.site_name|default:"VOYAGE" }}
+{% endblock %}
+
+
+{% block content %}
+
+<section class="min-h-screen bg-[#F8F5F0] text-[#1A1A1A]">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="mx-auto max-w-[1180px] px-6 md:px-10 lg:px-16 pt-32 pb-14">
+
+        <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+
+            <div>
+
+                <p class="mb-4 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#A8874D]">
+                    Secure journey payment
+                </p>
+
+                <h1 class="font-heading text-[clamp(3rem,6vw,5.5rem)] leading-[0.9] tracking-[-0.03em]">
+                    One final
+                    <br>
+                    <em class="text-[#C8A96E]">step.</em>
+                </h1>
+
+            </div>
+
+
+            <div class="max-w-sm">
+
+                <p class="text-sm leading-7 text-[#6B6B6B]">
+                    Complete your booking securely. This is a
+                    simulated payment experience and no real
+                    money will be transferred.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PAYMENT AREA
+    ====================================================== -->
+
+    <div class="mx-auto max-w-[1180px] px-6 md:px-10 lg:px-16 pb-24">
+
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
+
+
+            <!-- =================================================
+                 PAYMENT FORM
+            ================================================== -->
+
+            <div class="border border-[#DDD6CC] bg-white/70 p-7 md:p-10">
+
+                <div class="mb-10">
+
+                    <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        Payment method
+                    </p>
+
+                    <h2 class="font-heading text-3xl md:text-4xl">
+                        How would you like to pay?
+                    </h2>
+
+                </div>
+
+
+
+                <form
+                    method="POST"
+                    action="{% url 'booking:payment_process' booking.booking_id %}"
+                    id="payment-form"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- =========================================
+                         PAYMENT METHOD
+                    ========================================== -->
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+
+                        <!-- CARD -->
+
+                        <label class="payment-method-card">
+
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="card"
+                                checked
+                                class="peer sr-only"
+                            >
+
+                            <div class="cursor-pointer border border-[#D8CFC3] bg-[#F8F5F0] p-5 transition duration-300 peer-checked:border-[#C8A96E] peer-checked:bg-[#EEE7DA]">
+
+                                <div class="flex items-start justify-between">
+
+                                    <div>
+
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                            Card
+                                        </p>
+
+                                        <p class="mt-2 text-xs text-[#8F887F]">
+                                            Credit or debit card
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="flex gap-1">
+
+                                        <span class="text-[9px] font-bold">
+                                            VISA
+                                        </span>
+
+                                        <span class="text-[9px] font-bold">
+                                            MC
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+
+
+
+                        <!-- UPI -->
+
+                        <label class="payment-method-card">
+
+                            <input
+                                type="radio"
+                                name="payment_method"
+                                value="upi"
+                                class="peer sr-only"
+                            >
+
+                            <div class="cursor-pointer border border-[#D8CFC3] bg-[#F8F5F0] p-5 transition duration-300 peer-checked:border-[#C8A96E] peer-checked:bg-[#EEE7DA]">
+
+                                <div class="flex items-start justify-between">
+
+                                    <div>
+
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.2em]">
+                                            UPI
+                                        </p>
+
+                                        <p class="mt-2 text-xs text-[#8F887F]">
+                                            Pay using your UPI ID
+                                        </p>
+
+                                    </div>
+
+
+                                    <span class="text-lg">
+                                        ◉
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         CARD FORM
+                    ================================================== -->
+
+                    <div
+                        id="card-fields"
+                        class="mt-10"
+                    >
+
+                        <div class="mb-8">
+
+                            <p class="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A9288]">
+                                Card details
+                            </p>
+
+                        </div>
+
+
+                        <!-- Card holder -->
+
+                        <div class="mb-6">
+
+                            <label
+                                for="card_name"
+                                class="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#77716A]"
+                            >
+                                Cardholder name
+                            </label>
+
+                            <input
+                                id="card_name"
+                                name="card_name"
+                                type="text"
+                                autocomplete="cc-name"
+                                placeholder="Name on card"
+                                class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
+                            >
+
+                        </div>
+
+
+                        <!-- Card number -->
+
+                        <div class="mb-6">
+
+                            <label
+                                for="card_number"
+                                class="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#77716A]"
+                            >
+                                Card number
+                            </label>
+
+                            <input
+                                id="card_number"
+                                name="card_number"
+                                type="text"
+                                inputmode="numeric"
+                                autocomplete="cc-number"
+                                maxlength="19"
+                                placeholder="0000 0000 0000 0000"
+                                class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm tracking-[0.12em] outline-none transition focus:border-[#C8A96E]"
+                            >
+
+                        </div>
+
+
+                        <div class="grid grid-cols-2 gap-5">
+
+
+                            <!-- Expiry -->
+
+                            <div>
+
+                                <label
+                                    for="expiry"
+                                    class="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#77716A]"
+                                >
+                                    Expiry
+                                </label>
+
+                                <input
+                                    id="expiry"
+                                    name="expiry"
+                                    type="text"
+                                    inputmode="numeric"
+                                    autocomplete="cc-exp"
+                                    maxlength="5"
+                                    placeholder="MM/YY"
+                                    class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
+                                >
+
+                            </div>
+
+
+                            <!-- CVV -->
+
+                            <div>
+
+                                <label
+                                    for="cvv"
+                                    class="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#77716A]"
+                                >
+                                    Security code
+                                </label>
+
+                                <input
+                                    id="cvv"
+                                    name="cvv"
+                                    type="password"
+                                    inputmode="numeric"
+                                    autocomplete="cc-csc"
+                                    maxlength="4"
+                                    placeholder="•••"
+                                    class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         UPI FORM
+                    ================================================== -->
+
+                    <div
+                        id="upi-fields"
+                        class="mt-10 hidden"
+                    >
+
+                        <div class="mb-8">
+
+                            <p class="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A9288]">
+                                UPI details
+                            </p>
+
+                        </div>
+
+
+                        <label
+                            for="upi_id"
+                            class="mb-2 block text-[9px] font-semibold uppercase tracking-[0.18em] text-[#77716A]"
+                        >
+                            UPI ID
+                        </label>
+
+                        <input
+                            id="upi_id"
+                            name="upi_id"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="yourname@upi"
+                            class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
+                        >
+
+
+                        <div class="mt-5 border border-[#DDD6CC] bg-[#F8F5F0] px-5 py-4">
+
+                            <p class="text-xs leading-6 text-[#77716A]">
+                                After continuing, VOYAGE will simulate
+                                the payment verification process.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         NOTICE
+                    ================================================== -->
+
+                    <div class="mt-10 border-l-2 border-[#C8A96E] bg-[#F4EFE7] px-5 py-4">
+
+                        <p class="text-[10px] uppercase tracking-[0.15em] text-[#817A72]">
+                            Demo payment environment
+                        </p>
+
+                        <p class="mt-2 text-xs leading-6 text-[#6B665F]">
+                            No real card, UPI transaction, or money transfer
+                            takes place. The next step simulates payment
+                            processing for your booking.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         SUBMIT
+                    ================================================== -->
+
+                    <button
+                        type="submit"
+                        id="payment-submit"
+                        class="group mt-8 flex w-full items-center justify-between bg-[#C8A96E] px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#A8874D]"
+                    >
+
+                        <span>
+                            Continue securely
+                        </span>
+
+                        <span class="text-lg transition-transform duration-300 group-hover:translate-x-1">
+                            →
+                        </span>
+
+                    </button>
+
+
+                    <a
+                        href="{% url 'booking:booking_overview' booking.booking_id %}"
+                        class="mt-4 flex w-full items-center justify-center py-3 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#7A746D] transition hover:text-[#1A1A1A]"
+                    >
+                        ← Back to booking overview
+                    </a>
+
+                </form>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RIGHT — ORDER SUMMARY
+            ================================================== -->
+
+            <aside class="lg:sticky lg:top-28 lg:self-start">
+
+                <div class="border border-[#D8CFC3] bg-[#EEE9E1] p-7 md:p-8">
+
+                    <p class="mb-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#A8874D]">
+                        Your journey
+                    </p>
+
+
+                    <h2 class="font-heading text-3xl">
+                        {% if booking.destination_name %}
+                            {{ booking.destination_name }}
+                        {% elif booking.tour %}
+                            {{ booking.tour.name }}
+                        {% else %}
+                            Your journey
+                        {% endif %}
+                    </h2>
+
+
+                    <div class="my-7 h-px bg-[#D5CDC2]"></div>
+
+
+                    <!-- Reference -->
+
+                    <div class="mb-6">
+
+                        <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#8F887F]">
+                            Booking reference
+                        </p>
+
+                        <p class="text-sm font-medium tracking-[0.12em]">
+                            {{ booking.booking_id }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- Date -->
+
+                    <div class="mb-6">
+
+                        <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#8F887F]">
+                            Departure
+                        </p>
+
+                        <p class="text-sm">
+
+                            {% if booking.travel_date %}
+                                {{ booking.travel_date|date:"F d, Y" }}
+                            {% else %}
+                                Flexible dates
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- Travellers -->
+
+                    <div class="mb-7">
+
+                        <p class="mb-2 text-[9px] uppercase tracking-[0.2em] text-[#8F887F]">
+                            Travellers
+                        </p>
+
+                        <p class="text-sm">
+                            {{ booking.num_travelers }}
+                            {% if booking.num_travelers == 1 %}
+                                traveller
+                            {% else %}
+                                travellers
+                            {% endif %}
+                        </p>
+
+                    </div>
+
+
+                    <div class="h-px bg-[#D5CDC2]"></div>
+
+
+                    <!-- Total -->
+
+                    <div class="flex items-end justify-between gap-5 pt-7">
+
+                        <div>
+
+                            <p class="text-[9px] uppercase tracking-[0.2em] text-[#8F887F]">
+                                Total
+                            </p>
+
+                            <p class="mt-2 font-heading text-4xl">
+                                ₹{{ booking.total_amount|floatformat:2 }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Security -->
+
+                    <div class="mt-7 flex gap-3 border border-[#D8CFC3] bg-[#F8F5F0]/60 px-4 py-4">
+
+                        <span class="mt-0.5 text-sm">
+                            ◇
+                        </span>
+
+                        <p class="text-[10px] leading-5 text-[#77716A]">
+                            Your booking information is protected.
+                            This payment is a simulation for the
+                            VOYAGE booking experience.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAYMENT METHOD SWITCHING
+========================================================== -->
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const cardFields = document.getElementById('card-fields');
+    const upiFields = document.getElementById('upi-fields');
+
+    const paymentMethods = document.querySelectorAll(
+        'input[name="payment_method"]'
+    );
+
+    function updatePaymentMethod() {
+
+        const selected = document.querySelector(
+            'input[name="payment_method"]:checked'
+        );
+
+        if (!selected) {
+            return;
+        }
+
+        if (selected.value === 'upi') {
+
+            cardFields.classList.add('hidden');
+            upiFields.classList.remove('hidden');
+
+        } else {
+
+            cardFields.classList.remove('hidden');
+            upiFields.classList.add('hidden');
+
+        }
+
+    }
+
+
+    paymentMethods.forEach(function (method) {
+
+        method.addEventListener(
+            'change',
+            updatePaymentMethod
+        );
+
+    });
+
+
+    updatePaymentMethod();
+
+});
+
+
+
+/* =========================================================
+   CARD NUMBER FORMATTING
+========================================================= */
+
+const cardNumber = document.getElementById('card_number');
+
+if (cardNumber) {
+
+    cardNumber.addEventListener('input', function () {
+
+        let value = this.value
+            .replace(/\D/g, '')
+            .substring(0, 16);
+
+        value = value.match(/.{1,4}/g);
+
+        this.value = value
+            ? value.join(' ')
+            : '';
+
+    });
+
+}
+
+
+
+/* =========================================================
+   EXPIRY FORMATTING
+========================================================= */
+
+const expiry = document.getElementById('expiry');
+
+if (expiry) {
+
+    expiry.addEventListener('input', function () {
+
+        let value = this.value
+            .replace(/\D/g, '')
+            .substring(0, 4);
+
+        if (value.length >= 3) {
+
+            value =
+                value.substring(0, 2)
+                + '/'
+                + value.substring(2);
+
+        }
+
+        this.value = value;
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

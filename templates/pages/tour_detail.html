@@ -1056,54 +1056,56 @@
                 
                         </p>
                 
-                        <h3 class="mt-4 text-3xl font-heading text-[#1f2937]">
-                
-                            Loved by Explorers
-                
-                        </h3>
-                
+                        <h3 class="mt-4 text-3xl font-heading text-[#1f2937]"> Loved by Explorers </h3>
+                        
                         <div class="mt-8 space-y-6">
-                
-                            {% for review in tour.reviews|slice:":3" %}
-                
-                            <div class="border-b border-[#efe7d8] pb-6 last:border-none">
-                
-                                <div class="flex items-center justify-between">
-                
-                                    <h4 class="font-medium text-[#1f2937]">
-                
-                                        {{ review.author }}
-                
-                                    </h4>
-                
+                          {# ================================================== #}
+                          {# NEW DATABASE REVIEWS #}
+                          {# ================================================== #}
+                          {% for review in reviews|slice:":3" %}
+                            <div class="border-b border-[#efe7d8] pb-6">
+                              <div class="flex items-center justify-between">
+                                <div>
+                                  <h4 class="font-medium text-[#1f2937]">
+                                    {% if review.user.get_full_name %}
+                                      {{ review.user.get_full_name }}
+                                    {% else %}
+                                      {{ review.user.username }}
+                                    {% endif %}
+                                  </h4>
+                                  <div class="mt-1 text-sm tracking-widest text-[#b8860b]">
+                                    {% for star in "12345" %}
+                                      {% if forloop.counter <= review.rating %} ★ {% else %} ☆ {% endif %}
+                                    {% endfor %}
+                                  </div>
                                 </div>
-                
-                                <p class="mt-4 text-gray-600 leading-7 italic">
-                
-                                    “{{ review.text }}”
-                
-                                </p>
-                
-                                <span class="inline-block mt-4 text-xs uppercase tracking-[0.25em] text-[#b8860b]">
-                
-                                    Verified Traveler
-                
-                                </span>
-                
+                              </div>
+                              <p class="mt-4 text-gray-600 leading-7 italic"> “{{ review.comment }}” </p>
+                              <span class="inline-block mt-4 text-xs uppercase tracking-[0.25em] text-[#b8860b]"> Verified Traveler </span>
                             </div>
-                
-                            {% empty %}
-                
-                            <p class="text-gray-500 leading-8">
-                
-                                Reviews from our travelers will appear here once journeys have been completed.
-                
-                            </p>
-                
-                            {% endfor %}
-                
+                          {% endfor %}
+                        
+                          {# ================================================== #}
+                          {# OLD / STATIC TOUR REVIEWS #}
+                          {# ================================================== #}
+                          {% for review in tour.reviews|slice:":3" %}
+                            <div class="border-b border-[#efe7d8] pb-6">
+                              <div class="flex items-center justify-between">
+                                <h4 class="font-medium text-[#1f2937]"> {{ review.author }} </h4>
+                              </div>
+                              <p class="mt-4 text-gray-600 leading-7 italic"> “{{ review.text }}” </p>
+                              <span class="inline-block mt-4 text-xs uppercase tracking-[0.25em] text-[#b8860b]"> Traveler Story </span>
+                            </div>
+                          {% endfor %}
+                        
+                          {# ================================================== #}
+                          {# EMPTY STATE #}
+                          {# ================================================== #}
+                          {% if not reviews and not tour.reviews %}
+                            <p class="text-gray-500 leading-8"> Reviews from our travelers will appear here once journeys have been completed. </p>
+                          {% endif %}
                         </div>
-                
+
                     </div>
                 
                 </aside>

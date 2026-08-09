@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.forms import CharField, EmailField, Form, Textarea
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-
+from apps.booking.models import Review
 from apps.core.utils import mailer
 
 from .models import (
@@ -62,6 +62,18 @@ def home(request):
             "show_loading": True,  # Only home page gets loading screen
         },
     )
+
+
+def privacy_policy_page(request):
+    return render(request, 'pages/privacy_policy.html', {
+        'show_loading': False
+    })
+
+
+def terms_page(request):
+    return render(request, 'pages/terms.html', {
+        'show_loading': False
+    })
 
 
 def destinations_page(request):
@@ -250,6 +262,13 @@ def tour_detail(request, slug):
     if not tour:
         raise Http404("Tour not found")
 
+    reviews = Review.objects.filter(
+            booking__tour=tour
+        ).select_related(
+            'user',
+            'booking'
+        ).order_by('-created_at')
+    
     wishlist_tour = False
     if request.user.is_authenticated and hasattr(tour, "pk"):
         from apps.accounts.models import WishlistItem
@@ -263,6 +282,7 @@ def tour_detail(request, slug):
         "pages/tour_detail.html",
         {
             "tour": tour,
+            'reviews': reviews,
             "show_loading": False,
             "wishlist_tour": wishlist_tour,
         },

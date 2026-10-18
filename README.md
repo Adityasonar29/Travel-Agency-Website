@@ -5,7 +5,7 @@
 ![Django](https://img.shields.io/badge/Django-5.x-0f5132?style=flat-square&logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?style=flat-square&logo=python&logoColor=white)
 ![Status](https://img.shields.io/badge/status-active%20prototype-be9958?style=flat-square)
-![License](https://img.shields.io/badge/license-private-lightgrey?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-be9958?style=flat-square)
 
 VOYAGE is a Django travel platform for curated journeys and personalised travel requests. It pairs an editorial, luxury-travel interface with the practical workflows needed to discover destinations, select a package, submit a booking, pay, receive an invoice, and manage the journey from an authenticated account.
 

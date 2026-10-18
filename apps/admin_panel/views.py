@@ -13,7 +13,8 @@ from django.views.decorators.http import require_POST
 
 from apps.accounts.models import User
 from apps.booking.models import Booking, STATUS_CHOICES
-from apps.core.models import Destination, Tour
+from apps.core.models import ContactMessage, Destination, EmailLog, Tour
+from apps.core.utils import mailer
 
 from .decorators import admin_required
 from .forms import DestinationForm, TourForm
@@ -249,3 +250,46 @@ def invoices(request):
         if invoice.invoice_pdf_path:
             invoice.file_url = f"{settings.MEDIA_URL}invoices/{os.path.basename(invoice.invoice_pdf_path)}"
     return render(request, "admin_panel/invoices.html", {"invoices": invoice_list, "media_url": settings.MEDIA_URL})
+
+
+@admin_required
+def communications(request):
+    contact_messages = ContactMessage.objects.all()[:100]
+    email_logs = EmailLog.objects.all()[:100]
+    return render(
+        request,
+        "admin_panel/communications.html",
+        {"contact_messages": contact_messages, "email_logs": email_logs},
+    )
+
+
+@require_POST
+@admin_required
+def reply_to_contact(request, pk):
+    contact_message = get_object_or_404(ContactMessage, pk=pk)
+    reply_body = request.POST.get("reply_body", "").strip()
+    if not reply_body:
+        messages.error(request, "Write a reply before sending it.")
+        return redirect("admin_panel:communications")
+
+    subject = request.POST.get("subject", "").strip() or f"Re: {contact_message.subject}"
+    try:
+        mailer.send_generic_notification(
+            to_email=contact_message.email,
+            subject=subject,
+            template_path="emails/contact_reply.html",
+            context={
+                "recipient_name": contact_message.name,
+                "original_subject": contact_message.subject,
+                "reply_body": reply_body,
+                "support_email": settings.DEFAULT_FROM_EMAIL,
+                "_email_event": "contact_reply",
+            },
+        )
+    except Exception as exc:
+        messages.error(request, f"The reply could not be sent: {exc}")
+    else:
+        contact_message.is_replied = True
+        contact_message.save(update_fields=["is_replied"])
+        messages.success(request, f"Reply sent to {contact_message.email}.")
+    return redirect("admin_panel:communications")

@@ -59,7 +59,6 @@ class AuthFlowTests(TestCase):
     def test_profile_dashboard_shows_bookings_and_wishlist_counts(self):
         Booking.objects.create(
             user=self.user,
-            destination=self.destination,
             destination_name=self.destination.name,
             full_name='Demo User',
             email='demo@example.com',
@@ -77,8 +76,8 @@ class AuthFlowTests(TestCase):
         response = self.client.get(reverse('accounts:profile'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'My Bookings')
-        self.assertContains(response, 'Saved favourites')
+        self.assertContains(response, 'Booking #')
+        self.assertContains(response, 'Wishlist')
         self.assertContains(response, '#1')
         self.assertContains(response, 'Test Destination')
 

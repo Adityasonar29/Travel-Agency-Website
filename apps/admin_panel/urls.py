@@ -21,4 +21,6 @@ urlpatterns = [
     path("destinations/<int:pk>/delete/", views.delete_destination, name="destination_delete"),
     path("payments/", views.payments, name="payments"),
     path("invoices/", views.invoices, name="invoices"),
+    path("communications/", views.communications, name="communications"),
+    path("communications/<int:pk>/reply/", views.reply_to_contact, name="reply_to_contact"),
 ]

@@ -1,0 +1,4 @@
+{% extends 'emails/base.html' %}
+{% block eyebrow %}A reply from VOYAGE{% endblock %}
+{% block heading %}We have an update for you.{% endblock %}
+{% block body %}<p class="intro">Hello {{ recipient_name|default:'Traveller' }},</p><p>Thank you for contacting VOYAGE. Our team has replied to your message below.</p><div class="panel"><div class="panel-title">Your conversation</div><table role="presentation" class="details" width="100%"><tr><td class="label">Subject</td><td class="value">{{ original_subject }}</td></tr><tr><td class="label">Reply</td><td class="value">{{ reply_body|linebreaksbr }}</td></tr></table></div><p>You can reply directly to this email if you need anything else.</p>{% endblock %}

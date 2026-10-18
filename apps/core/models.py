@@ -18,6 +18,29 @@ class ContactMessage(models.Model):
         return f"{self.name} — {self.subject}"
 
 
+class EmailLog(models.Model):
+    STATUS_CHOICES = [
+        ("sent", "Sent"),
+        ("failed", "Failed"),
+    ]
+
+    recipient = models.EmailField()
+    subject = models.CharField(max_length=255)
+    template_path = models.CharField(max_length=255, blank=True)
+    event = models.CharField(max_length=120, blank=True)
+    body_text = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="sent")
+    error_message = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.subject} → {self.recipient}"
+
+
 class SiteSettings(models.Model):
     """Singleton model for global site settings."""
     site_name = models.CharField(max_length=100, default='VOYAGE')

@@ -162,6 +162,7 @@ def contact_page(request):
                 "site_name": getattr(request.site_settings, "site_name", "VOYAGE")
                 if hasattr(request, "site_settings")
                 else "VOYAGE",
+                "_email_event": "contact_received_admin",
             }
             mailer.send_generic_notification(
                 getattr(request, "site_settings", None).email
@@ -178,6 +179,8 @@ def contact_page(request):
                 "site_name": getattr(request.site_settings, "site_name", "VOYAGE")
                 if hasattr(request, "site_settings")
                 else "VOYAGE",
+                "message": contact_message.message,
+                "_email_event": "contact_received_customer",
             }
             mailer.send_contact_auto_reply(contact_message.email, customer_context)
 

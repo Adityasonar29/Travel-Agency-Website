@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage, Blog, AboutPage
+from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage, EmailLog, Blog, AboutPage
 
 
 
@@ -10,6 +10,14 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_filter = ('is_replied', 'created_at')
     search_fields = ('name', 'email', 'subject', 'message')
     readonly_fields = ('created_at',)
+
+
+@admin.register(EmailLog)
+class EmailLogAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'recipient', 'event', 'status', 'created_at', 'sent_at')
+    list_filter = ('status', 'event', 'created_at')
+    search_fields = ('subject', 'recipient', 'event', 'body_text')
+    readonly_fields = ('created_at', 'sent_at')
 
 
 @admin.register(AboutPage)

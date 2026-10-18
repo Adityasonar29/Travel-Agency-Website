@@ -17,6 +17,19 @@
     window.hideVoyageLoader = hideVoyageLoader;
     window.addEventListener('pageshow', hideVoyageLoader);
 
+    document.addEventListener('submit', function (event) {
+        const form = event.target.closest('[data-voyage-loading-form]');
+        if (!form || form.dataset.submitting === 'true') return;
+
+        form.dataset.submitting = 'true';
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.setAttribute('aria-busy', 'true');
+        }
+        showVoyageLoader();
+    });
+
     if (new URLSearchParams(window.location.search).get('preview_loader') === '1') {
         showVoyageLoader();
     }

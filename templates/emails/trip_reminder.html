@@ -1,6 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Hi {{ customer_name }},</p>
-  <p>This is a reminder for your upcoming trip to {{ destination }} on {{ travel_date }}.</p>
-  <p>We look forward to seeing you — safe travels!</p>
-{% endblock %}
+{% block eyebrow %}Your journey is approaching{% endblock %}
+{% block heading %}A little reminder before you go.{% endblock %}
+{% block body %}<p class="intro">Hello {{ customer_name|default:'Traveller' }},</p><p>Your upcoming journey to {{ destination|default:'your destination' }} begins on {{ travel_date|date:'F j, Y' }}.</p><div class="note">Take a moment to review your journey details and keep your booking reference close. We look forward to welcoming you.</div>{% if view_booking_url %}<a class="button" href="{{ view_booking_url }}">View my journey →</a>{% endif %}{% endblock %}

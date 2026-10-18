@@ -63,6 +63,7 @@ function initLoadingScreen() {
     const logoLine = document.getElementById('logo-line');
     const logoSub = document.getElementById('logo-sub');
     const mainContent = document.getElementById('main-content');
+    if (!screen) return;
 
     const tl = gsap.timeline({
         onComplete: () => {
@@ -108,9 +109,17 @@ function initHeroAnimations() {
 }
 
 function triggerHeroAnimations() {
+    const fadeTargets = document.querySelectorAll('.hero-fade');
+    const clipTargets = document.querySelectorAll('.hero-clip');
+    if (!fadeTargets.length && !clipTargets.length) return;
+
     const tl = gsap.timeline({ delay: 0.3 });
-    tl.to('.hero-fade', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.3 });
-    tl.to('.hero-clip', { clipPath: 'inset(0% 0 0 0)', y: 0, duration: 1.5, ease: 'power3.out', stagger: 0.3 }, '-=1.2');
+    if (fadeTargets.length) {
+        tl.to(fadeTargets, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.3 });
+    }
+    if (clipTargets.length) {
+        tl.to(clipTargets, { clipPath: 'inset(0% 0 0 0)', y: 0, duration: 1.5, ease: 'power3.out', stagger: 0.3 }, fadeTargets.length ? '-=1.2' : 0);
+    }
 }
 
 function initDestinationPage() {

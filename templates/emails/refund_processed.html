@@ -1,10 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Hi {{ customer_name }},</p>
-  <p>Your refund has been processed.</p>
-  <div class="card">
-    <strong>Refund Amount:</strong> {{ refund_amount }}<br>
-    <strong>Transaction ID:</strong> {{ transaction_id }}<br>
-    <strong>Processing Time:</strong> {{ processing_time }}
-  </div>
-{% endblock %}
+{% block eyebrow %}Refund complete{% endblock %}
+{% block heading %}Your refund has been processed.{% endblock %}
+{% block body %}<p class="intro">Hello {{ customer_name|default:'Traveller' }},</p><p>The refund for your VOYAGE journey has been processed successfully.</p><div class="panel"><div class="panel-title">Refund details</div><table role="presentation" class="details" width="100%"><tr><td class="label">Refund amount</td><td class="value">₹{{ refund_amount }}</td></tr><tr><td class="label">Transaction ID</td><td class="value">{{ transaction_id|default:'—' }}</td></tr><tr><td class="label">Processed</td><td class="value">{{ processing_time|default:'Today' }}</td></tr></table></div><p>Your bank or payment provider may take a little time to display the credit.</p>{% endblock %}

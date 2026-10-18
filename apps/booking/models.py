@@ -34,6 +34,12 @@ INVOICE_STATUS_CHOICES = [
     ('failed', 'Failed'),
 ]
 
+REFUND_STATUS_CHOICES = [
+    ('not_applicable', 'Not applicable'),
+    ('pending', 'Refund pending'),
+    ('processed', 'Refund processed'),
+]
+
 TRIP_PURPOSE_CHOICES = [
     ('leisure', 'Leisure'),
     ('honeymoon', 'Honeymoon'),
@@ -61,6 +67,8 @@ CONTACT_PREFERENCE_CHOICES = [
 ]
 
 class Booking(models.Model):
+    id: int
+    STATUS_CHOICES = STATUS_CHOICES
     booking_id = models.CharField(max_length=20, unique=True, blank=True, null=True)
     request_type = models.CharField(
         max_length=20,
@@ -115,6 +123,9 @@ class Booking(models.Model):
     invoice_sent_at = models.DateTimeField(blank=True, null=True)
     invoice_number = models.CharField(max_length=50, blank=True, null=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    refund_status = models.CharField(max_length=20, choices=REFUND_STATUS_CHOICES, default='not_applicable')
+    cancelled_at = models.DateTimeField(blank=True, null=True)
+    cancellation_reason = models.TextField(blank=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -196,9 +207,14 @@ class Booking(models.Model):
             'invoice_pdf_path': self.invoice_pdf_path,
             'total_amount': self.total_amount or 0,
             'created_at': self.created_at,
-            'payment_method': self.get_payment_method_display(),
-            'payment_status': self.get_payment_status_display(),
+            'payment_method': dict(PAYMENT_METHOD_CHOICES).get(self.payment_method, self.payment_method),
+            'payment_status': dict(PAYMENT_STATUS_CHOICES).get(self.payment_status, self.payment_status),
             'status': self.status,
+            'tour_name': self.tour.name if self.tour else '',
+            'destination': self.destination_name or '',
+            'travel_date': self.travel_date,
+            'num_travelers': self.num_travelers,
+            'support_email': getattr(settings, 'DEFAULT_FROM_EMAIL', 'hello@voyagetravel.com'),
         }
 
         try:

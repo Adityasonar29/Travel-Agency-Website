@@ -1,10 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Welcome {{ user_name }},</p>
-  <p>Thanks for creating an account. Explore destinations and complete your profile to get personalized recommendations.</p>
-  <p>
-    <a class="cta" href="{{ explore_url }}">Explore Destinations</a>
-    &nbsp;
-    <a class="cta" href="{{ profile_url }}">Complete Profile</a>
-  </p>
-{% endblock %}
+{% block eyebrow %}Welcome to VOYAGE{% endblock %}
+{% block heading %}A more considered way to travel.{% endblock %}
+{% block body %}<p class="intro">Hello {{ user_name|default:'Traveller' }},</p><p>Your VOYAGE account is ready. Discover carefully chosen destinations, keep your journeys together, and let us help shape the next one around you.</p>{% if explore_url %}<a class="button" href="{{ explore_url }}">Explore destinations →</a>{% endif %}{% if profile_url %}<a class="button button-secondary" href="{{ profile_url }}">Complete profile</a>{% endif %}{% endblock %}

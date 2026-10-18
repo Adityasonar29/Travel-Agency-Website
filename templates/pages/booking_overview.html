@@ -382,7 +382,7 @@
                             </p>
 
                             <p class="text-sm">
-                                {{ booking.get_travel_style_display|default:"Not specified" }}
+                                {{ booking.travel_style|default:"Not specified" }}
                             </p>
 
                         </div>
@@ -397,7 +397,7 @@
                             </p>
 
                             <p class="text-sm">
-                                {{ booking.get_budget_range_display|default:"Not specified" }}
+                                {{ booking.budget_range|default:"Not specified" }}
                             </p>
 
                         </div>
@@ -664,7 +664,7 @@
                  RIGHT — PAYMENT SUMMARY
             ================================================== -->
 
-            <aside class="lg:sticky lg:top-28 lg:self-start">
+            <aside class="lg:sticky lg:top-10 lg:self-start">
 
 
                 <div class="border border-[#D8CFC3] bg-[#EEE9E1] p-7 md:p-8">
@@ -703,7 +703,7 @@
                         <p class="text-sm whitespace-nowrap">
                             ₹{{ booking.total_amount|floatformat:2 }}
                         </p>
-
+Journey
                     </div>
 
                     {% endif %}
@@ -754,22 +754,15 @@
 
                     <!-- CTA -->
 
-                    {% if can_pay %}
+                    {% if booking.status == 'cancelled' %}
 
-                    <a
-                        href="{% url 'booking:payment' booking.booking_id %}"
-                        class="group mt-7 flex w-full items-center justify-between bg-[#C8A96E] px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#A8874D]"
-                    >
+                    <div class="mt-7 border border-[#C9AAAA] bg-[#F3E7E5] px-5 py-4">
 
-                        <span>
-                            Continue to payment
-                        </span>
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8A5555]">
+                            This booking has been cancelled. Your journey details remain available above.
+                        </p>
 
-                        <span class="text-lg transition-transform duration-300 group-hover:translate-x-1">
-                            →
-                        </span>
-
-                    </a>
+                    </div>
 
                     {% elif booking.status == 'confirmed' %}
 
@@ -788,12 +781,29 @@
 
                     </a>
 
-                    {% elif booking.status == 'cancelled' %}
+                    {% elif can_pay %}
 
-                    <div class="mt-7 border border-[#C9AAAA] bg-[#F3E7E5] px-5 py-4">
+                    <a
+                        href="{% url 'booking:payment' booking.booking_id %}"
+                        class="group mt-7 flex w-full items-center justify-between bg-[#C8A96E] px-6 py-5 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-[#A8874D]"
+                    >
 
-                        <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8A5555]">
-                            This booking has been cancelled.
+                        <span>
+                            Continue to payment
+                        </span>
+
+                        <span class="text-lg transition-transform duration-300 group-hover:translate-x-1">
+                            →
+                        </span>
+
+                    </a>
+
+                    {% elif can_pay == False %}
+
+                    <div class="mt-7 border border-[#D8CFC3] bg-[#F8F5F0]/70 px-5 py-4">
+
+                        <p class="text-[10px] uppercase tracking-[0.18em] text-[#8F887F]">
+                            Payment is already completed.
                         </p>
 
                     </div>
@@ -803,18 +813,13 @@
                     <div class="mt-7 border border-[#D8CFC3] bg-[#F8F5F0]/70 px-5 py-4">
 
                         <p class="text-[10px] uppercase tracking-[0.18em] text-[#8F887F]">
-                            Payment is not currently available.
+                            No Action Required
                         </p>
 
                     </div>
 
                     {% endif %}
 
-
-                    <p class="mt-5 text-center text-[10px] leading-5 text-[#8F887F]">
-                        Your payment is simulated securely for this
-                        experience. No real money will be transferred.
-                    </p>
 
                 </div>
 
@@ -828,6 +833,13 @@
                     ← Back to your journeys
                 </a>
 
+                {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                <form method="post" action="{% url 'booking:cancel_booking' booking.booking_id %}" class="mt-3 flex justify-center js-overview-cancel-form" data-refund="{% if booking.payment_status == 'paid' %}true{% else %}false{% endif %}">
+                    {% csrf_token %}
+                    <button type="submit" class="journey-overview-cancel">Cancel journey</button>
+                </form>
+                {% endif %}
+
             </aside>
 
         </div>
@@ -835,5 +847,41 @@
     </div>
 
 </section>
+
+<div class="journey-overview-modal" id="overview-cancel-modal" aria-hidden="true">
+    <div class="journey-overview-modal-card" role="dialog" aria-modal="true" aria-labelledby="overview-cancel-title">
+        <p class="journey-overview-kicker">Journey change</p>
+        <h2 id="overview-cancel-title">Cancel this journey?</h2>
+        <p id="overview-cancel-copy">This journey will be removed from your active trips.</p>
+        <div class="journey-overview-actions">
+            <button type="button" class="journey-overview-keep" data-overview-close>Keep journey</button>
+            <button type="button" class="journey-overview-confirm" data-overview-confirm>Cancel journey</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.journey-overview-cancel{border:1px solid #c9aaaa;background:transparent;color:#8a5555;padding:13px 18px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.journey-overview-cancel:hover{background:#8a5555;color:#fff}
+.journey-overview-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(26,25,22,.48);backdrop-filter:blur(5px)}
+.journey-overview-modal.is-open{display:flex}.journey-overview-modal-card{width:min(100%,480px);padding:34px;border:1px solid #d8cfc3;background:#f8f5f0;box-shadow:0 24px 70px rgba(26,25,22,.2)}
+.journey-overview-kicker{margin:0 0 12px;color:#a8874d;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}.journey-overview-modal h2{margin:0 0 12px;font:500 34px/1.1 'Cormorant Garamond',Georgia,serif}.journey-overview-modal-card>p:not(.journey-overview-kicker){color:#6b665e;font-size:14px;line-height:1.7}.journey-overview-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:26px}.journey-overview-actions button{padding:12px 16px;border:1px solid #d8cfc3;background:transparent;font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.journey-overview-confirm{border-color:#8a5555!important;color:#8a5555}.journey-overview-confirm:hover{background:#8a5555;color:#fff}
+</style>
+
+<script>
+(() => {
+    const modal = document.getElementById('overview-cancel-modal');
+    const form = document.querySelector('.js-overview-cancel-form');
+    if (!modal || !form) return;
+    const copy = document.getElementById('overview-cancel-copy');
+    let pending = false;
+    const close = () => { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden','true'); pending = false; };
+    form.addEventListener('submit', event => { event.preventDefault(); pending = true; copy.textContent = form.dataset.refund === 'true' ? 'Your refund will be initiated and should arrive within 24 hours. Contact support if it does not.' : 'This journey will be removed from your active trips.'; modal.classList.add('is-open'); modal.setAttribute('aria-hidden','false'); });
+    modal.querySelector('[data-overview-close]').addEventListener('click', close);
+    modal.querySelector('[data-overview-confirm]').addEventListener('click', () => { if (pending) { window.showVoyageLoader?.(); form.submit(); } });
+    modal.addEventListener('click', event => { if (event.target === modal) close(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && modal.classList.contains('is-open')) close(); });
+})();
+</script>
 
 {% endblock %}

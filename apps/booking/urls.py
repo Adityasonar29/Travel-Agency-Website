@@ -175,6 +175,12 @@ urlpatterns = [
         name='booking_confirmed'
     ),
 
+    path(
+        '<str:booking_id>/cancel/',
+        views.cancel_booking,
+        name='cancel_booking'
+    ),
+
 
     # ========================================================
     # REVIEW

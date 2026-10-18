@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                     setTimeout(function () {
-
+                        window.showVoyageLoader?.();
                         window.location.href =
                             data.redirect_url;
 
@@ -662,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function () {
              */
 
             if (response.redirected) {
-
+                window.showVoyageLoader?.();
                 window.location.href =
                     response.url;
 
@@ -675,6 +675,7 @@ document.addEventListener('DOMContentLoaded', function () {
              * Fallback.
              */
 
+            window.showVoyageLoader?.();
             window.location.href =
                 "{% url 'booking:booking_confirmed' booking.booking_id %}";
 

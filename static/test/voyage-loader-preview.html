@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>VOYAGE Loader Preview</title>
+    <link rel="stylesheet" href="./voyage-loader.css">
+</head>
+<body>
+    <main class="preview-page">
+        <p class="preview-eyebrow">VOYAGE / COMPONENT PREVIEW</p>
+        <h1>Loading overlay test</h1>
+        <p>Use the controls to preview the standalone journey loader.</p>
+        <div class="preview-actions">
+            <button type="button" data-loader-show>Show overlay</button>
+            <button type="button" data-loader-replay>Replay transition</button>
+        </div>
+    </main>
+
+    <!-- Standalone copy of the production overlay markup. -->
+    <div id="voyage-loading-overlay" class="voyage-loading-overlay is-visible" aria-hidden="false">
+        <div class="voyage-loader" role="status" aria-live="polite" aria-label="Preparing your journey">
+            <span class="voyage-loader-ring" aria-hidden="true"></span>
+            <span class="voyage-loader-mark" aria-hidden="true">V</span>
+            <p>Preparing your journey</p>
+            <small>A quieter way to travel.</small>
+            <span class="voyage-loader-line" aria-hidden="true"></span>
+        </div>
+    </div>
+
+    <script src="./voyage-loader.js"></script>
+</body>
+</html>

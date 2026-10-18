@@ -76,26 +76,34 @@
                     Your rating
                 </label>
 
-                <div class="flex gap-3">
-
+                <div
+                    id="rating-stars"
+                    class="flex gap-3"
+                >
                     {% for value in "12345" %}
-                        <label class="cursor-pointer">
-
+                
+                        <label
+                            class="rating-star cursor-pointer"
+                            data-value="{{ value }}"
+                        >
+                
                             <input
                                 type="radio"
                                 name="rating"
                                 value="{{ value }}"
-                                class="peer sr-only"
+                                class="sr-only"
                                 required
                             >
-
-                            <span class="flex h-14 w-14 items-center justify-center rounded-full border border-[#D8CFBF] text-xl text-[#B58A42] transition peer-checked:border-[#B58A42] peer-checked:bg-[#B58A42] peer-checked:text-white hover:border-[#B58A42]">
+                
+                            <span
+                                class="star-circle flex h-14 w-14 items-center justify-center rounded-full border border-[#D8CFBF] text-xl text-[#B58A42] transition-all duration-300"
+                            >
                                 ★
                             </span>
-
+                
                         </label>
+                
                     {% endfor %}
-
                 </div>
 
                 <p class="mt-3 text-xs text-[#999]">
@@ -139,5 +147,58 @@
 
     </div>
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const stars = document.querySelectorAll(".rating-star");
+
+    stars.forEach((star) => {
+
+        star.addEventListener("click", function () {
+
+            const selectedValue = Number(this.dataset.value);
+
+            stars.forEach((item) => {
+
+                const value = Number(item.dataset.value);
+                const circle = item.querySelector(".star-circle");
+
+                if (value <= selectedValue) {
+
+                    circle.classList.remove(
+                        "border-[#D8CFBF]",
+                        "text-[#B58A42]"
+                    );
+
+                    circle.classList.add(
+                        "bg-[#B58A42]",
+                        "border-[#B58A42]",
+                        "text-white"
+                    );
+
+                } else {
+
+                    circle.classList.remove(
+                        "bg-[#B58A42]",
+                        "border-[#B58A42]",
+                        "text-white"
+                    );
+
+                    circle.classList.add(
+                        "border-[#D8CFBF]",
+                        "text-[#B58A42]"
+                    );
+
+                }
+
+            });
+
+        });
+
+    });
+
+});
+</script>
 
 {% endblock %}

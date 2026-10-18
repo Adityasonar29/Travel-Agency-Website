@@ -1,0 +1,4 @@
+{% extends 'emails/base.html' %}
+{% block eyebrow %}Payment update{% endblock %}
+{% block heading %}Your refund is on its way.{% endblock %}
+{% block body %}<p class="intro">Hello {{ customer_name|default:'Traveller' }},</p><p>We have started the refund for your cancelled VOYAGE journey.</p><div class="panel"><div class="panel-title">Refund summary</div><table role="presentation" class="details" width="100%"><tr><td class="label">Booking ID</td><td class="value">{{ booking_id }}</td></tr><tr><td class="label">Refund amount</td><td class="value">₹{{ amount }}</td></tr><tr><td class="label">Expected timeline</td><td class="value">Within 24 hours</td></tr></table></div><div class="note">Your bank or payment provider may take a little longer to display the credit. If it has not arrived after 24 hours, contact {{ support_email|default:'support' }}.</div>{% endblock %}

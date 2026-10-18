@@ -794,18 +794,7 @@
 }
 
 .journey-status::before {
-    content: "";
-
-    display: inline-block;
-
-    width: 5px;
-    height: 5px;
-
-    margin-right: 7px;
-
-    border-radius: 50%;
-
-    background: currentColor;
+    display: none;
 }
 
 
@@ -906,6 +895,109 @@
 .journey-status-cancelled {
     color: #8a5555;
 }
+
+.journey-cancel-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.journey-cancel-button {
+    border: 1px solid rgba(170, 92, 78, .35);
+    background: transparent;
+    color: #a55f52;
+    padding: 8px 13px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+
+.journey-cancel-button:hover {
+    background: #a55f52;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.journey-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.journey-actions::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    flex: 0 0 5px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background: var(--voyage-gold);
+}
+
+.journey-status-label::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    margin-right: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.journey-view-button {
+    min-width: 150px;
+}
+
+.journey-cancel-button {
+    border-radius: 0;
+}
+
+.journey-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(26, 25, 22, .48);
+    backdrop-filter: blur(5px);
+}
+
+.journey-modal.is-open { display: flex; }
+
+.journey-modal-card {
+    width: min(100%, 480px);
+    padding: 34px;
+    border: 1px solid #d8cfc3;
+    background: #f8f5f0;
+    color: #1a1916;
+    box-shadow: 0 24px 70px rgba(26,25,22,.2);
+}
+
+.journey-modal-kicker {
+    margin-bottom: 12px;
+    color: #a8874d;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+}
+
+.journey-modal-title {
+    margin: 0 0 12px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 34px;
+    font-weight: 500;
+}
+
+.journey-modal-copy { color: #6b665e; font-size: 14px; line-height: 1.7; }
+.journey-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
+.journey-modal-actions button { cursor: pointer; }
 
 
 /* =========================================================
@@ -1922,7 +2014,6 @@
 
                         </div>
 
-
                         <div class="journey-meta">
 
                             <div>
@@ -1942,12 +2033,13 @@
 
 
                         <div class="journey-status">
+                        <div class="journey-actions">
                         
                             {% if booking.status == 'pending' %}
                         
                                 <a
                                     href="{% url 'booking:booking_overview' booking.booking_id %}"
-                                    class="journey-process-button"
+                                    class="journey-process-button journey-view-button"
                                 >
                                     <span>
                                         Complete the process
@@ -1962,7 +2054,7 @@
                         
                                 <a
                                     href="{% url 'booking:booking_confirmed' booking.booking_id %}"
-                                    class="journey-process-button journey-confirmed-button"
+                                    class="journey-process-button journey-confirmed-button journey-view-button"
                                 >
                                     <span>
                                         View journey
@@ -1977,7 +2069,7 @@
                         
                                 <a
                                     href="{% url 'booking:review_page' booking.booking_id %}"
-                                    class="journey-process-button"
+                                    class="journey-process-button journey-view-button"
                                 >
                                     <span>
                                         Leave a review
@@ -1990,6 +2082,9 @@
                         
                             {% elif booking.status == 'cancelled' %}
                         
+                                <a href="{% url 'booking:booking_overview' booking.booking_id %}" class="journey-process-button journey-view-button">
+                                    <span>View journey</span><span class="journey-process-arrow">→</span>
+                                </a>
                                 <span class="journey-status-label journey-status-cancelled">
                                     Cancelled
                                 </span>
@@ -2001,6 +2096,17 @@
                                 </span>
                         
                             {% endif %}
+
+                            {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                                <form method="post"
+                                      action="{% url 'booking:cancel_booking' booking.booking_id %}"
+                                      class="journey-cancel-form js-cancel-form"
+                                      data-refund="{% if booking.payment_status == 'paid' %}true{% else %}false{% endif %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="journey-cancel-button">Cancel journey</button>
+                                </form>
+                            {% endif %}
+                        </div>
                         
                         </div>
 
@@ -2059,6 +2165,18 @@
     </div>
 
 </section>
+
+<div class="journey-modal" id="journey-cancel-modal" aria-hidden="true">
+    <div class="journey-modal-card" role="dialog" aria-modal="true" aria-labelledby="journey-modal-title">
+        <p class="journey-modal-kicker">Journey change</p>
+        <h2 class="journey-modal-title" id="journey-modal-title">Cancel this journey?</h2>
+        <p class="journey-modal-copy" id="journey-modal-copy">This journey will be removed from your active trips.</p>
+        <div class="journey-modal-actions">
+            <button type="button" class="journey-process-button" data-modal-close>Keep journey</button>
+            <button type="button" class="journey-cancel-button" data-modal-confirm>Cancel journey</button>
+        </div>
+    </div>
+</div>
 
 
 <!-- =====================================================
@@ -2613,6 +2731,28 @@
 {% block extra_js %}
 
 <script>
+
+    (() => {
+        const modal = document.getElementById('journey-cancel-modal');
+        if (!modal) return;
+        let pendingForm = null;
+        const copy = document.getElementById('journey-modal-copy');
+        const close = () => { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); pendingForm = null; };
+        document.querySelectorAll('.js-cancel-form').forEach(form => form.addEventListener('submit', event => {
+            event.preventDefault();
+            pendingForm = form;
+            copy.textContent = form.dataset.refund === 'true'
+                ? 'Your refund will be initiated and should arrive within 24 hours. Contact support if it does not.'
+                : 'This journey will be removed from your active trips.';
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            modal.querySelector('[data-modal-confirm]').focus();
+        }));
+        modal.querySelector('[data-modal-close]').addEventListener('click', close);
+        modal.querySelector('[data-modal-confirm]').addEventListener('click', () => { if (pendingForm) { window.showVoyageLoader?.(); pendingForm.submit(); } });
+        modal.addEventListener('click', event => { if (event.target === modal) close(); });
+        document.addEventListener('keydown', event => { if (event.key === 'Escape' && modal.classList.contains('is-open')) close(); });
+    })();
 
 document.addEventListener("DOMContentLoaded", () => {
 

@@ -1,41 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Hi {{ customer_name }},</p>
-  <p>Please find your invoice attached.</p>
-  <div class="card">
-    <strong>Invoice ID:</strong> {{ invoice_id }}<br>
-    <strong>Booking ID:</strong> {{ booking_id }}<br>
-    <strong>Amount:</strong> {{ amount }}
-    <hr style="margin:10px 0;">
-    <div>
-      <strong>Cost Breakdown</strong>
-      <div style="margin-top:8px">
-        {% if items %}
-          <table style="width:100%; border-collapse:collapse; font-size:13px">
-            <thead>
-              <tr style="background:#f2f2f2"><th style="text-align:left;padding:6px">Description</th><th style="text-align:center;padding:6px">Qty</th><th style="text-align:right;padding:6px">Unit</th><th style="text-align:right;padding:6px">Total</th></tr>
-            </thead>
-            <tbody>
-              {% for it in items %}
-                <tr><td style="padding:6px">{{ it.desc }}</td><td style="text-align:center">{{ it.qty }}</td><td style="text-align:right">{{ it.unit }}</td><td style="text-align:right">{{ it.total }}</td></tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <div>No itemized breakdown available.</div>
-        {% endif %}
-      </div>
-      <div style="margin-top:8px">
-        <strong>Subtotal:</strong> {{ subtotal }}<br>
-        <strong>Tax:</strong> {{ tax }}<br>
-        <strong>Discount:</strong> {{ discount }}<br>
-        <strong>Grand Total:</strong> {{ grand_total }}<br>
-        <strong>Amount Paid:</strong> {{ amount_paid }}<br>
-        <strong>Remaining Balance:</strong> {{ remaining_balance }}
-      </div>
-    </div>
-  </div>
-  <p>
-    <a class="cta" href="{{ invoice_url }}">Download Invoice</a>
-  </p>
-{% endblock %}
+{% block eyebrow %}Your invoice{% endblock %}
+{% block heading %}The details of your journey, in one place.{% endblock %}
+{% block body %}<p class="intro">Hello {{ customer_name|default:'Traveller' }},</p><p>Your VOYAGE invoice is attached to this email. You can also use the link below to open it online.</p><div class="panel"><div class="panel-title">Invoice summary</div><table role="presentation" class="details" width="100%"><tr><td class="label">Invoice number</td><td class="value">{{ invoice_number|default:'—' }}</td></tr><tr><td class="label">Booking ID</td><td class="value">{{ booking_id }}</td></tr><tr><td class="label">Journey</td><td class="value">{{ tour_name }}</td></tr><tr><td class="label">Destination</td><td class="value">{{ destination }}</td></tr><tr><td class="label">Travel date</td><td class="value">{{ travel_date|date:'F j, Y' }}</td></tr><tr><td class="label">Travellers</td><td class="value">{{ num_travelers|default:'1' }}</td></tr><tr><td class="label">Total</td><td class="value">₹{{ total_amount|default:'0.00' }}</td></tr><tr><td class="label">Payment</td><td class="value">{{ payment_status|default:'Paid' }}{% if payment_method %} · {{ payment_method }}{% endif %}</td></tr></table></div>{% if invoice_url %}<a class="button" href="{{ invoice_url }}">Open invoice →</a>{% endif %}<p style="margin-top:24px">Please keep this invoice for your records. If anything looks incorrect, reply to this email and our team will help.</p>{% endblock %}

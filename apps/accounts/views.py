@@ -4,11 +4,13 @@ from django.contrib.auth import authenticate, login, logout, get_user_model, upd
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.urls import reverse
+from django.utils import timezone
 from .forms import RegisterForm, LoginForm, ProfileForm
 from apps.booking.models import Booking
 from apps.booking.views import _update_completed_bookings
 from apps.accounts.models import WishlistItem
 from apps.core.models import Destination, Tour
+from apps.core.utils import mailer
 
 User = get_user_model()
 
@@ -51,25 +53,33 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 if remember:
-                    request.session.set_expiry(60 * 60 * 24 * 30)  # 30 days
+                    request.session.set_expiry(60 * 60 * 24 * 30)
                 else:
-                    request.session.set_expiry(0)  # browser session
-                messages.success(request, 'You are now logged in.')
-                if user is not None:
-                    login(request, user)
-                
-                    if remember:
-                        request.session.set_expiry(60 * 60 * 24 * 30)
-                    else:
-                        request.session.set_expiry(0)
-                
-                    messages.success(request, "You are now logged in.")
-                
-                    # Admin goes to dashboard
-                    if user.is_staff or user.is_superuser:
-                        return redirect("admin_panel:dashboard")
-                
-                    return redirect(next_url)
+                    request.session.set_expiry(0)
+
+                if user.email:
+                    try:
+                        mailer.send_login_alert(
+                            user.email,
+                            {
+                                'user_name': user.get_full_name() or user.get_username(),
+                                'login_time': timezone.localtime().strftime('%d %b %Y, %I:%M %p'),
+                                'ip_address': request.META.get('REMOTE_ADDR') or 'Unavailable',
+                                'device': request.META.get('HTTP_USER_AGENT', 'Browser sign-in')[:180],
+                                'profile_url': request.build_absolute_uri(reverse('accounts:profile')),
+                            },
+                        )
+                    except Exception as exc:
+                        # A mail server outage must never prevent a valid login.
+                        print(f"[LOGIN ALERT] Failed: {exc}")
+
+                messages.success(request, "You are now logged in.")
+
+                # Admin goes to dashboard
+                if user.is_staff or user.is_superuser:
+                    return redirect("admin_panel:dashboard")
+
+                return redirect(next_url)
             else:
                 messages.error(request, 'Invalid credentials')
     else:
@@ -116,8 +126,19 @@ def profile_view(request):
 
     upcoming_count = bookings.filter(status__in=['pending', 'confirmed']).count()
     favorites_count = wishlist_items.count()
-    profile_completion = 55 + int(bool(user.phone)) * 10 + int(bool(user.country)) * 10 + int(bool(user.profile_image)) * 10
-    profile_completion = min(profile_completion, 100)
+    profile_fields = (
+        user.first_name,
+        user.last_name,
+        user.email,
+        user.phone,
+        user.country,
+        user.profile_image,
+    )
+    profile_completion = round(
+        sum(bool(value) for value in profile_fields)
+        / len(profile_fields)
+        * 100
+    )
 
     return render(request, 'accounts/profile.html', {
         'form': profile_form,

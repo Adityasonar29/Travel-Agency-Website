@@ -1,0 +1,36 @@
+# Python and Django runtime files
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# Local configuration and databases
+.env
+.env.*
+db.sqlite3
+
+# User-generated runtime media
+media/invoices/
+media/profiles/
+media/uploads/
+
+# Local development artifacts
+.pytest_cache/
+.mypy_cache/
+*.log
+staticfiles/
+
+# Raw local screenshot dump; curated copies live in docs/assets/
+Screenshot *.png
+screen shots of travel web/
+VOYAGE *.pdf
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

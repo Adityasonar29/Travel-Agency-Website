@@ -5,6 +5,8 @@
 
 {% block content %}
 
+{{ tour_durations|json_script:"tour-durations" }}
+
 <section class="pt-28 pb-24 md:pt-36 md:pb-32 bg-cream">
 
     <div class="max-w-5xl mx-auto px-6 md:px-12">
@@ -71,10 +73,11 @@
 
         <div class="bg-white rounded-[2rem] shadow-[0_25px_90px_rgba(0,0,0,0.07)] overflow-hidden p-8 md:p-12">
 
-            <form id="booking-form" method="post" class="space-y-8">
+            <form id="booking-form" method="post" class="space-y-8" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="step" value="{{ step }}" />
                 <input type="hidden" name="request_type" id="request-type">
+                <input type="hidden" name="booking_submission_key" value="{{ booking_submission_key }}">
 
                 <!-- ===================================================== -->
                 <!-- STEP 1: Choose Your Journey -->
@@ -1054,6 +1057,18 @@
         color: #a85c4a;
     }
 
+    .booking-inline-error {
+        margin-top: 0.4rem;
+        font-size: 0.72rem;
+        line-height: 1.4;
+        color: #a34f45;
+    }
+
+    .booking-field-invalid {
+        border-color: #b76b5d !important;
+        box-shadow: 0 0 0 1px rgba(163,79,69,.12);
+    }
+
     .review-card {
         padding: 1rem 1.15rem;
         border-radius: 0.9rem;
@@ -1087,6 +1102,40 @@
 <script>
 
     let currentStep = {{ step|default:"1" }};
+
+    function showBookingFieldError(field, text) {
+        if (!field) return;
+        field.classList.add('booking-field-invalid');
+        field.parentElement?.querySelectorAll('.booking-inline-error').forEach(node => node.remove());
+        const error = document.createElement('p');
+        error.className = 'booking-inline-error';
+        error.textContent = text;
+        field.insertAdjacentElement('afterend', error);
+    }
+
+    // Browser constraint validation tries to focus required fields inside
+    // hidden steps, which produces the "invalid form control is not focusable"
+    // error. We validate the missing field, reveal its step, and focus it.
+    document.getElementById('booking-form')?.addEventListener('submit', event => {
+        const form = event.currentTarget;
+        const missing = [...form.querySelectorAll('[required]')].find(field =>
+            !field.disabled && !String(field.value || '').trim()
+        );
+        if (!missing) {
+            window.showVoyageLoader?.();
+            form.querySelectorAll('button[type="submit"]').forEach(button => {
+                button.disabled = true;
+                button.textContent = 'Sending request…';
+            });
+            return;
+        }
+        event.preventDefault();
+        const section = missing.closest('.step-section');
+        const stepNumber = section ? Number(section.id.replace('step-', '')) : 2;
+        setStep(stepNumber);
+        missing.focus();
+        showBookingFieldError(missing, 'This field is required. Please complete it before continuing.');
+    });
 
 
     function setStep(step) {
@@ -1181,11 +1230,13 @@
             if (requestType === 'curated') {
     
                 if (!destination) {
+                    showBookingFieldError(destinationSelect, 'Please choose a destination.');
                     destinationSelect?.focus();
                     return;
                 }
     
                 if (!tour) {
+                    showBookingFieldError(tourSelect, 'Please choose a tour package.');
                     tourSelect?.focus();
                     return;
                 }
@@ -1542,6 +1593,27 @@
     }
 
 
+    function syncReturnDateToTour() {
+        const startInput = document.querySelector('[name="travel_date"]');
+        const endInput = document.querySelector('[name="return_date"]');
+        const tourInput = document.querySelector('[name="tour"]');
+        if (!startInput || !endInput || !tourInput || !startInput.value) return;
+
+        const durationMap = JSON.parse(document.getElementById('tour-durations')?.textContent || '{}');
+        const days = Number(durationMap[tourInput.value] || 0);
+        if (!days) return;
+
+        const start = new Date(`${startInput.value}T00:00:00`);
+        if (Number.isNaN(start.getTime())) return;
+        start.setDate(start.getDate() + Math.max(days - 1, 1));
+        const yyyy = start.getFullYear();
+        const mm = String(start.getMonth() + 1).padStart(2, '0');
+        const dd = String(start.getDate()).padStart(2, '0');
+        endInput.value = `${yyyy}-${mm}-${dd}`;
+        endInput.min = startInput.value;
+        endInput.readOnly = true;
+    }
+
     document.addEventListener(
         'DOMContentLoaded',
         () => {
@@ -1566,7 +1638,7 @@
                 '[name="tour"]'
             )?.addEventListener(
                 'change',
-                updateReview
+                () => { syncReturnDateToTour(); updateReview(); }
             );
 
 
@@ -1574,7 +1646,7 @@
                 '[name="travel_date"]'
             )?.addEventListener(
                 'change',
-                updateReview
+                () => { syncReturnDateToTour(); updateReview(); }
             );
 
 
@@ -1584,6 +1656,8 @@
                 'change',
                 updateReview
             );
+
+            syncReturnDateToTour();
 
 
             document.querySelector(

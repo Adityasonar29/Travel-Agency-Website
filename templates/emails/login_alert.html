@@ -1,0 +1,4 @@
+{% extends 'emails/base.html' %}
+{% block eyebrow %}Account security{% endblock %}
+{% block heading %}A new sign-in to your account.{% endblock %}
+{% block body %}<p class="intro">Hello {{ user_name|default:'Traveller' }},</p><p>Your VOYAGE account was just accessed. If this was you, no action is needed.</p><div class="panel"><div class="panel-title">Sign-in details</div><table role="presentation" class="details" width="100%"><tr><td class="label">Time</td><td class="value">{{ login_time }}</td></tr><tr><td class="label">IP address</td><td class="value">{{ ip_address|default:'Unavailable' }}</td></tr><tr><td class="label">Device</td><td class="value">{{ device|default:'Browser sign-in' }}</td></tr></table></div><div class="note">If you do not recognise this activity, change your password immediately and contact our support team.</div>{% if profile_url %}<a class="button" href="{{ profile_url }}">Review my account →</a>{% endif %}{% endblock %}

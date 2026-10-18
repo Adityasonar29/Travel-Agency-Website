@@ -81,6 +81,7 @@
                     method="POST"
                     action="{% url 'booking:payment_process' booking.booking_id %}"
                     id="payment-form"
+                    autocomplete="off"
                 >
 
                     {% csrf_token %}
@@ -217,7 +218,7 @@
                                 id="card_name"
                                 name="card_name"
                                 type="text"
-                                autocomplete="cc-name"
+                                autocomplete="off"
                                 placeholder="Name on card"
                                 class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
                             >
@@ -241,7 +242,7 @@
                                 name="card_number"
                                 type="text"
                                 inputmode="numeric"
-                                autocomplete="cc-number"
+                                autocomplete="off"
                                 maxlength="19"
                                 placeholder="0000 0000 0000 0000"
                                 class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm tracking-[0.12em] outline-none transition focus:border-[#C8A96E]"
@@ -269,7 +270,7 @@
                                     name="expiry"
                                     type="text"
                                     inputmode="numeric"
-                                    autocomplete="cc-exp"
+                                    autocomplete="off"
                                     maxlength="5"
                                     placeholder="MM/YY"
                                     class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
@@ -294,7 +295,7 @@
                                     name="cvv"
                                     type="password"
                                     inputmode="numeric"
-                                    autocomplete="cc-csc"
+                                    autocomplete="off"
                                     maxlength="4"
                                     placeholder="•••"
                                     class="w-full border border-[#D8CFC3] bg-[#F8F5F0] px-4 py-4 text-sm outline-none transition focus:border-[#C8A96E]"
@@ -604,6 +605,13 @@ document.addEventListener('DOMContentLoaded', function () {
 ========================================================= */
 
 const cardNumber = document.getElementById('card_number');
+
+const paymentForm = document.getElementById('payment-form');
+if (paymentForm) {
+    paymentForm.addEventListener('submit', () => {
+        window.showVoyageLoader?.();
+    });
+}
 
 if (cardNumber) {
 

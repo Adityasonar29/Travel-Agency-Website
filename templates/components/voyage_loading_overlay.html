@@ -1,0 +1,14 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/voyage-loader.css' %}?v=4">
+
+<div id="voyage-loading-overlay" class="voyage-loading-overlay" aria-hidden="true">
+    <div class="voyage-loader" role="status" aria-live="polite" aria-label="Preparing your journey">
+        <span class="voyage-loader-ring" aria-hidden="true"></span>
+        <span class="voyage-loader-mark" aria-hidden="true">V</span>
+        <p>Preparing your journey</p>
+        <small>A quieter way to travel.</small>
+        <span class="voyage-loader-line" aria-hidden="true"></span>
+    </div>
+</div>
+
+<script src="{% static 'js/voyage-loader.js' %}?v=1"></script>

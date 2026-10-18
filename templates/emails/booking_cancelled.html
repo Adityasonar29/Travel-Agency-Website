@@ -1,11 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Hi {{ customer_name }},</p>
-  <p>Your booking has been cancelled.</p>
-  <div class="card">
-    <strong>Booking ID:</strong> {{ booking_id }}<br>
-    <strong>Cancellation Date:</strong> {{ cancellation_date }}<br>
-    <strong>Refund Amount:</strong> {{ refund_amount }}
-  </div>
-  <p>If you have questions, contact support.</p>
-{% endblock %}
+{% block eyebrow %}Journey update{% endblock %}
+{% block heading %}Your journey has been cancelled.{% endblock %}
+{% block body %}<p class="intro">Hello {{ customer_name|default:'Traveller' }},</p><p>We have recorded the cancellation of your VOYAGE journey. Here is a clear summary for your records.</p><div class="panel"><div class="panel-title">Cancellation details</div><table role="presentation" class="details" width="100%"><tr><td class="label">Booking ID</td><td class="value">{{ booking_id }}</td></tr><tr><td class="label">Journey</td><td class="value">{{ tour_name|default:'VOYAGE journey' }}</td></tr><tr><td class="label">Travel date</td><td class="value">{{ travel_date|date:'F j, Y' }}</td></tr><tr><td class="label">Refund</td><td class="value">{% if refund_pending %}₹{{ amount }} initiated{% else %}No refund required{% endif %}</td></tr></table></div>{% if refund_pending %}<div class="note">Your refund has been initiated and should arrive within 24 hours. If it has not arrived after that time, please contact {{ support_email|default:'support' }}.</div>{% endif %}<p style="margin-top:24px">We hope to plan a quieter, better-fitting journey with you another time.</p>{% endblock %}

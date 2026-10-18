@@ -156,6 +156,19 @@
 
     </div>
 
+    <section class="revenue-section panel mb-5" aria-labelledby="revenue-heading">
+        <div class="panel-head"><div><div class="eyebrow">Finance</div><h3 id="revenue-heading">Revenue overview</h3><p class="muted">Collected revenue is calculated from successful payments only.</p></div></div>
+        <div class="grid-4 revenue-cards">
+            <div class="stat-card"><span class="label">Total collected</span><strong>₹{{ total_revenue|floatformat:2 }}</strong></div>
+            <div class="stat-card"><span class="label">This month</span><strong>₹{{ month_revenue|floatformat:2 }}</strong></div>
+            <div class="stat-card"><span class="label">This year</span><strong>₹{{ year_revenue|floatformat:2 }}</strong></div>
+            <div class="stat-card"><span class="label">Pending payment</span><strong>₹{{ pending_revenue|floatformat:2 }}</strong></div>
+        </div>
+        <div class="revenue-chart" aria-label="Revenue for the last six months">
+            {% for month in monthly_revenue %}<div class="revenue-bar-item"><div class="revenue-bar" style="--bar-height:{{ month.height }}" title="₹{{ month.value|floatformat:2 }}"></div><span>{{ month.label }}</span></div>{% endfor %}
+        </div>
+    </section>
+
     <!-- Recent Bookings -->
 
     <div class="card bg-dark border-warning mb-5">

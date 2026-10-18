@@ -1,39 +1,5 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{{ subject }}</title>
-    <style>
-      /* Minimal inline-friendly styles */
-      body { font-family: Arial, Helvetica, sans-serif; background:#f5f5f5; margin:0; padding:24px; }
-      .email-wrap { max-width:680px; margin:0 auto; background:#ffffff; border-radius:8px; overflow:hidden; }
-      .header { padding:24px; background:#1A1A1A; color:#fff; display:flex; align-items:center; gap:12px }
-      .logo { font-weight:700; font-size:18px; }
-      .banner { width:100%; height:160px; background:#C8A96E; display:block; }
-      .content { padding:28px; color:#333; }
-      .card { background:#f8f8f8; padding:16px; border-radius:8px; margin:12px 0; }
-      .cta { display:inline-block; background:#1A1A1A; color:#fff; padding:12px 18px; border-radius:6px; text-decoration:none; }
-      .footer { padding:18px; background:#fafafa; font-size:12px; color:#666; text-align:center }
-    </style>
-  </head>
-  <body>
-    <div class="email-wrap">
-      <div class="header">
-        <div class="logo">VOYAGE</div>
-        <div style="margin-left:auto">Travel Agency</div>
-      </div>
-      <div class="banner"></div>
-      <div class="content">
-        <h2>{{ heading }}</h2>
-        <div>
-          {% block body %}{% endblock %}
-        </div>
-      </div>
-      <div class="footer">
-        Need help? Contact us at <a href="mailto:support@agency.com">support@agency.com</a> • +91 XXXXX XXXXX
-        <div style="margin-top:8px">© {{ now|date:"Y" }} Voyage Travel Agency</div>
-      </div>
-    </div>
-  </body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{% block title %}{{ subject|default:'VOYAGE' }}{% endblock %}</title>
+<style>
+body{margin:0;padding:0;background:#f5f2ec;color:#252321;font-family:Arial,Helvetica,sans-serif}table{border-collapse:collapse}.shell{width:100%;padding:32px 14px}.email{width:100%;max-width:680px;margin:0 auto;background:#fffefa;border:1px solid #e5ded2}.masthead{padding:27px 34px 24px;border-bottom:1px solid #e5ded2}.brand{color:#252321;font-family:Georgia,'Times New Roman',serif;font-size:26px;letter-spacing:.16em}.brand-sub{margin-top:7px;color:#be9958;font-size:10px;letter-spacing:.22em;text-transform:uppercase}.body{padding:38px 42px 34px}.eyebrow{margin:0 0 13px;color:#be9958;font-size:10px;font-weight:bold;letter-spacing:.22em;text-transform:uppercase}h1{margin:0 0 18px;color:#252321;font-family:Georgia,'Times New Roman',serif;font-size:34px;font-weight:normal;line-height:1.1}p{margin:0 0 17px;color:#5f5a53;font-size:15px;line-height:1.75}.intro{color:#252321;font-size:17px}.panel{margin:26px 0;border:1px solid #e5ded2;background:#faf8f3}.panel-title{padding:13px 17px;border-bottom:1px solid #e5ded2;color:#be9958;font-size:10px;font-weight:bold;letter-spacing:.18em;text-transform:uppercase}.details td{padding:12px 17px;border-bottom:1px solid #e5ded2;vertical-align:top;font-size:14px;line-height:1.45}.details tr:last-child td{border-bottom:0}.label{width:38%;color:#8c857b;font-size:10px!important;letter-spacing:.14em;text-transform:uppercase}.value{color:#252321;font-weight:600}.button{display:inline-block;margin:4px 8px 4px 0;padding:13px 19px;background:#252321;color:#fffefa!important;font-size:11px;font-weight:bold;letter-spacing:.14em;text-decoration:none;text-transform:uppercase}.button-secondary{background:#be9958}.note{padding:16px 18px;border-left:3px solid #be9958;background:#f7f3eb;color:#5f5a53;font-size:13px;line-height:1.6}.footer{padding:22px 34px 27px;border-top:1px solid #e5ded2;color:#8c857b;font-size:12px;line-height:1.7;text-align:center}.footer a{color:#75603d}@media only screen and (max-width:560px){.shell{padding:12px 6px}.masthead{padding:22px}.body{padding:30px 22px}.footer{padding:20px 22px}h1{font-size:29px}.details td{padding:10px 12px}}
+</style></head><body><table role="presentation" class="shell"><tr><td><table role="presentation" class="email"><tr><td class="masthead"><div class="brand">VOYAGE</div><div class="brand-sub">Travel agency · thoughtfully arranged</div></td></tr><tr><td class="body"><p class="eyebrow">{% block eyebrow %}A note from VOYAGE{% endblock %}</p><h1>{% block heading %}Your journey, thoughtfully arranged.{% endblock %}</h1>{% block body %}{% endblock %}</td></tr><tr><td class="footer">Need help? Contact <a href="mailto:{{ support_email|default:'hello@voyagetravel.com' }}">{{ support_email|default:'hello@voyagetravel.com' }}</a><br>VOYAGE Travel Agency · Mumbai, Maharashtra, India<br><span style="color:#b4aa9d">This is an automated message about your VOYAGE account or journey.</span></td></tr></table></td></tr></table></body></html>

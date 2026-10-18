@@ -1,13 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Hi {{ name }},</p>
-  <p>{{ intro }}</p>
-  <div class="card">
-    {% for item in items %}
-      <div style="margin-bottom:10px">
-        <strong>{{ item.title }}</strong><br>
-        <div>{{ item.summary }}</div>
-      </div>
-    {% endfor %}
-  </div>
-{% endblock %}
+{% block eyebrow %}From the VOYAGE journal{% endblock %}
+{% block heading %}Notes for your next escape.{% endblock %}
+{% block body %}<p class="intro">Hello {{ name|default:'Traveller' }},</p><p>{{ intro }}</p><div class="panel"><div class="panel-title">Selected for you</div><table role="presentation" class="details" width="100%">{% for item in items %}<tr><td class="value"><strong>{{ item.title }}</strong><br><span style="color:#5f5a53;font-weight:normal">{{ item.summary }}</span></td></tr>{% endfor %}</table></div>{% endblock %}

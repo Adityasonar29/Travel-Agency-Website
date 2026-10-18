@@ -202,6 +202,7 @@ def booking_page(request, tour_pk=None):
     Payment happens later from the user's journey archive.
     """
 
+    submission_key = request.POST.get('booking_submission_key') or str(uuid.uuid4())
     step = (
         request.POST.get('step')
         or request.GET.get('step', '1')
@@ -241,6 +242,16 @@ def booking_page(request, tour_pk=None):
         )
 
         if form.is_valid():
+
+            previous_key = request.session.get('booking_submission_key')
+            previous_booking_id = request.session.get('booking_submission_booking_id')
+            if previous_key and previous_key == submission_key and previous_booking_id:
+                return redirect(
+                    reverse(
+                        'booking:booking_confirmation',
+                        args=[previous_booking_id]
+                    )
+                )
 
             booking = form.save(
                 commit=False
@@ -285,6 +296,9 @@ def booking_page(request, tour_pk=None):
                 )
 
                 booking.save()
+                request.session['booking_submission_key'] = submission_key
+                request.session['booking_submission_booking_id'] = booking.booking_id
+                request.session.modified = True
 
                 messages.success(
                     request,
@@ -319,6 +333,9 @@ def booking_page(request, tour_pk=None):
             )
 
             booking.save()
+            request.session['booking_submission_key'] = submission_key
+            request.session['booking_submission_booking_id'] = booking.booking_id
+            request.session.modified = True
 
             request.session[
                 'draft_booking_id'
@@ -386,6 +403,11 @@ def booking_page(request, tour_pk=None):
             'form': form,
             'step': step,
             'tour_pk': tour_pk,
+            'tour_durations': {
+                str(tour.pk): (tour.duration_days or 0)
+                for tour in Tour.objects.all()
+            },
+            'booking_submission_key': submission_key,
         }
     )
 
@@ -1147,6 +1169,72 @@ def booking_confirmed(request, booking_id):
     )
 
 
+@login_required(login_url='/accounts/login/')
+def cancel_booking(request, booking_id):
+    """Cancel an unpaid or paid booking from the member's journey archive."""
+    if request.method != 'POST':
+        return redirect(reverse('accounts:profile') + '#journeys')
+
+    booking = _get_user_booking(request, booking_id)
+
+    if booking.status in {'cancelled', 'completed'}:
+        messages.info(request, 'This journey can no longer be cancelled.')
+        return redirect(reverse('accounts:profile') + '#journeys')
+
+    with transaction.atomic():
+        booking.status = 'cancelled'
+        booking.cancelled_at = timezone.now()
+        booking.cancellation_reason = (request.POST.get('reason') or '').strip()
+        if booking.payment_status == 'paid':
+            booking.payment_status = 'refunded'
+            booking.refund_status = 'pending'
+        else:
+            booking.refund_status = 'not_applicable'
+        booking.save(update_fields=[
+            'status', 'payment_status', 'refund_status', 'cancelled_at',
+            'cancellation_reason', 'updated_at',
+        ])
+
+    if _can_send_mail():
+        try:
+            mailer.send_generic_notification(
+                to_email=booking.email,
+                subject=f'Journey cancellation received — {booking.booking_id}',
+                template_path='emails/booking_cancelled.html',
+                context={
+                    'customer_name': booking.full_name or 'Traveller',
+                    'booking_id': booking.booking_id,
+                    'tour_name': booking.tour.name if booking.tour else booking.destination_name,
+                    'travel_date': booking.travel_date,
+                    'amount': booking.total_amount or 0,
+                    'refund_pending': booking.refund_status == 'pending',
+                    'support_email': settings.DEFAULT_FROM_EMAIL,
+                },
+            )
+            if booking.refund_status == 'pending':
+                mailer.send_generic_notification(
+                    to_email=booking.email,
+                    subject=f'Refund initiated — {booking.booking_id}',
+                    template_path='emails/refund_initiated.html',
+                    context={
+                        'customer_name': booking.full_name or 'Traveller',
+                        'booking_id': booking.booking_id,
+                        'amount': booking.total_amount or 0,
+                        'support_email': settings.DEFAULT_FROM_EMAIL,
+                    },
+                )
+        except Exception as exc:
+            print(f'[CANCELLATION EMAIL] Failed: {exc}')
+    else:
+        print(f'[CANCELLATION] Would email {booking.email} for {booking.booking_id}')
+
+    if booking.refund_status == 'pending':
+        messages.success(request, 'Your journey was cancelled. Your refund has been initiated and should arrive within 24 hours. Contact support if it does not.')
+    else:
+        messages.success(request, 'Your journey was cancelled and removed from your active trips.')
+    return redirect(reverse('accounts:profile') + '#journeys')
+
+
 # ============================================================
 # REVIEW PAGE
 # ============================================================
@@ -1456,6 +1544,8 @@ def _send_booking_emails(request, booking):
 
         'status': 'Pending Confirmation',
 
+        'support_email': settings.DEFAULT_FROM_EMAIL,
+
         'view_booking_url': request.build_absolute_uri(
             reverse(
                 'booking:booking_confirmation',
@@ -1586,6 +1676,16 @@ def _send_payment_success_email(request, booking):
         ),
 
         'status': booking.status,
+
+        'invoice_url': (
+            request.build_absolute_uri(
+                f"{settings.MEDIA_URL}{booking.invoice_pdf_path}"
+            )
+            if booking.invoice_pdf_path
+            else None
+        ),
+
+        'support_email': settings.DEFAULT_FROM_EMAIL,
 
         'view_booking_url': request.build_absolute_uri(
             reverse(

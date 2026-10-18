@@ -1,8 +1,4 @@
 {% extends 'emails/base.html' %}
-{% block body %}
-  <p>Hi {{ customer_name }},</p>
-  <p>We hope you enjoyed your trip to {{ destination }}. Please leave a review to help other travelers.</p>
-  <p>
-    <a class="cta" href="{{ review_url }}">Leave a Review</a>
-  </p>
-{% endblock %}
+{% block eyebrow %}A moment to reflect{% endblock %}
+{% block heading %}How did your journey feel?{% endblock %}
+{% block body %}<p class="intro">Hello {{ customer_name|default:'Traveller' }},</p><p>We hope you enjoyed your time in {{ destination|default:'your destination' }}. A short review helps us refine the journeys we create for future travellers.</p><a class="button" href="{{ review_url }}">Share your experience →</a>{% endblock %}

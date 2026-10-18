@@ -3,6 +3,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from django.conf import settings
 import os
+from email.mime.image import MIMEImage
 
 
 def _send_html_email(subject, to_email, template_path, context=None, attachments=None):
@@ -12,6 +13,14 @@ def _send_html_email(subject, to_email, template_path, context=None, attachments
 
     msg = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [to_email])
     msg.attach_alternative(html_content, "text/html")
+
+    logo_path = os.path.join(settings.BASE_DIR, "static", "images", "voyage-logo.png")
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as logo_file:
+            logo = MIMEImage(logo_file.read(), _subtype="png")
+        logo.add_header("Content-ID", "<voyage-logo>")
+        logo.add_header("Content-Disposition", "inline", filename="voyage-logo.png")
+        msg.attach(logo)
 
     # Attach files if provided (list of file paths)
     if attachments:
@@ -46,6 +55,12 @@ def send_welcome_email(to_email, context):
     subject = context.get('subject', 'Welcome to Voyage')
     template = 'emails/welcome.html'
     _send_html_email(subject, to_email, template, context)
+
+
+def send_login_alert(to_email, context):
+    """Notify a traveller when their account is successfully accessed."""
+    subject = context.get('subject', 'A new sign-in to your VOYAGE account')
+    _send_html_email(subject, to_email, 'emails/login_alert.html', context)
 
 
 # Generic helper for other notifications

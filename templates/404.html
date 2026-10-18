@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+
+{% block content %}
+
+<section class="relative min-h-[80vh] overflow-hidden bg-[#F8F5F0] flex items-center justify-center">
+
+    <!-- Decorative background -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-[#C8A96E]/10 blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-[#D4C9BC]/20 blur-3xl"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 w-full max-w-4xl mx-auto px-6 py-24 text-center">
+
+        <!-- Small label -->
+        <p class="mb-6 text-[10px] md:text-xs font-semibold uppercase tracking-[0.35em] text-[#A8874D]">
+            Lost somewhere?
+        </p>
+
+        <!-- 404 -->
+        <h1 class="font-heading text-[clamp(8rem,25vw,18rem)] leading-[0.72] tracking-[-0.06em] text-[#1A1A1A]">
+            404
+        </h1>
+
+        <!-- Divider -->
+        <div class="flex items-center justify-center gap-4 my-10">
+            <span class="w-12 h-px bg-[#C8A96E]"></span>
+            <span class="w-2 h-2 rotate-45 border border-[#C8A96E]"></span>
+            <span class="w-12 h-px bg-[#C8A96E]"></span>
+        </div>
+
+        <!-- Heading -->
+        <h2 class="font-heading text-3xl md:text-5xl text-[#1A1A1A] mb-5">
+            This destination doesn't exist.
+        </h2>
+
+        <!-- Description -->
+        <p class="max-w-xl mx-auto text-sm md:text-base leading-relaxed text-[#6B6B6B] mb-10">
+            Looks like you've wandered off the map. The page you're looking for
+            may have moved, disappeared, or never existed in the first place.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+
+            <a href="{% url 'core:home' %}"
+               class="group inline-flex items-center justify-center gap-3
+                      min-w-[190px] px-7 py-4
+                      bg-[#1A1A1A] text-white
+                      text-[10px] font-semibold uppercase tracking-[0.2em]
+                      transition-all duration-300
+                      hover:bg-[#C8A96E] hover:text-[#1A1A1A]">
+
+                <span>Back to Home</span>
+
+                <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.5">
+                    <path d="M5 12h14"/>
+                    <path d="m13 6 6 6-6 6"/>
+                </svg>
+
+            </a>
+
+            <a href="{% url 'core:destinations' %}"
+               class="inline-flex items-center justify-center
+                      min-w-[190px] px-7 py-4
+                      border border-[#D8CFC3]
+                      text-[#1A1A1A]
+                      text-[10px] font-semibold uppercase tracking-[0.2em]
+                      transition-all duration-300
+                      hover:border-[#1A1A1A]
+                      hover:bg-white">
+
+                Explore Destinations
+
+            </a>
+
+        </div>
+
+        <!-- Bottom text -->
+        <p class="mt-16 text-[9px] uppercase tracking-[0.3em] text-[#A39A90]">
+            Every journey begins somewhere
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

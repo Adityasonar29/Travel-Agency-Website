@@ -1,5 +1,4 @@
 from array import typecodes
-from functools import Placeholder
 
 from django import forms
 from apps.core.models import Tour, Destination

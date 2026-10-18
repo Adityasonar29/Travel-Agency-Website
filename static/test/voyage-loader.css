@@ -1,0 +1,21 @@
+*{box-sizing:border-box}
+body{margin:0;background:#f6f3ed;color:#1d1c19;font-family:'DM Sans',Arial,sans-serif}
+.preview-page{min-height:100vh;display:grid;place-content:center;padding:32px;text-align:center}
+.preview-eyebrow{color:#c5a15e;font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+.preview-page h1{font:400 clamp(42px,7vw,82px)/.95 Georgia,serif;margin:16px 0}
+.preview-page p:not(.preview-eyebrow){color:#8d8377}
+.preview-actions{display:flex;justify-content:center;gap:12px;margin-top:28px}
+.preview-actions button{border:1px solid #c5a15e;background:transparent;padding:13px 18px;color:#1d1c19;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;font-size:10px}
+.preview-actions button:hover{background:#c5a15e;color:#fff}
+.voyage-loading-overlay{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;background:#f6f3ed;color:#1d1c19}
+.voyage-loading-overlay.is-visible{display:flex}
+.voyage-loader{position:relative;display:flex;flex-direction:column;align-items:center;min-width:280px;padding:0;color:#1d1c19;text-align:center}
+.voyage-loader-ring{position:absolute;top:-18px;width:174px;height:174px;border:1px solid #c5a15e;border-radius:50%;animation:voyage-loader-spin 3.4s cubic-bezier(.65,0,.35,1) infinite}
+.voyage-loader-mark{position:relative;margin-top:42px;font:400 48px/.8 Georgia,serif;color:#c5a15e;letter-spacing:-.08em;transform:translateX(-2px)}
+.voyage-loader p{margin:96px 0 0;color:#1d1c19;font:500 22px/1.2 Arial,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.voyage-loader small{margin-top:20px;color:#8d8377;font:400 18px/1.4 Arial,sans-serif}
+.voyage-loader-line{display:block;width:218px;height:1px;margin-top:28px;background:linear-gradient(90deg,transparent,#c5a15e,transparent);animation:voyage-loader-line 1.8s ease-in-out infinite}
+@keyframes voyage-loader-spin{to{transform:rotate(360deg)}}
+@keyframes voyage-loader-line{0%,100%{opacity:.35;transform:scaleX(.55)}50%{opacity:1;transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.voyage-loader-ring,.voyage-loader-line{animation:none}}
+@media (max-width:520px){.voyage-loader p{font-size:17px}.voyage-loader small{font-size:15px}.voyage-loader-ring{width:150px;height:150px}.voyage-loader-line{width:180px}}

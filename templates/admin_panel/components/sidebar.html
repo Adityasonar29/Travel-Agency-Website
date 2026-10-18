@@ -148,7 +148,10 @@
             {% if request.user.profile_image %}
 
                 <img src="{{ request.user.profile_image.url }}"
-                     class="w-12 h-12 rounded-full object-cover">
+                     class="w-12 h-12 rounded-full object-cover sidebar-avatar"
+                     width="48"
+                     height="48"
+                     alt="">
 
             {% else %}
 
@@ -178,12 +181,13 @@
 
         </div>
 
-        <a href="{% url 'accounts:logout' %}"
+        <button type="button"
+           data-open-logout-confirmation
            class="mt-6 flex justify-center items-center w-full rounded-xl border border-[#C8A96E] py-3 text-[#C8A96E] hover:bg-[#C8A96E] hover:text-black transition duration-300">
 
             Logout
 
-        </a>
+        </button>
 
     </div>
 

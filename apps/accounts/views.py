@@ -1,18 +1,38 @@
+import logging
+import secrets
+from datetime import timedelta
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.views.decorators.http import require_POST
 from django.urls import reverse
 from django.utils import timezone
-from .forms import RegisterForm, LoginForm, ProfileForm
+from .forms import (
+    LoginForm,
+    PasswordResetRequestForm,
+    PasswordResetVerifyForm,
+    ProfileForm,
+    RegisterForm,
+)
 from apps.booking.models import Booking
 from apps.booking.views import _update_completed_bookings
-from apps.accounts.models import WishlistItem
+from apps.accounts.models import PasswordResetPin, WishlistItem
 from apps.core.models import Destination, Tour
 from apps.core.utils import mailer
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
+PASSWORD_RESET_SESSION_KEY = "password_reset_user_id"
+PASSWORD_RESET_PIN_LIFETIME = timedelta(minutes=10)
+PASSWORD_RESET_RESEND_DELAY = timedelta(seconds=60)
+PASSWORD_RESET_MAX_ATTEMPTS = 5
 
 
 def register_view(request):
@@ -49,6 +69,20 @@ def login_view(request):
                     user = authenticate(request, username=identifier, password=password)
             except Exception:
                 user = authenticate(request, username=identifier, password=password)
+
+            inactive_user = User.objects.filter(
+                email__iexact=identifier,
+                is_active=False,
+            ).first() or User.objects.filter(
+                username=identifier,
+                is_active=False,
+            ).first()
+            if user is None and inactive_user and inactive_user.check_password(password):
+                messages.error(
+                    request,
+                    'This VOYAGE account is deactivated. Please contact support to restore access.',
+                )
+                return render(request, 'accounts/login.html', {'form': form, 'next': next_url})
 
             if user is not None:
                 login(request, user)
@@ -87,6 +121,146 @@ def login_view(request):
     return render(request, 'accounts/login.html', {'form': form, 'next': next_url})
 
 
+def forgot_password_view(request):
+    form = PasswordResetRequestForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        identifier = form.cleaned_data["username_or_email"].strip()
+        user = User.objects.filter(
+            email__iexact=identifier,
+            is_active=True,
+        ).first() or User.objects.filter(
+            username__iexact=identifier,
+            is_active=True,
+        ).first()
+
+        request.session.pop(PASSWORD_RESET_SESSION_KEY, None)
+        if user and user.email:
+            reset_pin, created = PasswordResetPin.objects.get_or_create(
+                user=user,
+                defaults={
+                    "pin_hash": "",
+                    "expires_at": timezone.now(),
+                },
+            )
+            now = timezone.now()
+            if (
+                created
+                or reset_pin.expires_at <= now
+                or reset_pin.created_at < now - PASSWORD_RESET_RESEND_DELAY
+            ):
+                pin = f"{secrets.randbelow(1_000_000):06d}"
+                reset_pin.pin_hash = make_password(pin)
+                reset_pin.created_at = now
+                reset_pin.expires_at = now + PASSWORD_RESET_PIN_LIFETIME
+                reset_pin.attempts = 0
+                reset_pin.save(
+                    update_fields=[
+                        "pin_hash",
+                        "created_at",
+                        "expires_at",
+                        "attempts",
+                    ]
+                )
+                try:
+                    mailer.send_generic_notification(
+                        user.email,
+                        "Your VOYAGE password reset PIN",
+                        "emails/password_reset_pin.html",
+                        {
+                            "user_name": user.get_full_name() or user.get_username(),
+                            "pin": pin,
+                            "expires_minutes": int(
+                                PASSWORD_RESET_PIN_LIFETIME.total_seconds() // 60
+                            ),
+                            "support_email": settings.DEFAULT_FROM_EMAIL,
+                            "_email_event": "password_reset_pin",
+                        },
+                    )
+                except Exception:
+                    reset_pin.delete()
+                    logger.exception(
+                        "Unable to send password reset PIN to account %s",
+                        user.pk,
+                    )
+                    messages.error(
+                        request,
+                        "We could not send the reset email right now. Please try again later.",
+                    )
+                    return render(
+                        request,
+                        "accounts/forgot_password.html",
+                        {"form": form},
+                    )
+            request.session[PASSWORD_RESET_SESSION_KEY] = user.pk
+
+        messages.success(
+            request,
+            "If an active account matches those details, a password reset PIN has been sent to its email address.",
+        )
+        return redirect("accounts:reset_password")
+
+    return render(request, "accounts/forgot_password.html", {"form": form})
+
+
+def reset_password_view(request):
+    user_id = request.session.get(PASSWORD_RESET_SESSION_KEY)
+    user = User.objects.filter(pk=user_id, is_active=True).first() if user_id else None
+    if user is None:
+        messages.info(request, "Request a password reset PIN to continue.")
+        return redirect("accounts:forgot_password")
+
+    form = PasswordResetVerifyForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        reset_pin = PasswordResetPin.objects.filter(user=user).first()
+        if reset_pin is None or reset_pin.attempts >= PASSWORD_RESET_MAX_ATTEMPTS:
+            messages.error(
+                request,
+                "That PIN has expired or is no longer valid. Request a new one.",
+            )
+            request.session.pop(PASSWORD_RESET_SESSION_KEY, None)
+            return redirect("accounts:forgot_password")
+
+        if reset_pin.expires_at <= timezone.now():
+            reset_pin.delete()
+            request.session.pop(PASSWORD_RESET_SESSION_KEY, None)
+            messages.error(
+                request,
+                "That PIN has expired. Request a new one to continue.",
+            )
+            return redirect("accounts:forgot_password")
+
+        if not check_password(form.cleaned_data["pin"], reset_pin.pin_hash):
+            reset_pin.attempts += 1
+            if reset_pin.attempts >= PASSWORD_RESET_MAX_ATTEMPTS:
+                reset_pin.delete()
+                request.session.pop(PASSWORD_RESET_SESSION_KEY, None)
+                messages.error(
+                    request,
+                    "Too many incorrect attempts. Request a new PIN to continue.",
+                )
+                return redirect("accounts:forgot_password")
+            reset_pin.save(update_fields=["attempts"])
+            form.add_error("pin", "That PIN is incorrect.")
+            return render(request, "accounts/reset_password.html", {"form": form})
+
+        new_password = form.cleaned_data["new_password1"]
+        try:
+            validate_password(new_password, user=user)
+        except ValidationError as exc:
+            form.add_error("new_password1", exc)
+            return render(request, "accounts/reset_password.html", {"form": form})
+
+        user.set_password(new_password)
+        user.save(update_fields=["password"])
+        reset_pin.delete()
+        request.session.pop(PASSWORD_RESET_SESSION_KEY, None)
+        messages.success(request, "Your password has been reset. You can now log in.")
+        return redirect("accounts:login")
+
+    return render(request, "accounts/reset_password.html", {"form": form})
+
+
+@require_POST
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out.')

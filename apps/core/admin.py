@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db.models import Avg, Sum
+from apps.booking.models import Booking, Review
 from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage, EmailLog, Blog, AboutPage
 
 
@@ -132,8 +134,29 @@ class TestimonialAdmin(admin.ModelAdmin):
 
 @admin.register(Stat)
 class StatAdmin(admin.ModelAdmin):
-    list_display = ('label', 'value', 'suffix', 'order')
-    list_editable = ('value', 'order')
+    list_display = ('label', 'metric', 'display_stat_value', 'suffix', 'order')
+    list_editable = ('metric', 'suffix', 'order')
+
+    @admin.display(description="Website value")
+    def display_stat_value(self, obj):
+        if obj.metric == "manual":
+            return f"{obj.prefix}{obj.value}{obj.suffix}"
+        if obj.metric == "satisfaction":
+            average = Review.objects.aggregate(value=Avg("rating"))["value"]
+            value = round(average / 5 * 100) if average is not None else obj.value
+            return f"{value}%"
+        if obj.metric == "tours":
+            return Tour.objects.count()
+        if obj.metric == "destinations":
+            return Destination.objects.count()
+        if obj.metric == "travelers":
+            return (
+                Booking.objects.filter(status__in=["confirmed", "completed"]).aggregate(
+                    total=Sum("num_travelers")
+                )["total"]
+                or 0
+            )
+        return f"{obj.prefix}{obj.value}{obj.suffix}"
 
 
 @admin.register(MarqueeWord)

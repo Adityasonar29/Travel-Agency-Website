@@ -10,6 +10,9 @@ class ContactMessage(models.Model):
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_replied = models.BooleanField(default=False)
+    reply_subject = models.CharField(max_length=255, blank=True)
+    reply_body = models.TextField(blank=True)
+    replied_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -24,11 +27,13 @@ class EmailLog(models.Model):
         ("failed", "Failed"),
     ]
 
+    sender = models.EmailField(blank=True)
     recipient = models.EmailField()
     subject = models.CharField(max_length=255)
     template_path = models.CharField(max_length=255, blank=True)
     event = models.CharField(max_length=120, blank=True)
     body_text = models.TextField(blank=True)
+    body_html = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="sent")
     error_message = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -220,8 +225,10 @@ class Destination(models.Model):
     city = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     hero_image = models.URLField(blank=True)
-    image = models.ImageField(upload_to='destinations/')
+    image = models.ImageField(upload_to='destinations/', blank=True)
+    image_url = models.URLField(blank=True)
     hover_image = models.ImageField(upload_to='destinations/hover/', blank=True)
+    hover_image_url = models.URLField(blank=True)
     gallery = models.JSONField(blank=True, default=list)
     best_time_to_travel = models.CharField(max_length=100, blank=True)
     weather = models.CharField(max_length=200, blank=True)
@@ -254,6 +261,31 @@ class Destination(models.Model):
     def get_absolute_url(self):
         slug = self.slug or slugify(self.name)
         return reverse('core:destination_detail', args=[slug])
+
+    @property
+    def primary_image(self):
+        if self.image_url:
+            return self.image_url
+        return self.image.url if self.image else ''
+
+    @property
+    def secondary_image(self):
+        if self.hover_image_url:
+            return self.hover_image_url
+        return self.hover_image.url if self.hover_image else self.primary_image
+
+    @property
+    def current_rating(self):
+        if not self.pk:
+            return self.rating
+
+        from apps.booking.models import Review
+        from django.db.models import Avg
+
+        live_rating = Review.objects.filter(
+            booking__tour__destinations=self,
+        ).aggregate(value=Avg('rating'))['value']
+        return round(float(live_rating), 1) if live_rating is not None else self.rating
 
 class FunFact(models.Model):
     title = models.CharField(max_length=200)
@@ -320,6 +352,19 @@ class Tour(models.Model):
     def is_available(self):
         return self.seats_available > 0
 
+    @property
+    def current_rating(self):
+        if not self.pk:
+            return self.rating
+
+        from apps.booking.models import Review
+        from django.db.models import Avg
+
+        live_rating = Review.objects.filter(
+            booking__tour=self,
+        ).aggregate(value=Avg('rating'))['value']
+        return round(float(live_rating), 1) if live_rating is not None else self.rating
+
 
 
 
@@ -356,10 +401,25 @@ class Testimonial(models.Model):
 
 
 class Stat(models.Model):
-    value = models.IntegerField()
+    METRIC_CHOICES = [
+        ("manual", "Manually maintained"),
+        ("tours", "Total tours"),
+        ("destinations", "Total destinations"),
+        ("travelers", "Total travelers"),
+        ("satisfaction", "Customer satisfaction"),
+    ]
+
+    value = models.IntegerField(
+        help_text="Used for manually maintained stats and as the satisfaction fallback before reviews exist."
+    )
     suffix = models.CharField(max_length=10, default='+')
     prefix = models.CharField(max_length=10, blank=True)
     label = models.CharField(max_length=100)
+    metric = models.CharField(
+        max_length=20,
+        choices=METRIC_CHOICES,
+        default="manual",
+    )
     order = models.IntegerField(default=0)
 
     class Meta:
@@ -393,5 +453,3 @@ class Blog(models.Model):
 
 
   # Change this path to match your Destination model location
-
-

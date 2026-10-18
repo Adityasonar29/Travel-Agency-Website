@@ -1,0 +1,9 @@
+{% extends "emails/base.html" %}
+{% block eyebrow %}Account update{% endblock %}
+{% block heading %}Your VOYAGE account is active again.{% endblock %}
+{% block body %}
+<p class="intro">Hello {{ user_name|default:'Traveller' }},</p>
+<p>An administrator has reactivated your VOYAGE account. You can now sign in and continue managing your journeys.</p>
+<a class="button" href="{{ login_url }}">Sign in to VOYAGE →</a>
+<div class="note">If you did not expect this change or need help, contact {{ support_email|default:'our support team' }}.</div>
+{% endblock %}

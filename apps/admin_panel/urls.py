@@ -22,5 +22,6 @@ urlpatterns = [
     path("payments/", views.payments, name="payments"),
     path("invoices/", views.invoices, name="invoices"),
     path("communications/", views.communications, name="communications"),
+    path("communications/compose/", views.compose_message, name="compose_message"),
     path("communications/<int:pk>/reply/", views.reply_to_contact, name="reply_to_contact"),
 ]

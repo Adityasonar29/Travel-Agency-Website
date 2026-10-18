@@ -9,22 +9,12 @@
 
         <!-- Clean Stats Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 scroll-reveal" style="opacity:0;">
+            {% for stat in site_stats %}
             <div class="text-center p-8 bg-cream rounded-sm">
-                <p class="text-3xl md:text-4xl font-heading font-light text-gold mb-2">50+</p>
-                <p class="text-xs font-body text-ink-muted tracking-[0.15em] uppercase">Countries</p>
+                <p class="text-3xl md:text-4xl font-heading font-light text-gold mb-2">{{ stat.display_value }}</p>
+                <p class="text-xs font-body text-ink-muted tracking-[0.15em] uppercase">{{ stat.label }}</p>
             </div>
-            <div class="text-center p-8 bg-cream rounded-sm">
-                <p class="text-3xl md:text-4xl font-heading font-light text-gold mb-2">200+</p>
-                <p class="text-xs font-body text-ink-muted tracking-[0.15em] uppercase">Curated Routes</p>
-            </div>
-            <div class="text-center p-8 bg-cream rounded-sm">
-                <p class="text-3xl md:text-4xl font-heading font-light text-gold mb-2">500+</p>
-                <p class="text-xs font-body text-ink-muted tracking-[0.15em] uppercase">Destinations</p>
-            </div>
-            <div class="text-center p-8 bg-cream rounded-sm">
-                <p class="text-3xl md:text-4xl font-heading font-light text-gold mb-2">24/7</p>
-                <p class="text-xs font-body text-ink-muted tracking-[0.15em] uppercase">Concierge</p>
-            </div>
+            {% endfor %}
         </div>
 
         <div class="text-center scroll-reveal" style="opacity:0;">

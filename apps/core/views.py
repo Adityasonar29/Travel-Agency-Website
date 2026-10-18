@@ -15,7 +15,6 @@ from .models import (
     Experience,
     FunFact,
     MarqueeWord,
-    Stat,
     Testimonial,
     Tour,
 )
@@ -33,7 +32,6 @@ def home(request):
     experiences = Experience.objects.all()[:4]
     funfacts = FunFact.objects.all()[:6]
     testimonials = Testimonial.objects.filter(is_active=True)
-    stats = Stat.objects.all()[:4]
     marquee_words = MarqueeWord.objects.all()[:8]
 
     if not destinations.exists():
@@ -44,8 +42,6 @@ def home(request):
         funfacts = _sample_funfacts()
     if not testimonials.exists():
         testimonials = _sample_testimonials()
-    if not stats.exists():
-        stats = _sample_stats()
     if not marquee_words.exists():
         marquee_words = _sample_marquee()
 
@@ -57,7 +53,6 @@ def home(request):
             "experiences": experiences,
             "funfacts": funfacts,
             "testimonials": testimonials,
-            "stats": stats,
             "marquee_words": marquee_words,
             "show_loading": True,  # Only home page gets loading screen
         },
@@ -117,19 +112,13 @@ def about_page(request):
         about = AboutPage.load()
         print(about)
 
-        stats = Stat.objects.all()[:4]
-
         testimonials = Testimonial.objects.filter(is_active=True)[:3]
-
-        if not stats.exists():
-            stats = _sample_stats()
 
         if not testimonials.exists():
             testimonials = _sample_testimonials()
 
         context = {
             "about": about,
-            "stats": stats,
             "testimonials": testimonials,
             "show_loading": False,
         }
@@ -159,6 +148,8 @@ def contact_page(request):
                 "email": contact_message.email,
                 "subject": contact_message.subject,
                 "message": contact_message.message,
+                "contact_subject": contact_message.subject,
+                "contact_message": contact_message.message,
                 "site_name": getattr(request.site_settings, "site_name", "VOYAGE")
                 if hasattr(request, "site_settings")
                 else "VOYAGE",
@@ -175,11 +166,11 @@ def contact_page(request):
 
             customer_context = {
                 "name": contact_message.name,
-                "subject": contact_message.subject,
+                "contact_subject": contact_message.subject,
                 "site_name": getattr(request.site_settings, "site_name", "VOYAGE")
                 if hasattr(request, "site_settings")
                 else "VOYAGE",
-                "message": contact_message.message,
+                "contact_message": contact_message.message,
                 "_email_event": "contact_received_customer",
             }
             mailer.send_contact_auto_reply(contact_message.email, customer_context)
@@ -1021,15 +1012,6 @@ def _sample_testimonials():
             author_destination="Amalfi Coast, Italy",
             author_image="",
         ),
-    ]
-
-
-def _sample_stats():
-    return [
-        _S(value=500, suffix="+", prefix="", label="Destinations"),
-        _S(value=12, suffix="K+", prefix="", label="Happy Travelers"),
-        _S(value=98, suffix="%", prefix="", label="Satisfaction"),
-        _S(value=15, suffix="+", prefix="", label="Years Experience"),
     ]
 
 

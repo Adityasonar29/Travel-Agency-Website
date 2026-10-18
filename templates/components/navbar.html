@@ -56,11 +56,12 @@
                        style="opacity:0;transform:translateY(30px);">
                         My Profile
                     </a>
-                    <a href="{% url 'accounts:logout' %}"
+                    <button type="button"
+                       data-open-logout-confirmation
                        class="menu-link text-sm font-body text-gold tracking-[0.2em] uppercase border border-gold px-8 py-3 hover:bg-gold hover:text-ink transition-all duration-300"
                        style="opacity:0;transform:translateY(30px);">
                         Logout
-                    </a>
+                    </button>
                 {% else %}
                     <a href="{% url 'accounts:login' %}"
                        class="menu-link text-sm font-body text-gold tracking-[0.2em] uppercase border border-gold px-8 py-3 hover:bg-gold hover:text-ink transition-all duration-300"

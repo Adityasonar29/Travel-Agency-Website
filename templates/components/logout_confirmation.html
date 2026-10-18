@@ -1,0 +1,53 @@
+<dialog id="logout-confirmation" class="logout-confirmation" aria-labelledby="logout-confirmation-title">
+    <div class="logout-confirmation__content">
+        <span class="logout-confirmation__eyebrow">VOYAGE account</span>
+        <h2 id="logout-confirmation-title">Ready to log out?</h2>
+        <p>You can sign back in anytime to continue managing your journeys.</p>
+        <div class="logout-confirmation__actions">
+            <button type="button" class="logout-confirmation__cancel" data-close-logout-confirmation>Stay signed in</button>
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-confirmation__submit">Yes, log out</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<style>
+.logout-confirmation{width:min(440px,calc(100% - 32px));max-width:440px;margin:auto;padding:0;border:1px solid #c8a96e;background:#fffefb;color:#1d1c19;box-shadow:0 24px 80px rgba(0,0,0,.32)}
+.logout-confirmation::backdrop{background:rgba(17,16,14,.68);backdrop-filter:blur(4px)}
+.logout-confirmation__content{padding:32px}
+.logout-confirmation__eyebrow{color:#8d8377;font:500 10px "DM Sans",Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase}
+.logout-confirmation h2{margin:10px 0;color:#1d1c19;font:500 34px/1.1 "Cormorant Garamond",Georgia,serif}
+.logout-confirmation p{margin:0;color:#756d63;font:14px/1.65 "DM Sans",Arial,sans-serif}
+.logout-confirmation__actions{display:flex;justify-content:flex-end;gap:10px;margin-top:26px}
+.logout-confirmation__actions button{min-height:42px;padding:0 15px;font:500 11px "DM Sans",Arial,sans-serif;letter-spacing:.06em;cursor:pointer}
+.logout-confirmation__actions form{margin:0}
+.logout-confirmation__cancel{border:1px solid #ddd5c8;background:transparent;color:#514b43}
+.logout-confirmation__cancel:hover{background:#f3efe8}
+.logout-confirmation__submit{border:1px solid #1d1c19;background:#1d1c19;color:#fffefb}
+.logout-confirmation__submit:hover{border-color:#9b463d;background:#9b463d}
+@media(max-width:480px){.logout-confirmation__content{padding:24px}.logout-confirmation__actions{flex-direction:column-reverse}.logout-confirmation__actions button{width:100%}}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const dialog = document.getElementById("logout-confirmation");
+    const openButton = document.querySelector("[data-open-logout-confirmation]");
+    if (!dialog || !openButton) return;
+
+    openButton.addEventListener("click", function () {
+        const menuOverlay = document.getElementById("menu-overlay");
+        if (menuOverlay && menuOverlay.classList.contains("active")) {
+            window.toggleMenu();
+        }
+        dialog.showModal();
+    });
+    dialog.querySelector("[data-close-logout-confirmation]").addEventListener("click", function () {
+        dialog.close();
+    });
+    dialog.addEventListener("click", function (event) {
+        if (event.target === dialog) dialog.close();
+    });
+});
+</script>

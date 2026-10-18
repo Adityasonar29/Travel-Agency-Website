@@ -22,6 +22,8 @@
         if (!form || form.dataset.submitting === 'true') return;
 
         form.dataset.submitting = 'true';
+        const dialog = form.closest('dialog');
+        if (dialog) dialog.classList.add('is-submitting');
         const submitButton = form.querySelector('button[type="submit"]');
         if (submitButton) {
             submitButton.disabled = true;

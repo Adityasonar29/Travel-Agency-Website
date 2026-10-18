@@ -1,0 +1,244 @@
+{% extends "admin_panel/layouts/base.html" %}
+{% block title %}Communications{% endblock %}
+{% block extra_css %}
+<style>
+.communication-center{--cc-paper:#f6f3ed;--cc-card:#fffefb;--cc-ink:#1d1c19;--cc-muted:#8d8377;--cc-gold:#c5a15e;--cc-line:#ddd5c8;color:var(--cc-ink);margin-right:18px}
+.communication-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:28px}
+.communication-head .breadcrumb{margin-bottom:9px;color:var(--cc-muted);font-size:12px}
+.communication-head h1{margin:0;color:var(--cc-ink);font:500 clamp(38px,5vw,58px)/.98 "Cormorant Garamond",Georgia,serif}
+.communication-head p{margin:12px 0 0;color:var(--cc-muted);font-size:14px}
+.compose-trigger{flex:0 0 auto;background:#1d1c19!important;color:#fffefb!important;border-color:#1d1c19!important}
+.compose-trigger:hover{background:#51483d!important;color:#fff!important}
+.communication-summary{display:flex;align-items:center;gap:8px;margin:18px 0 22px;color:var(--cc-muted);font-size:12px}
+.communication-summary strong{color:#886a36;font-weight:600}
+.communication-tabs{display:flex;gap:5px;overflow-x:auto;border-bottom:1px solid var(--cc-line);margin-bottom:18px}
+.communication-tabs a{display:flex;align-items:center;gap:8px;flex:0 0 auto;padding:12px 15px;border-bottom:2px solid transparent;color:#72695e;font-size:12px;text-decoration:none}
+.communication-tabs a:hover{color:var(--cc-ink)}
+.communication-tabs a[aria-current=page]{border-color:var(--cc-gold);color:var(--cc-ink)}
+.tab-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:20px;background:#f1e7d5;color:#765b2e;font-size:10px}
+.communication-panel{margin:0 0 28px;padding:0!important;background:var(--cc-card)!important;border-color:var(--cc-line)!important}
+.communication-panel-head{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 24px 16px}
+.communication-panel-head h2{margin:0;color:var(--cc-ink);font:500 27px/1.1 "Cormorant Garamond",Georgia,serif}
+.communication-panel-head p{margin:5px 0 0;color:var(--cc-muted);font-size:12px}
+.communication-tools{display:flex;gap:8px;align-items:center;padding:0 24px 17px}
+.communication-tools input{width:min(360px,100%);min-height:40px;padding:9px 12px;border:1px solid var(--cc-line);background:#fffefb;color:var(--cc-ink);font:inherit}
+.communication-tools button{min-height:40px}
+.communication-table{width:100%;border-collapse:collapse}
+.communication-table th{padding:11px 15px;border-top:1px solid #eee8de;border-bottom:1px solid var(--cc-line);color:var(--cc-muted);font-size:9px;font-weight:500;letter-spacing:.14em;text-align:left;text-transform:uppercase}
+.communication-table td{padding:14px 15px;border-bottom:1px solid #eee8de;vertical-align:middle;font-size:12px}
+.communication-table tr:last-child td{border-bottom:0}
+.message-open{display:block;max-width:100%;padding:0;border:0;background:none;color:var(--cc-ink);font:500 13px/1.4 "DM Sans",Arial,sans-serif;text-align:left;cursor:pointer}
+.message-open:hover{color:#8c6931}
+.message-preview{display:block;max-width:440px;margin-top:4px;overflow:hidden;color:var(--cc-muted);text-overflow:ellipsis;white-space:nowrap;font-size:11px}
+.message-contact{min-width:150px}
+.message-contact strong,.message-contact span{display:block}
+.message-contact span{margin-top:3px;color:var(--cc-muted);overflow-wrap:anywhere}
+.message-time{white-space:nowrap;color:#756d63;font-size:11px}
+.delivery-status{display:inline-flex;padding:5px 9px;border:1px solid #c5d6c8;border-radius:30px;color:#52745b;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.delivery-status.failed{border-color:#dfc2bc;color:#a05e53}
+.needs-reply{display:inline-flex;padding:5px 9px;border:1px solid #e0cda8;border-radius:30px;color:#8b6a32;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.communication-pagination{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-top:1px solid #eee8de;color:var(--cc-muted);font-size:11px}
+.communication-pagination a{color:#665a49;text-decoration:none}
+.communication-empty{padding:38px 24px!important;color:var(--cc-muted)!important;text-align:center}
+.communication-dialog{position:fixed;inset:auto;top:50%;left:50%;transform:translate(-50%,-50%);margin:0;width:min(920px,calc(100% - 32px));max-width:920px;max-height:calc(100% - 32px);overflow-y:auto;border:1px solid var(--cc-line);padding:0;background:var(--cc-card);color:var(--cc-ink);box-shadow:0 20px 70px rgba(31,29,25,.2)}
+.communication-dialog::backdrop{background:rgba(27,25,21,.48)}
+.dialog-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding:22px 26px;border-bottom:1px solid var(--cc-line)}
+.dialog-head h2{margin:4px 0 0;overflow-wrap:anywhere;font:500 30px/1.1 "Cormorant Garamond",Georgia,serif}
+.dialog-kicker,.dialog-label{display:block;color:var(--cc-muted);font-size:9px;letter-spacing:.14em;text-transform:uppercase}
+.dialog-close{border:1px solid var(--cc-line);background:transparent;padding:8px 11px;color:var(--cc-ink);cursor:pointer}
+.dialog-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:18px 26px;border-bottom:1px solid var(--cc-line)}
+.dialog-meta strong{display:block;margin-top:6px;overflow-wrap:anywhere;font-size:12px;font-weight:500}
+.conversation-split{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--cc-line)}
+.conversation-pane{min-width:0;min-height:180px;padding:23px 26px;background:var(--cc-card)}
+.conversation-pane--reply{background:#f8f5ee}
+.conversation-pane p,.email-message{margin:12px 0 0;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.75;color:#514b43;font-size:13px}
+.reply-timestamp{display:block;margin-top:13px;color:var(--cc-muted);font-size:10px}
+.reply-form,.compose-form{padding:20px 26px;border-top:1px solid var(--cc-line)}
+.reply-form label,.compose-form label{display:block;margin:0 0 6px;color:var(--cc-muted);font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+.reply-form input,.reply-form textarea,.compose-form input,.compose-form textarea{display:block;width:100%;box-sizing:border-box;padding:11px 12px;margin:0 0 13px;border:1px solid var(--cc-line);background:#fffefb;color:var(--cc-ink);font:13px/1.5 "DM Sans",Arial,sans-serif}
+.reply-form textarea,.compose-form textarea{resize:vertical;min-height:125px}
+.reply-form button,.compose-form button{margin-top:2px}
+.compose-dialog{width:min(620px,calc(100% - 32px))}
+.dialog-loading{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:rgba(255,254,251,.94);color:var(--cc-ink);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.communication-dialog.is-submitting .dialog-loading{display:flex}
+.dialog-loading-spinner{width:42px;height:42px;border:3px solid rgba(197,161,94,.22);border-top-color:var(--cc-gold);border-right-color:#9b783c;border-radius:50%;animation:voyage-loader-spin .75s linear infinite}
+.email-content{padding:24px 26px}
+.email-message{margin:0}
+@media(max-width:760px){.communication-center{margin-right:0}.communication-head{align-items:flex-start;flex-direction:column}.communication-panel-head{padding:18px 16px 13px}.communication-tools{padding:0 16px 14px}.communication-table{min-width:620px}.communication-table-wrap{overflow-x:auto}.dialog-meta,.conversation-split{grid-template-columns:1fr}.dialog-head,.dialog-meta,.conversation-pane,.reply-form,.compose-form,.email-content{padding:17px}.communication-pagination{padding:13px 16px}}
+</style>
+{% endblock %}
+{% block content %}
+<main class="communication-center">
+    <header class="communication-head">
+        <div>
+            <div class="breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> / Communications</div>
+            <h1>Communications</h1>
+            <p>Manage customer enquiries and your conversations.</p>
+        </div>
+        <button class="btn compose-trigger" type="button" data-open-dialog="compose-dialog">Compose message</button>
+    </header>
+
+    <div class="communication-summary">
+        <strong>{{ inbox_count }}</strong> enquiries need a reply
+        <span aria-hidden="true">·</span> {{ sent_count }} sent email records
+    </div>
+
+    <nav class="communication-tabs" aria-label="Communication folders">
+        <a href="?tab=inbox" {% if active_tab == "inbox" %}aria-current="page"{% endif %}>Inbox <span class="tab-count">{{ inbox_count }}</span></a>
+        <a href="?tab=sent" {% if active_tab == "sent" %}aria-current="page"{% endif %}>Sent <span class="tab-count">{{ sent_count }}</span></a>
+        <a href="?tab=contacts" {% if active_tab == "contacts" %}aria-current="page"{% endif %}>Contact enquiries <span class="tab-count">{{ contact_count }}</span></a>
+    </nav>
+
+    {% if active_tab == "inbox" or active_tab == "contacts" %}
+    <section class="panel communication-panel">
+        <div class="communication-panel-head">
+            <div>
+                <h2>{% if active_tab == "inbox" %}Inbox{% else %}Contact enquiries{% endif %}</h2>
+                <p>{% if active_tab == "inbox" %}Customer enquiries that still need a response.{% else %}All messages submitted through the website contact form.{% endif %}</p>
+            </div>
+        </div>
+        <form class="communication-tools" method="get">
+            <input type="hidden" name="tab" value="{{ active_tab }}">
+            <input name="q" value="{{ query }}" placeholder="Search sender, email, subject or message" aria-label="Search messages">
+            <button class="btn btn-small" type="submit">Search</button>
+            {% if query %}<a class="btn btn-small" href="?tab={{ active_tab }}">Clear</a>{% endif %}
+        </form>
+        <div class="communication-table-wrap">
+            <table class="communication-table">
+                <thead><tr><th>From</th><th>Subject and message</th><th>Received</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for contact in contact_messages %}
+                    <tr>
+                        <td><div class="message-contact"><strong>{{ contact.name }}</strong><span>{{ contact.email }}</span></div></td>
+                        <td><button type="button" class="message-open" data-open-dialog="contact-dialog-{{ contact.pk }}">{{ contact.subject }}</button><span class="message-preview">{{ contact.message }}</span></td>
+                        <td class="message-time">{{ contact.created_at|date:"d M Y, H:i" }}</td>
+                        <td>{% if contact.is_replied %}<span class="delivery-status">Replied</span>{% else %}<span class="needs-reply">Needs reply</span>{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="communication-empty">{% if active_tab == "inbox" %}No enquiries are waiting for a reply.{% else %}No contact enquiries match your search.{% endif %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    {% for contact in contact_messages %}
+    <dialog id="contact-dialog-{{ contact.pk }}" class="communication-dialog">
+        <div class="dialog-head">
+            <div><span class="dialog-kicker">Contact enquiry</span><h2>{{ contact.subject }}</h2></div>
+            <button type="button" class="dialog-close" data-close-dialog>Close</button>
+        </div>
+        <div class="dialog-meta">
+            <div><span class="dialog-kicker">From customer</span><strong>{{ contact.name }} · {{ contact.email }}</strong></div>
+            <div><span class="dialog-kicker">Subject</span><strong>{{ contact.subject }}</strong></div>
+            <div><span class="dialog-kicker">Received</span><strong>{{ contact.created_at|date:"d M Y, H:i" }}</strong></div>
+        </div>
+        <div class="conversation-split">
+            <div class="conversation-pane">
+                <span class="dialog-label">Customer message</span>
+                <p>{{ contact.message }}</p>
+            </div>
+            <div class="conversation-pane conversation-pane--reply">
+                <span class="dialog-label">Your reply{% if contact.replied_at %} · Sent {{ contact.replied_at|date:"d M Y, H:i" }}{% endif %}</span>
+                <p>{% if contact.reply_body %}{{ contact.reply_body }}{% else %}No reply has been sent yet.{% endif %}</p>
+            </div>
+        </div>
+        <div class="dialog-meta">
+            <div><span class="dialog-kicker">Reply from</span><strong>{{ contact.reply_sender }}</strong></div>
+            <div><span class="dialog-kicker">Reply to</span><strong>{{ contact.email }}</strong></div>
+            <div><span class="dialog-kicker">Reply subject</span><strong>{{ contact.reply_subject|default:"Not sent yet" }}</strong></div>
+        </div>
+        <form method="post" action="{% url 'admin_panel:reply_to_contact' contact.pk %}" class="reply-form" data-voyage-loading-form>
+            {% csrf_token %}
+            <label for="reply-subject-{{ contact.pk }}">Reply subject</label>
+            <input id="reply-subject-{{ contact.pk }}" type="text" name="subject" value="{% if contact.reply_subject %}{{ contact.reply_subject }}{% else %}Re: {{ contact.subject }}{% endif %}" required>
+            <label for="reply-body-{{ contact.pk }}">Reply</label>
+            <textarea id="reply-body-{{ contact.pk }}" name="reply_body" required placeholder="Write a thoughtful reply..."></textarea>
+            <button class="btn btn-primary btn-small" type="submit">Send reply</button>
+        </form>
+        <div class="dialog-loading" aria-hidden="true"><span class="dialog-loading-spinner"></span><span>Sending reply</span></div>
+    </dialog>
+    {% endfor %}
+    {% else %}
+    <section class="panel communication-panel">
+        <div class="communication-panel-head">
+            <div><h2>Sent email</h2><p>Delivered and failed email messages sent by VOYAGE.</p></div>
+        </div>
+        <form class="communication-tools" method="get">
+            <input type="hidden" name="tab" value="sent">
+            <input name="q" value="{{ query }}" placeholder="Search recipient, subject or message" aria-label="Search sent email">
+            <button class="btn btn-small" type="submit">Search</button>
+            {% if query %}<a class="btn btn-small" href="?tab=sent">Clear</a>{% endif %}
+        </form>
+        <div class="communication-table-wrap">
+            <table class="communication-table">
+                <thead><tr><th>To</th><th>Subject and message</th><th>Sent</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for email in email_logs %}
+                    <tr>
+                        <td><div class="message-contact"><strong>{{ email.recipient }}</strong><span>From {{ email.display_sender }}</span></div></td>
+                        <td><button type="button" class="message-open" data-open-dialog="email-dialog-{{ email.pk }}">{{ email.subject }}</button><span class="message-preview">{{ email.display_body }}</span></td>
+                        <td class="message-time">{{ email.sent_at|date:"d M Y, H:i"|default:"Not sent" }}</td>
+                        <td><span class="delivery-status {% if email.status == 'failed' %}failed{% endif %}">{{ email.get_status_display }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="communication-empty">No sent email matches your search.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    {% for email in email_logs %}
+    <dialog id="email-dialog-{{ email.pk }}" class="communication-dialog">
+        <div class="dialog-head">
+            <div><span class="dialog-kicker">Email delivery details</span><h2>{{ email.subject }}</h2></div>
+            <button type="button" class="dialog-close" data-close-dialog>Close</button>
+        </div>
+        <div class="dialog-meta">
+            <div><span class="dialog-kicker">From</span><strong>{{ email.display_sender }}</strong></div>
+            <div><span class="dialog-kicker">To</span><strong>{{ email.recipient }}</strong></div>
+            <div><span class="dialog-kicker">Time sent</span><strong>{{ email.sent_at|date:"d M Y, H:i"|default:"Not sent" }}</strong></div>
+        </div>
+        <div class="email-content"><span class="dialog-label">Message</span><p class="email-message">{{ email.display_body|default:"No message content is available for this email." }}</p></div>
+    </dialog>
+    {% endfor %}
+    {% endif %}
+
+    <dialog id="compose-dialog" class="communication-dialog compose-dialog">
+        <div class="dialog-head">
+            <div><span class="dialog-kicker">New email</span><h2>Compose message</h2></div>
+            <button type="button" class="dialog-close" data-close-dialog>Close</button>
+        </div>
+        <form method="post" action="{% url 'admin_panel:compose_message' %}" class="compose-form" data-voyage-loading-form>
+            {% csrf_token %}
+            <label for="compose-recipient">Recipient email</label>
+            <input id="compose-recipient" type="email" name="recipient" required>
+            <label for="compose-subject">Subject</label>
+            <input id="compose-subject" type="text" name="subject" maxlength="255" required>
+            <label for="compose-body">Message</label>
+            <textarea id="compose-body" name="body" required placeholder="Write your message..."></textarea>
+            <button class="btn btn-primary btn-small" type="submit">Send email</button>
+        </form>
+        <div class="dialog-loading" aria-hidden="true"><span class="dialog-loading-spinner"></span><span>Sending email</span></div>
+    </dialog>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('[data-open-dialog]').forEach((button) => {
+    button.addEventListener('click', () => {
+        const dialog = document.getElementById(button.dataset.openDialog);
+        if (dialog) dialog.showModal();
+    });
+});
+document.querySelectorAll('[data-close-dialog]').forEach((button) => {
+    button.addEventListener('click', () => button.closest('dialog').close());
+});
+document.querySelectorAll('dialog').forEach((dialog) => {
+    dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.close();
+    });
+});
+</script>
+{% endblock %}

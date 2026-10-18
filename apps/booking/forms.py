@@ -26,11 +26,11 @@ class BookingForm(forms.ModelForm):
 
     BUDGET_CHOICES = [
         ('', 'Select budget range'),
-        ('budget', 'Budget Friendly — Rs. 25,000-45,000'),
-        ('mid', 'Mid Range — Rs. 45,000-75,000'),
-        ('premium', 'Premium — Rs. 75,000-1,20,000'),
-        ('luxury', 'Luxury — Rs. 1,20,000-2,50,000'),
-        ('ultra', 'Ultra Luxury — Rs. 2,50,000+'),
+        ('budget', 'Budget Friendly — $300-550'),
+        ('mid', 'Mid Range — $550-900'),
+        ('premium', 'Premium — $900-1,450'),
+        ('luxury', 'Luxury — $1,450-3,000'),
+        ('ultra', 'Ultra Luxury — $3,000+'),
     ]
 
     request_type = forms.CharField(

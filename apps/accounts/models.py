@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import AbstractUser
@@ -25,6 +26,21 @@ class User(AbstractUser):
         
     def __str__(self):
         return self.get_full_name() or self.username
+
+
+class PasswordResetPin(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="password_reset_pin",
+    )
+    pin_hash = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    attempts = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return f"Password reset PIN for {self.user_id}"
 
 
 class WishlistItem(models.Model):

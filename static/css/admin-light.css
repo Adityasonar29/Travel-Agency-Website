@@ -104,3 +104,36 @@ label{font-size:11px!important;text-transform:uppercase;letter-spacing:.12em;col
 .revenue-section .revenue-chart{min-height:190px!important;margin-top:28px!important;padding:22px 18px 12px!important;background:#fffefc!important;border:1px solid #e5ded2!important;border-radius:2px}
 .revenue-section .revenue-bar{height:min(100%,max(4px,calc(var(--bar-height) * 1%)))!important}
 .admin-profile .profile-role{display:block!important}
+
+/* Final admin shell fixes */
+.sidebar{overflow:hidden!important}
+.sidebar>div:first-child{min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;flex:1 1 auto!important}
+.sidebar>div:first-child::-webkit-scrollbar{width:6px}
+.sidebar>div:first-child::-webkit-scrollbar-thumb{background:#d8bd8c;border-radius:10px}
+.sidebar>div:last-child{flex:0 0 auto!important;background:#f3f0e9!important}
+.sidebar img{display:block!important;width:48px!important;height:48px!important;max-width:48px!important;max-height:48px!important;object-fit:cover!important;border-radius:50%!important;overflow:hidden!important}
+.admin-profile .profile-image{width:40px!important;height:40px!important;display:grid!important;place-items:center!important;overflow:hidden!important;border-radius:50%!important;flex:0 0 40px!important}
+.admin-profile .profile-image img{display:block!important;width:40px!important;height:40px!important;max-width:40px!important;max-height:40px!important;object-fit:cover!important;border-radius:50%!important}
+.admin-profile .profile-fallback-avatar{width:40px!important;height:40px!important}
+.admin-flash-message{background:#fffefa!important;color:#4c463d!important;border:1px solid #d9d1c4!important;border-left:3px solid #b89458!important;padding:13px 16px!important;border-radius:2px!important;margin-bottom:10px!important}
+.form-actions{margin-top:34px!important;padding-top:24px!important;border-top:1px solid var(--voyage-line)!important;gap:14px!important}
+.form-actions .btn:first-child{color:#98584e!important;border-color:#d3aaa3!important;background:#fff8f5!important}
+.form-actions .btn:first-child:hover{background:#b86a5e!important;border-color:#b86a5e!important;color:#fff!important}
+.form-actions .btn.btn-gold,.form-actions button{background:#526f5c!important;border-color:#526f5c!important;color:#fff!important}
+.form-actions .btn.btn-gold:hover,.form-actions button:hover{background:#6d8f75!important;border-color:#6d8f75!important}
+.page-head{padding-top:12px!important}
+.communications-panel{margin-right:18px!important}
+.communications-panel+.panel{margin-right:18px!important}
+.admin-topbar .admin-profile .profile-image{display:grid!important;width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;max-height:40px!important;flex:0 0 40px!important;overflow:hidden!important;border-radius:50%!important;line-height:0!important}
+.admin-topbar .admin-profile .profile-image img.profile-avatar{display:block!important;position:static!important;width:40px!important;height:40px!important;min-width:40px!important;max-width:40px!important;min-height:40px!important;max-height:40px!important;object-fit:cover!important;object-position:center!important;border:0!important;border-radius:50%!important}
+.sidebar{overflow:hidden!important}
+.sidebar>div:first-child{min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+.sidebar>div:last-child{flex-shrink:0!important}
+.form-actions{margin-top:38px!important;padding-top:26px!important;gap:14px!important}
+.form-actions .btn:first-child{background:#4c3836!important;border-color:#4c3836!important;color:#fff!important}
+.form-actions .btn:first-child:hover{background:#70504c!important;border-color:#70504c!important;color:#fff!important}
+.form-actions .btn.btn-gold,.form-actions button{background:#405648!important;border-color:#405648!important;color:#fff!important}
+.form-actions .btn.btn-gold:hover,.form-actions button:hover{background:#607b68!important;border-color:#607b68!important}
+.destination-form-grid .field .help{color:var(--voyage-muted)!important;font-size:12px!important;line-height:1.5!important}
+.map-link{display:inline-flex!important;margin-top:8px!important}
+.admin-flash-message{background:#fffefa!important;color:#4c463d!important;border:1px solid #d9d1c4!important;border-left:3px solid #b89458!important}

@@ -1,0 +1,8 @@
+{% extends "emails/base.html" %}
+{% block eyebrow %}Account update{% endblock %}
+{% block heading %}Your account is currently deactivated.{% endblock %}
+{% block body %}
+<p class="intro">Hello {{ user_name|default:'Traveller' }},</p>
+<p>Your VOYAGE account has been deactivated by an administrator, so sign-in is temporarily unavailable.</p>
+<div class="note">Your booking records and payment history remain preserved. Contact our team if you believe this was unexpected or if you would like to request reactivation.</div>
+{% endblock %}

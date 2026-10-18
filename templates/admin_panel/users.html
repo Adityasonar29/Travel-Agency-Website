@@ -1,1 +1,49 @@
-{% extends "admin_panel/layouts/base.html" %}{% block title %}Users{% endblock %}{% block content %}<div class="page-head"><div><div class="eyebrow">People</div><h1>Users</h1><p>Manage customer accounts and protect administrator access.</p></div></div><div class="panel"><form class="toolbar"><input class="search" name="q" value="{{ query }}" placeholder="Search name, username, email..."><button class="btn btn-gold">Search</button></form><div class="table-wrap"><table class="data-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Account</th><th>Actions</th></tr></thead><tbody>{% for user in users %}<tr><td><strong>{{ user.get_full_name|default:user.username }}</strong><br><span class="muted">@{{ user.username }}</span></td><td>{{ user.email|default:"—" }}</td><td>{% if user.is_superuser or user.is_staff %}<span class="badge confirmed">Administrator</span>{% else %}<span class="badge">Customer</span>{% endif %}</td><td>{{ user.date_joined|date:"d M Y" }}</td><td><span class="badge {% if user.is_active %}active{% else %}inactive{% endif %}">{% if user.is_active %}Active{% else %}Inactive{% endif %}</span></td><td><div class="actions"><form method="post" action="{% url 'admin_panel:toggle_user' user.pk %}">{% csrf_token %}<button class="btn btn-small" {% if user.pk == request.user.pk %}disabled{% endif %}>{% if user.is_active %}Deactivate{% else %}Activate{% endif %}</button></form>{% if not user.is_superuser and user.pk != request.user.pk %}<form method="post" action="{% url 'admin_panel:delete_user' user.pk %}" onsubmit="return confirm('Delete this user and their account?')">{% csrf_token %}<button class="btn btn-small btn-danger">Delete</button></form>{% endif %}</div></td></tr>{% empty %}<tr><td colspan="6" class="empty">No users found.</td></tr>{% endfor %}</tbody></table></div></div>{% endblock %}
+{% extends "admin_panel/layouts/base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="page-head">
+    <div>
+        <div class="eyebrow">People</div>
+        <h1>Users</h1>
+        <p>Manage customer accounts and protect administrator access. Deleting an account removes its personal data while retaining anonymized booking and payment records.</p>
+    </div>
+</div>
+<div class="panel">
+    <form class="toolbar">
+        <input class="search" name="q" value="{{ query }}" placeholder="Search name, username, email...">
+        <button class="btn btn-gold">Search</button>
+    </form>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Account</th><th>Actions</th></tr></thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td><strong>{{ user.get_full_name|default:user.username }}</strong><br><span class="muted">@{{ user.username }}</span></td>
+                    <td>{{ user.email|default:"—" }}</td>
+                    <td>{% if user.is_superuser or user.is_staff %}<span class="badge confirmed">Administrator</span>{% else %}<span class="badge">Customer</span>{% endif %}</td>
+                    <td>{{ user.date_joined|date:"d M Y" }}</td>
+                    <td><span class="badge {% if user.is_active %}active{% else %}inactive{% endif %}">{% if user.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+                    <td>
+                        <div class="actions">
+                            <form method="post" action="{% url 'admin_panel:toggle_user' user.pk %}">
+                                {% csrf_token %}
+                                <button class="btn btn-small" {% if user.pk == request.user.pk %}disabled{% endif %}>{% if user.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+                            </form>
+                            {% if not user.is_superuser and user.pk != request.user.pk %}
+                            <form method="post" action="{% url 'admin_panel:delete_user' user.pk %}" onsubmit="return confirm('Permanently delete this account and erase its personal data? Anonymized booking and payment records will be retained.')">
+                                {% csrf_token %}
+                                <button class="btn btn-small btn-danger">Delete</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="empty">No users found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

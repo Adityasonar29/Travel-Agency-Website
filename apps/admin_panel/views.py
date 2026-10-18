@@ -1,14 +1,19 @@
 import os
 from calendar import month_abbr
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.db import transaction
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db.models import Q, Sum
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import User
@@ -163,7 +168,60 @@ def delete_user(request, pk):
         messages.error(request, "Your account and superuser accounts cannot be deleted here.")
     else:
         username = user.get_username()
-        user.delete()
+        email = user.email
+        profile_image = user.profile_image
+        booking_ids = list(
+            user.bookings.exclude(booking_id__isnull=True)
+            .values_list("booking_id", flat=True)
+        )
+        invoice_paths = list(
+            user.bookings.exclude(invoice_pdf_path__isnull=True)
+            .exclude(invoice_pdf_path="")
+            .values_list("invoice_pdf_path", flat=True)
+        )
+        with transaction.atomic():
+            user.bookings.update(
+                user=None,
+                full_name="Deleted account",
+                email="",
+                phone="",
+                budget_range="",
+                travel_style="",
+                special_requests="",
+                origin="",
+                flexible_dates=False,
+                trip_purpose="",
+                accommodation="",
+                transport_preferences="",
+                experience_preferences="",
+                dietary_requirements="",
+                accessibility_requirements="",
+                additional_notes="",
+                contact_preference="email",
+                cancellation_reason="",
+                invoice_email="",
+                invoice_pdf_path=None,
+            )
+            if email:
+                ContactMessage.objects.filter(email__iexact=email).delete()
+                EmailLog.objects.filter(recipient__iexact=email).delete()
+            for booking_id in booking_ids:
+                EmailLog.objects.filter(body_text__icontains=booking_id).delete()
+            user.delete()
+        for invoice_path in invoice_paths:
+            file_path = os.path.join(
+                settings.MEDIA_ROOT, "invoices", os.path.basename(invoice_path)
+            )
+            try:
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            except OSError as exc:
+                messages.warning(request, f"Account deleted, but an invoice file could not be removed: {exc}")
+        if profile_image:
+            try:
+                profile_image.delete(save=False)
+            except Exception as exc:
+                messages.warning(request, f"Account deleted, but its profile image could not be removed: {exc}")
         messages.success(request, f"User {username} was deleted.")
     return redirect("admin_panel:users")
 
@@ -177,6 +235,35 @@ def toggle_user(request, pk):
     else:
         user.is_active = not user.is_active
         user.save(update_fields=["is_active"])
+        if not user.is_active and user.email:
+            try:
+                mailer.send_generic_notification(
+                    to_email=user.email,
+                    subject="Your VOYAGE account has been deactivated",
+                    template_path="emails/account_deactivated.html",
+                    context={
+                        "user_name": user.get_full_name() or user.get_username(),
+                        "support_email": settings.DEFAULT_FROM_EMAIL,
+                        "_email_event": "account_deactivated",
+                    },
+                )
+            except Exception as exc:
+                messages.warning(request, f"Account deactivated, but the notification email could not be sent: {exc}")
+        elif user.is_active and user.email:
+            try:
+                mailer.send_generic_notification(
+                    to_email=user.email,
+                    subject="Your VOYAGE account has been reactivated",
+                    template_path="emails/account_activated.html",
+                    context={
+                        "user_name": user.get_full_name() or user.get_username(),
+                        "support_email": settings.DEFAULT_FROM_EMAIL,
+                        "login_url": request.build_absolute_uri(reverse("accounts:login")),
+                        "_email_event": "account_activated",
+                    },
+                )
+            except Exception as exc:
+                messages.warning(request, f"Account activated, but the notification email could not be sent: {exc}")
         messages.success(request, f"User {user.username} is now {'active' if user.is_active else 'inactive'}.")
     return redirect("admin_panel:users")
 
@@ -254,13 +341,160 @@ def invoices(request):
 
 @admin_required
 def communications(request):
-    contact_messages = ContactMessage.objects.all()[:100]
-    email_logs = EmailLog.objects.all()[:100]
+    tab = request.GET.get("tab", "inbox")
+    if tab not in {"inbox", "sent", "contacts"}:
+        tab = "inbox"
+    query = request.GET.get("q", "").strip()
+    inbox_list = _search(
+        ContactMessage.objects.filter(is_replied=False),
+        query,
+        ["name", "email", "subject", "message"],
+    )
+    contact_list = _search(
+        ContactMessage.objects.all(),
+        query,
+        ["name", "email", "subject", "message"],
+    )
+    sent_list = _search(
+        EmailLog.objects.all(),
+        query,
+        ["sender", "recipient", "subject", "body_text"],
+    )
+    page_items = list(
+        {"inbox": inbox_list, "sent": sent_list, "contacts": contact_list}[tab]
+    )
+    if tab in {"inbox", "contacts"}:
+        for contact in page_items:
+            contact.reply_sender = settings.DEFAULT_FROM_EMAIL
+    else:
+        from apps.core.utils.mailer import clean_logged_email_text
+
+        for email in page_items:
+            email.display_sender = email.sender or settings.DEFAULT_FROM_EMAIL
+            email.display_body = clean_logged_email_text(email.body_text)
+            if email.body_html:
+                from apps.core.utils.mailer import email_html_to_message_text
+
+                email.display_body = email_html_to_message_text(email.body_html)
+            if email.event in {
+                "account_activated",
+                "account_deactivated",
+            }:
+                account = User.objects.filter(email__iexact=email.recipient).first()
+                display_name = (
+                    account.get_full_name() or account.get_username()
+                    if account
+                    else "Traveller"
+                )
+                if email.event == "account_activated":
+                    email.display_body = (
+                        f"Account update. Hello {display_name}, "
+                        "An administrator has reactivated your VOYAGE account. "
+                        "You can now sign in and continue managing your journeys. "
+                        f"If you need help, contact {settings.DEFAULT_FROM_EMAIL}."
+                    )
+                else:
+                    email.display_body = (
+                        f"Account update. Hello {display_name}, "
+                        "your VOYAGE account has been deactivated by an administrator, "
+                        "so sign-in is temporarily unavailable. Your booking records "
+                        "and payment history remain preserved. Contact our team if you "
+                        f"need help: {settings.DEFAULT_FROM_EMAIL}."
+                    )
+            contact_event_fields = {
+                "contact_reply": ("replied_at", "reply_body"),
+                "contact_received_customer": ("created_at", "message"),
+                "contact_received_admin": ("created_at", "message"),
+            }
+            event_match = contact_event_fields.get(email.event)
+            if event_match and email.sent_at:
+                timestamp_field, body_field = event_match
+                contact_filters = {
+                    f"{timestamp_field}__range": (
+                        email.sent_at - timedelta(minutes=5),
+                        email.sent_at + timedelta(minutes=5),
+                    ),
+                }
+                if email.event == "contact_reply":
+                    contact_filters["email__iexact"] = email.recipient
+                    contact_filters.update(
+                        reply_subject=email.subject,
+                        is_replied=True,
+                    )
+                elif email.event == "contact_received_admin":
+                    contact_filters["subject"] = email.subject.removeprefix(
+                        "New contact message: "
+                    )
+                else:
+                    contact_filters["email__iexact"] = email.recipient
+                    contact_filters["subject"] = email.subject
+                contact_matches = list(
+                    ContactMessage.objects.filter(
+                        **contact_filters
+                    )
+                    .exclude(**{body_field: ""})
+                )
+                if contact_matches:
+                    closest_seconds = min(
+                        abs(
+                            (
+                                getattr(contact, timestamp_field)
+                                - email.sent_at
+                            ).total_seconds()
+                        )
+                        for contact in contact_matches
+                    )
+                    closest_matches = [
+                        contact
+                        for contact in contact_matches
+                        if abs(
+                            (
+                                getattr(contact, timestamp_field)
+                                - email.sent_at
+                            ).total_seconds()
+                        )
+                        == closest_seconds
+                    ]
+                    if len(closest_matches) == 1:
+                        email.display_body = getattr(closest_matches[0], body_field)
+            if email.event in {"contact_reply", "contact_received_customer"}:
+                email.display_html = ""
     return render(
         request,
-        "admin_panel/communications.html",
-        {"contact_messages": contact_messages, "email_logs": email_logs},
+        "admin_panel/communications_v2.html",
+        {
+            "active_tab": tab,
+            "query": query,
+            "contact_messages": page_items if tab in {"inbox", "contacts"} else [],
+            "email_logs": page_items if tab == "sent" else [],
+            "inbox_count": ContactMessage.objects.filter(is_replied=False).count(),
+            "contact_count": ContactMessage.objects.count(),
+            "sent_count": EmailLog.objects.count(),
+        },
     )
+
+
+@require_POST
+@admin_required
+def compose_message(request):
+    recipient = request.POST.get("recipient", "").strip()
+    subject = request.POST.get("subject", "").strip()
+    body = request.POST.get("body", "").strip()
+    try:
+        validate_email(recipient)
+    except ValidationError:
+        messages.error(request, "Enter a valid recipient email address.")
+        return redirect("admin_panel:communications")
+    if not subject or not body:
+        messages.error(request, "Add a subject and message before sending.")
+        return redirect("admin_panel:communications")
+    try:
+        mailer.send_admin_message(recipient, subject, body)
+    except Exception as exc:
+        messages.error(request, f"The message could not be sent: {exc}")
+    else:
+        messages.success(request, f"Email sent to {recipient}.")
+    return redirect(f"{reverse('admin_panel:communications')}?tab=sent")
 
 
 @require_POST
@@ -270,7 +504,7 @@ def reply_to_contact(request, pk):
     reply_body = request.POST.get("reply_body", "").strip()
     if not reply_body:
         messages.error(request, "Write a reply before sending it.")
-        return redirect("admin_panel:communications")
+        return redirect(f"{reverse('admin_panel:communications')}?tab=contacts")
 
     subject = request.POST.get("subject", "").strip() or f"Re: {contact_message.subject}"
     try:
@@ -284,12 +518,16 @@ def reply_to_contact(request, pk):
                 "reply_body": reply_body,
                 "support_email": settings.DEFAULT_FROM_EMAIL,
                 "_email_event": "contact_reply",
+                "_email_log_body": reply_body,
             },
         )
     except Exception as exc:
         messages.error(request, f"The reply could not be sent: {exc}")
     else:
         contact_message.is_replied = True
-        contact_message.save(update_fields=["is_replied"])
+        contact_message.reply_subject = subject
+        contact_message.reply_body = reply_body
+        contact_message.replied_at = timezone.now()
+        contact_message.save(update_fields=["is_replied", "reply_subject", "reply_body", "replied_at"])
         messages.success(request, f"Reply sent to {contact_message.email}.")
-    return redirect("admin_panel:communications")
+    return redirect(f"{reverse('admin_panel:communications')}?tab=contacts")

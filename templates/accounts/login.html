@@ -832,10 +832,6 @@
                             <span>Remember me</span>
                         </label>
 
-                        <a href="#" class="forgot-link">
-                            Forgot password?
-                        </a>
-
                     </div>
 
 
@@ -860,6 +856,12 @@
 
                 </form>
 
+                <div class="register-line">
+                    Forgot your password?
+                    <a href="{% url 'accounts:forgot_password' %}" class="register-link">
+                        Reset it by email
+                    </a>
+                </div>
 
                 <!-- Register -->
                 <div class="register-line">

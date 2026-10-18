@@ -26,6 +26,14 @@ class TourForm(AdminModelForm):
             "price_per_person": forms.NumberInput(attrs={"step": "0.01"}),
             "rating": forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "5"}),
         }
+        labels = {
+            "hero_image": "Hero image URL",
+            "image": "Image URL",
+        }
+        help_texts = {
+            "hero_image": "Paste a publicly accessible image URL.",
+            "image": "Paste a publicly accessible image URL.",
+        }
 
 
 class DestinationForm(AdminModelForm):
@@ -33,10 +41,24 @@ class DestinationForm(AdminModelForm):
         model = Destination
         fields = [
             "name", "country", "state", "city", "description", "image", "hover_image",
-            "hero_image", "best_time_to_travel", "weather", "rating", "latitude",
-            "longitude", "is_featured", "order",
+            "image_url", "hover_image_url", "hero_image", "best_time_to_travel", "weather",
+            "rating", "is_featured", "latitude", "longitude", "order",
         ]
         widgets = {
             "description": forms.Textarea(attrs={"rows": 6}),
             "rating": forms.NumberInput(attrs={"step": "0.1", "min": "0", "max": "5"}),
+        }
+        labels = {
+            "image": "Upload image",
+            "hover_image": "Upload hover image",
+            "image_url": "Image URL",
+            "hover_image_url": "Hover image URL",
+            "hero_image": "Hero image URL",
+        }
+        help_texts = {
+            "image": "Choose a local image, or provide an image URL below.",
+            "image_url": "Optional. A URL takes precedence over the uploaded image.",
+            "hover_image": "Choose a local hover image, or provide a hover image URL below.",
+            "hover_image_url": "Optional. A URL takes precedence over the uploaded hover image.",
+            "hero_image": "Paste a publicly accessible hero image URL.",
         }

@@ -17,7 +17,7 @@ def _display_date(value):
 
 
 def _money(value):
-    return f"Rs. {Decimal(value or 0):,.2f}"
+    return f"${Decimal(value or 0):,.2f}"
 
 
 def _destination_text(booking):

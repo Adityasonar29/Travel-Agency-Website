@@ -100,45 +100,12 @@
 
         <div class="mt-10">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for stat in site_stats %}
                 <div class="text-center">
-                    <h3 class="text-5xl font-heading text-gold">50+</h3>
-
-                    <p
-                        class="mt-2 text-sm uppercase tracking-[0.25em] text-ink/60"
-                    >
-                        Luxury Tours
-                    </p>
+                    <h3 class="text-5xl font-heading text-gold">{{ stat.display_value }}</h3>
+                    <p class="mt-2 text-sm uppercase tracking-[0.25em] text-ink/60">{{ stat.label }}</p>
                 </div>
-
-                <div class="text-center">
-                    <h3 class="text-5xl font-heading text-gold">40</h3>
-
-                    <p
-                        class="mt-2 text-sm uppercase tracking-[0.25em] text-ink/60"
-                    >
-                        Countries
-                    </p>
-                </div>
-
-                <div class="text-center">
-                    <h3 class="text-5xl font-heading text-gold">1200+</h3>
-
-                    <p
-                        class="mt-2 text-sm uppercase tracking-[0.25em] text-ink/60"
-                    >
-                        Happy Travelers
-                    </p>
-                </div>
-
-                <div class="text-center">
-                    <h3 class="text-5xl font-heading text-gold">15+</h3>
-
-                    <p
-                        class="mt-2 text-sm uppercase tracking-[0.25em] text-ink/60"
-                    >
-                        Years Experience
-                    </p>
-                </div>
+                {% endfor %}
             </div>
         </div>
 

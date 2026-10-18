@@ -48,8 +48,8 @@
                     <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">🕒 {{ tour.duration }}</span>
                     <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">💎 {{ tour.budget_range }}</span>
                     <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">💲 ${{ tour.price_per_person|floatformat:0 }}</span>
-                    {% if tour.rating %}
-                    <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">⭐ {{tour.rating }}/5</span>
+                    {% if tour.current_rating %}
+                    <span class="px-5 py-3 rounded-full bg-white border border-[#e8dcc2] shadow-sm text-sm">⭐ {{ tour.current_rating }}/5</span>
                     {% endif %}
                 </div>
 
@@ -114,10 +114,10 @@
                     <p class="text-xs text-gray-400">Per Traveler</p>
                 </div>
 
-                {% if tour.rating %}
+                {% if tour.current_rating %}
                 <div class="absolute -right-6 bottom-10 bg-white rounded-3xl px-6 py-4 shadow-xl">
                     <div class="text-yellow-500 text-sm tracking-wide">★★★★★</div>
-                    <h3 class="text-xl font-heading text-[#1f2937] mt-0.5">{{ tour.rating }}/5</h3>
+                    <h3 class="text-xl font-heading text-[#1f2937] mt-0.5">{{ tour.current_rating }}/5</h3>
                     <p class="text-xs text-gray-400">Traveler Rating</p>
                 </div>
                 {% endif %}
@@ -845,7 +845,7 @@
                 
                             </div>
                 
-                            {% if tour.rating %}
+                            {% if tour.current_rating %}
                 
                             <div class="flex items-center justify-between">
                 
@@ -857,7 +857,7 @@
                 
                                 <span class="font-medium text-[#1f2937]">
                 
-                                    ★ {{ tour.rating }}/5
+                                    ★ {{ tour.current_rating }}/5
                 
                                 </span>
                 

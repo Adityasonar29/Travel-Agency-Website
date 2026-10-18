@@ -29,6 +29,39 @@ class LoginForm(forms.Form):
     remember_me = forms.BooleanField(required=False, initial=False)
 
 
+class PasswordResetRequestForm(forms.Form):
+    username_or_email = forms.CharField(
+        label="Username or Email",
+        max_length=254,
+    )
+
+
+class PasswordResetVerifyForm(forms.Form):
+    pin = forms.RegexField(
+        regex=r"^\d{6}$",
+        label="6-digit PIN",
+        error_messages={"invalid": "Enter the 6-digit PIN from your email."},
+    )
+    new_password1 = forms.CharField(
+        label="New password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+    new_password2 = forms.CharField(
+        label="Confirm new password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("new_password1")
+        confirmation = cleaned_data.get("new_password2")
+        if password and confirmation and password != confirmation:
+            self.add_error("new_password2", "The passwords do not match.")
+        return cleaned_data
+
+
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User

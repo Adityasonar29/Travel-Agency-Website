@@ -190,7 +190,7 @@
 
     </style>
 
-    <link rel="stylesheet" href="{% static 'css/admin-light.css' %}?v=13">
+    <link rel="stylesheet" href="{% static 'css/admin-light.css' %}?v=14">
 
     {% block extra_css %}
     {% endblock %}
@@ -212,17 +212,14 @@
             <div style="margin-bottom:25px;">
 
                 {% for message in messages %}
+                    {% ifchanged message %}
 
-                    <div style="
-                    background:#1f1f1f;
-                    border-left:4px solid var(--gold);
-                    padding:16px;
-                    border-radius:14px;
-                    margin-bottom:10px;">
+                    <div class="admin-flash-message" role="status" aria-live="polite">
 
                         {{ message }}
 
                     </div>
+                    {% endifchanged %}
 
                 {% endfor %}
 
@@ -237,6 +234,9 @@
     </main>
 
 </div>
+
+{% include "components/voyage_loading_overlay.html" %}
+{% include "components/logout_confirmation.html" %}
 
 {% block scripts %}
 {% endblock %}

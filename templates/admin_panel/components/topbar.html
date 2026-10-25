@@ -3,7 +3,7 @@
 <header class="admin-topbar">
 
     <div class="topbar-left admin-mobile-toggle">
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Open navigation" aria-controls="adminSidebar" aria-expanded="false">
             <i class="fas fa-bars"></i>
         </button>
     </div>
@@ -54,15 +54,32 @@ if(profile){
 }
 
 const toggle=document.getElementById("sidebarToggle");
+const sidebar=document.getElementById("adminSidebar");
+const closeButton=document.getElementById("sidebarClose");
+const backdrop=document.getElementById("sidebarBackdrop");
 
-if(toggle){
+if(toggle&&sidebar&&backdrop){
+    const closeSidebar=()=>{
+        document.body.classList.remove("sidebar-collapsed");
+        toggle.setAttribute("aria-expanded","false");
+        toggle.setAttribute("aria-label","Open navigation");
+    };
 
     toggle.addEventListener("click",()=>{
-
-        document.body.classList.toggle("sidebar-collapsed");
-
+        const isOpen=document.body.classList.toggle("sidebar-collapsed");
+        toggle.setAttribute("aria-expanded",String(isOpen));
+        toggle.setAttribute("aria-label",isOpen?"Close navigation":"Open navigation");
     });
 
+    closeButton?.addEventListener("click",closeSidebar);
+    backdrop.addEventListener("click",closeSidebar);
+    sidebar.querySelectorAll("nav a").forEach(link=>link.addEventListener("click",closeSidebar));
+    document.addEventListener("keydown",event=>{
+        if(event.key==="Escape") closeSidebar();
+    });
+    window.addEventListener("resize",()=>{
+        if(window.matchMedia("(min-width: 993px)").matches) closeSidebar();
+    });
 }
 
 </script>

@@ -31,7 +31,7 @@
             defer></script>
 
     <link rel="stylesheet"
-          href="{% static 'css/custom.css' %}">
+          href="{% static 'css/custom.css' %}?v=13">
 
     <link rel="stylesheet"
           href="{% static 'css/admin.css' %}?v=2">
@@ -190,7 +190,7 @@
 
     </style>
 
-    <link rel="stylesheet" href="{% static 'css/admin-light.css' %}?v=14">
+    <link rel="stylesheet" href="{% static 'css/admin-light.css' %}?v=17">
 
     {% block extra_css %}
     {% endblock %}
@@ -202,6 +202,7 @@
 <div class="layout">
 
     {% include "admin_panel/components/sidebar.html" %}
+    <button type="button" class="sidebar-backdrop" id="sidebarBackdrop" aria-label="Close navigation"></button>
 
     <main class="content">
 

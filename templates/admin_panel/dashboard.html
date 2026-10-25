@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid dashboard-page">
 
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -15,9 +15,6 @@
             </p>
         </div>
 
-        <a href="{% url 'core:home' %}" class="btn btn-outline-warning">
-            View Website
-        </a>
     </div>
 
     <!-- Statistics -->
@@ -27,7 +24,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card bg-dark border-warning shadow h-100">
                 <div class="card-body">
-                    <h6 class="text-secondary">Total Users</h6>
+                    <h6 class="admin-stat-label text-secondary">Total Users</h6>
                     <h2 class="text-warning fw-bold">
                         {{ total_users }}
                     </h2>
@@ -38,7 +35,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card bg-dark border-warning shadow h-100">
                 <div class="card-body">
-                    <h6 class="text-secondary">Bookings</h6>
+                    <h6 class="admin-stat-label text-secondary">Bookings</h6>
                     <h2 class="text-warning fw-bold">
                         {{ total_bookings }}
                     </h2>
@@ -49,7 +46,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card bg-dark border-warning shadow h-100">
                 <div class="card-body">
-                    <h6 class="text-secondary">Tours</h6>
+                    <h6 class="admin-stat-label text-secondary">Tours</h6>
                     <h2 class="text-warning fw-bold">
                         {{ total_tours }}
                     </h2>
@@ -60,7 +57,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card bg-dark border-warning shadow h-100">
                 <div class="card-body">
-                    <h6 class="text-secondary">Destinations</h6>
+                    <h6 class="admin-stat-label text-secondary">Destinations</h6>
                     <h2 class="text-warning fw-bold">
                         {{ total_destinations }}
                     </h2>
@@ -183,6 +180,7 @@
 
         <div class="card-body p-0">
 
+            <div class="table-wrap">
             <table class="table table-dark table-hover mb-0">
 
                 <thead>
@@ -278,6 +276,7 @@
                 </tbody>
 
             </table>
+            </div>
 
         </div>
 
@@ -299,6 +298,7 @@
 
         <div class="card-body p-0">
 
+            <div class="table-wrap">
             <table class="table table-dark table-hover mb-0">
 
                 <thead>
@@ -346,6 +346,7 @@
                 </tbody>
 
             </table>
+            </div>
 
         </div>
 

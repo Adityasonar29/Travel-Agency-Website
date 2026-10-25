@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollProgress();
     initHeroAnimations();
     initDestinationPage();
+    initFunFactAccordion();
     initImageReveal();
     initRiseCards();
     initStatCounters();
@@ -36,16 +37,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function initFunFactAccordion() {
+    document.querySelectorAll('.fun-fact-card').forEach((card) => {
+        const toggle = () => {
+            const expanded = card.classList.toggle('is-expanded');
+            card.setAttribute('aria-expanded', String(expanded));
+        };
+
+        card.addEventListener('click', toggle);
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggle();
+            }
+        });
+    });
+}
+
 /* ═══════════════════════════════════════════
    SMOOTH SCROLL (Lenis) — Ultra smooth
    ═══════════════════════════════════════════ */
 function initSmoothScroll() {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
     const lenis = new Lenis({
-        duration: 1.6,
+        duration: isMobile ? 0.85 : 1.6,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
         wheelMultiplier: 0.8,
-        touchMultiplier: 1.5,
+        touchMultiplier: isMobile ? 1.15 : 1.5,
     });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
@@ -64,11 +83,14 @@ function initLoadingScreen() {
     const logoSub = document.getElementById('logo-sub');
     const mainContent = document.getElementById('main-content');
     if (!screen) return;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const animationScale = isMobile ? 0.72 : 0.85;
+    const slideDistance = isMobile ? 22 : 50;
 
     const tl = gsap.timeline({
         onComplete: () => {
             gsap.to(screen, {
-                yPercent: -100, duration: 0.8, ease: 'power4.inOut',
+                yPercent: -100, duration: isMobile ? 0.4 : 0.8, ease: 'power4.inOut',
                 onComplete: () => {
                     screen.style.display = 'none';
                     if (mainContent) mainContent.style.opacity = '1';
@@ -80,16 +102,33 @@ function initLoadingScreen() {
 
     cards.forEach((card, i) => {
         tl.to(card, {
-            opacity: 1, rotation: (i - 2) * 8, x: (i - 2) * 50, y: (i - 2) * 30,
-            scale: 0.85, zIndex: cards.length - i, duration: 0.6, ease: 'power3.out',
-        }, i * 0.12);
+            opacity: 1,
+            rotation: (i - 2) * (isMobile ? 5 : 8),
+            x: (i - 2) * slideDistance,
+            y: (i - 2) * (isMobile ? 12 : 30),
+            scale: animationScale,
+            zIndex: cards.length - i,
+            duration: isMobile ? 0.35 : 0.6,
+            ease: 'power3.out',
+        }, i * (isMobile ? 0.06 : 0.12));
     });
-    tl.to('.deck-card', { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.8, ease: 'power3.inOut', stagger: { each: 0.05, from: 'end' } }, '+=0.5');
-    tl.to('.deck-card', { scale: 0, opacity: 0, duration: 0.5, ease: 'power3.in', stagger: { each: 0.04, from: 'center' } }, '+=0.3');
-    tl.to(logo, { opacity: 1, duration: 0.1 }, '-=0.2');
-    tl.to(logoLine, { width: 120, duration: 0.6, ease: 'power2.out' }, '-=0.1');
-    tl.to(logoSub, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3');
-    tl.to({}, { duration: 0.8 });
+    tl.to('.deck-card', {
+        x: 0, y: 0, rotation: 0, scale: 1,
+        duration: isMobile ? 0.45 : 0.8,
+        ease: 'power3.inOut',
+        stagger: { each: isMobile ? 0.025 : 0.05, from: 'end' },
+    }, isMobile ? '+=0.15' : '+=0.5');
+    tl.to('.deck-card', {
+        scale: 0, opacity: 0,
+        duration: isMobile ? 0.3 : 0.5,
+        ease: 'power3.in',
+        stagger: { each: isMobile ? 0.02 : 0.04, from: 'center' },
+    }, isMobile ? '+=0.1' : '+=0.3');
+    tl.to(logo, { opacity: 1, duration: isMobile ? 0.08 : 0.1 }, '-=0.2');
+    tl.to(logoLine, { width: 120, duration: isMobile ? 0.35 : 0.6, ease: 'power2.out' }, '-=0.1');
+    tl.to(logoSub, { opacity: 1, y: 0, duration: isMobile ? 0.3 : 0.5, ease: 'power2.out' }, '-=0.3');
+    tl.to({}, { duration: isMobile ? 0.2 : 0.8 });
+    if (isMobile) tl.timeScale(0.85);
 }
 
 /* ═══════════════════════════════════════════
@@ -115,10 +154,10 @@ function triggerHeroAnimations() {
 
     const tl = gsap.timeline({ delay: 0.3 });
     if (fadeTargets.length) {
-        tl.to(fadeTargets, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', stagger: 0.3 });
+        tl.to(fadeTargets, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.3 });
     }
     if (clipTargets.length) {
-        tl.to(clipTargets, { clipPath: 'inset(0% 0 0 0)', y: 0, duration: 1.5, ease: 'power3.out', stagger: 0.3 }, fadeTargets.length ? '-=1.2' : 0);
+        tl.to(clipTargets, { clipPath: 'inset(0% 0 0 0)', y: 0, duration: 1.5, ease: 'power3.out', stagger: 0.3 }, fadeTargets.length ? '-=0.4' : 0);
     }
 }
 
@@ -317,8 +356,9 @@ function initScrollProgress() {
    IMAGE REVEAL (clip-path wipe)
    ═══════════════════════════════════════════ */
 function initImageReveal() {
+    const start = getMobileRevealStart('top 80%');
     document.querySelectorAll('.image-reveal').forEach((el) => {
-        ScrollTrigger.create({ trigger: el, start: 'top 80%', onEnter: () => el.classList.add('revealed'), once: true });
+        ScrollTrigger.create({ trigger: el, start, onEnter: () => el.classList.add('revealed'), once: true });
     });
 }
 
@@ -326,10 +366,11 @@ function initImageReveal() {
    CARDS RISE ON SCROLL
    ═══════════════════════════════════════════ */
 function initRiseCards() {
+    const start = getMobileRevealStart('top 90%');
     gsap.utils.toArray('.rise-card').forEach((card, i) => {
         gsap.to(card, {
             y: 0, opacity: 1, duration: 1, delay: i * 0.12, ease: 'power3.out',
-            scrollTrigger: { trigger: card, start: 'top 90%', toggleActions: 'play none none none' },
+            scrollTrigger: { trigger: card, start, toggleActions: 'play none none none' },
         });
     });
 }
@@ -338,10 +379,11 @@ function initRiseCards() {
    STAT COUNTERS
    ═══════════════════════════════════════════ */
 function initStatCounters() {
+    const start = getMobileRevealStart('top 85%');
     document.querySelectorAll('.stat-item').forEach((item, i) => {
         gsap.to(item, {
             y: 0, opacity: 1, duration: 0.8, delay: i * 0.15, ease: 'power3.out',
-            scrollTrigger: { trigger: item, start: 'top 85%', onEnter: () => animateCounter(item), once: true },
+            scrollTrigger: { trigger: item, start, onEnter: () => animateCounter(item), once: true },
         });
     });
 }
@@ -362,11 +404,13 @@ function initInfiniteDrag() {
     const wrapper = document.getElementById('drag-wrapper');
     if (!track || !wrapper) return;
 
+    const start = getMobileRevealStart('top 95%');
+
     // Animate cards in
     gsap.utils.toArray('.drag-card').forEach((card, i) => {
         gsap.to(card, {
             y: 0, opacity: 1, duration: 0.8, delay: i * 0.08, ease: 'power3.out',
-            scrollTrigger: { trigger: card, start: 'top 95%', once: true },
+            scrollTrigger: { trigger: card, start, once: true },
         });
     });
 
@@ -453,9 +497,16 @@ function initZoomScroll() {
    SCROLL REVEAL
    ═══════════════════════════════════════════ */
 function initScrollReveal() {
+    const start = getMobileRevealStart('top 85%');
     document.querySelectorAll('.scroll-reveal').forEach((el) => {
-        gsap.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+        gsap.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: el, start, once: true } });
     });
+}
+
+function getMobileRevealStart(desktopStart) {
+    return window.matchMedia('(max-width: 768px)').matches
+        ? 'top bottom+=80px'
+        : desktopStart;
 }
 
 /* ═══════════════════════════════════════════
@@ -503,7 +554,7 @@ function initMapAnimation() {
    ═══════════════════════════════════════════ */
 function initBigTextParallax() {
     const bigText = document.querySelector('.voyage-big-text');
-    if (!bigText) return;
+    if (!bigText || window.matchMedia('(max-width: 768px)').matches) return;
 
     gsap.fromTo(bigText,
         { x: '-5%' },

@@ -1,7 +1,12 @@
+from django.conf import settings
 from django.db.models import Avg, Sum
 
 from apps.booking.models import Booking, Review
 from .models import Destination, SiteSettings, Stat, Tour
+
+
+def debug_mode(request):
+    return {"debug_mode": settings.DEBUG}
 
 
 def site_settings(request):

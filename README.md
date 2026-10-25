@@ -1,163 +1,112 @@
-# VOYAGE Travel Agency
+<div align="center">
 
-![VOYAGE](static/images/voyage-logo.png)
+<img src="static/images/voyage-logo.png" alt="VOYAGE" width="220">
 
-![Django](https://img.shields.io/badge/Django-5.x-0f5132?style=flat-square&logo=django&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?style=flat-square&logo=python&logoColor=white)
-![CI](https://github.com/Adityasonar29/Travel-Agency-Website/actions/workflows/ci.yml/badge.svg?branch=main)
-![Status](https://img.shields.io/badge/status-active%20prototype-be9958?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-be9958?style=flat-square)
+# Curated journeys. Made unforgettable.
 
-VOYAGE is a Django travel platform for curated journeys and personalised travel requests. It pairs an editorial, luxury-travel interface with the practical workflows needed to discover destinations, select a package, submit a booking, pay, receive an invoice, and manage the journey from an authenticated account.
+An editorial travel experience for discovering destinations, planning a journey, and managing every step of a booking.
 
-## Product at a glance
+[![Django](https://img.shields.io/badge/Django-5.x-0f5132?style=flat-square&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![CI](https://github.com/Adityasonar29/Travel-Agency-Website/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Adityasonar29/Travel-Agency-Website/actions/workflows/ci.yml)
+[![Status](https://img.shields.io/badge/status-active%20prototype-be9958?style=flat-square)](#project-status)
+[![License](https://img.shields.io/badge/license-MIT-be9958?style=flat-square)](LICENSE)
 
-VOYAGE serves two audiences:
+</div>
 
-- Travellers explore destinations, browse curated tours, select a package, submit travel details, review preferences, confirm a booking, access invoices, cancel journeys, and manage their profile.
-- Administrators manage users, destinations, tours, bookings, invoices, revenue reporting, and the operational status of each journey.
+---
 
-The experience uses warm ivory surfaces, editorial serif headings, restrained champagne-gold accents, charcoal actions, thin borders, and generous spacing. The aim is a calm journey from inspiration to confirmation rather than a dense booking portal.
+VOYAGE is a Django travel platform for curated journeys and personalised travel requests. Travellers can explore destinations, choose a package, submit a booking, pay, receive an invoice, and manage their journey from an account. Administrators have dedicated tools for managing bookings, destinations, tours, users, and revenue.
 
-## Product journey
+## Contents
 
-```text
-Explore destinations
-        ↓
-Choose a destination and tour
-        ↓
-Enter traveller details
-        ↓
-Set preferences
-        ↓
-Review and confirm booking
-        ↓
-Complete payment
-        ↓
-Receive confirmation and invoice
-        ↓
-Manage, cancel, or review the journey
-```
+- [The journey](#the-journey)
+- [Product walkthrough](#product-walkthrough)
+- [What you can do](#what-you-can-do)
+- [Email notifications](#email-notifications)
+- [Project structure](#project-structure)
+- [Get started](#get-started)
+- [Checks and tests](#checks-and-tests)
+- [Documentation](#documentation)
+- [Design principles](#design-principles)
+- [Project status](#project-status)
 
-## Experience preview
+## The journey
 
-### Explore
+| Discover | Choose | Plan | Confirm | Manage |
+| --- | --- | --- | --- | --- |
+| Explore destinations and tours | Pick a destination and package | Add traveller details and preferences | Review, book, and pay | Access invoices, manage, cancel, or review |
 
-The destination catalogue introduces the brand with a large editorial heading and image-led destination cards.
-
-![VOYAGE destination catalogue](docs/assets/explore-destinations.png)
-
-### Choose a journey
-
-The first booking step keeps the decision focused: select a destination, then select the relevant package.
-
-![Choose a destination and tour](docs/assets/choose-journey.png)
-
-### Traveller details
-
-The booking form uses a calm two-column layout on larger screens and collapses for smaller devices.
-
-![Traveller details form](docs/assets/booking-details.png)
-
-### Preferences
-
-Budget, travel style, and special requests are collected after the essential traveller information.
-
-![Journey preferences](docs/assets/preferences.png)
-
-### Review
-
-Before submission, the traveller sees the selected package and entered information in a compact confirmation view.
-
-![Booking review](docs/assets/booking-review.png)
-
-## Full product walkthrough
-
-The repository includes the screenshots captured during the project review. GitHub renders these paths directly from the repository, so the documentation stays portable after a push or clone.
+## Product walkthrough
 
 ### Public website
 
-![VOYAGE home page](docs/assets/home-full.png)
+| Home | About |
+|:---:|:---:|
+| ![VOYAGE home page](docs/assets/home-full.png) | ![About VOYAGE](docs/assets/about-us.png) |
 
-![VOYAGE logo introduction](docs/assets/intro-logo.png)
+| Destinations | Tours |
+|:---:|:---:|
+| ![Destinations page](docs/assets/destinations.png) | ![Tours page](docs/assets/tours.png) |
 
-![About VOYAGE](docs/assets/about-us.png)
+| Destination catalogue | Tour details |
+|:---:|:---:|
+| ![Destination catalogue](docs/assets/explore-destinations.png) | ![Amalfi Coast tour detail](docs/assets/tour-detail.png) |
 
-![Destinations page](docs/assets/destinations.png)
+### Account and booking
 
-![Tours page](docs/assets/tours.png)
+| Sign in | Create an account |
+|:---:|:---:|
+| ![Login page](docs/assets/login.png) | ![Registration page](docs/assets/register.png) |
 
-![Amalfi Coast tour detail](docs/assets/tour-detail.png)
+| Start a booking | Select a tour |
+|:---:|:---:|
+| ![Booking start](docs/assets/booking-start.png) | ![Booking with selected tour](docs/assets/booking-tour-selected.png) |
 
-### Account and booking flow
+| Review your booking | Payment |
+|:---:|:---:|
+| ![Booking overview](docs/assets/booking-overview.png) | ![Payment page](docs/assets/booking-payment.png) |
 
-![Login page](docs/assets/login.png)
+| Payment processing | Confirmation |
+|:---:|:---:|
+| ![Payment processing](docs/assets/booking-payment-processing.png) | ![Booking confirmation](docs/assets/booking-confirmation.png) |
 
-![Registration page](docs/assets/register.png)
+| Confirmed journey | Journey in profile |
+|:---:|:---:|
+| ![Confirmed journey](docs/assets/booking-confirmed.png) | ![Journey on profile](docs/assets/journey-profile.png) |
 
-![Booking start](docs/assets/booking-start.png)
-
-![Booking with selected tour](docs/assets/booking-tour-selected.png)
-
-![Booking overview](docs/assets/booking-overview.png)
-
-![Payment page](docs/assets/booking-payment.png)
-
-![Payment processing](docs/assets/booking-payment-processing.png)
-
-![Booking confirmation](docs/assets/booking-confirmation.png)
-
-![Confirmed journey](docs/assets/booking-confirmed.png)
-
-![Journey on profile](docs/assets/journey-profile.png)
-
-![Profile page](docs/assets/profile.png)
-
-![Review submission](docs/assets/review.png)
-
-![Contact page](docs/assets/contact.png)
+| Profile | Leave a review |
+|:---:|:---:|
+| ![Profile page](docs/assets/profile.png) | ![Review submission](docs/assets/review.png) |
 
 ### Presentation
 
-The 20-page product presentation is included as a repository artifact:
-
-[Open the VOYAGE Curated Journeys presentation](docs/presentation/VOYAGE-Curated-Journeys.pdf)
+Explore the [20-page VOYAGE Curated Journeys presentation](docs/presentation/VOYAGE-Curated-Journeys.pdf).
 
 ![VOYAGE presentation cover](docs/presentation/voyage-curated-journeys-preview-01.png)
 
-## Core capabilities
+## What you can do
 
-### Customer experience
+### For travellers
 
-- Destination catalogue with destination detail pages.
-- Curated tour packages with duration, pricing, capacity, and destination relationships.
-- Package-aware **Book Now** routing.
-- Multi-step booking flow with validation and clear required-field feedback.
-- Personalised journey preferences for budget, travel style, accommodation, purpose, and special requests.
-- Duplicate-submission protection for booking requests.
-- Payment confirmation flow with loading overlay feedback.
-- Journey archive and booking detail pages.
-- Invoice PDF generation and downloadable invoice links.
-- Booking cancellation with refund status messaging.
-- Profile details, profile image, wishlist, and account security notifications.
-- Branded 404 page for unknown routes and missing destination records.
+- Explore destinations and detailed, curated tour packages.
+- Book a package through a validated, multi-step flow with traveller preferences.
+- Review payment status and receive booking confirmations.
+- Download invoices and manage or cancel journeys from an account.
+- Maintain profile details, profile image, and wishlist.
+- Share feedback through journey reviews.
 
-### Admin experience
+### For administrators
 
-- Dashboard metrics for users, bookings, tours, destinations, and booking statuses.
-- Booking search and filtering on the bookings page.
-- Booking detail view with status management.
-- Tour and destination CRUD workflows.
-- Styled create and edit forms with consistent labels, validation, uploads, and action areas.
-- Invoice list with working PDF open actions.
-- Revenue chart populated from booking data.
-- Branded administrator header and navigation.
+- Monitor users, bookings, tours, destinations, and booking statuses from the dashboard.
+- Search bookings and manage booking details and status.
+- Create, edit, and remove destinations and tours.
+- Review invoices, revenue summaries, and operational communications.
+- Manage user accounts and view booking activity.
 
 ## Email notifications
 
-The application uses one shared VOYAGE email shell so customer and admin notifications have consistent typography, spacing, colors, footer information, and responsive behavior.
-
-Active event coverage:
+Customer and administrator notifications share a VOYAGE email layout for consistent typography, spacing, colors, footer information, and responsive behavior.
 
 | Event | Recipient | Template | Trigger |
 | --- | --- | --- | --- |
@@ -171,34 +120,33 @@ Active event coverage:
 | Refund initiated | Customer | `emails/refund_initiated.html` | Paid booking cancellation |
 | Contact acknowledgement | Customer | `emails/contact_auto_reply.html` | Contact form submission |
 
-The repository also contains reusable templates for future verification, password reset, review, reminder, newsletter, and processed-refund workflows. They are documented in [EMAIL-EVENT-MATRIX.md](docs/EMAIL-EVENT-MATRIX.md) so dormant templates are not mistaken for active triggers.
+Reusable templates for future verification, password reset, review, reminder, newsletter, and processed-refund workflows are documented in the [email event matrix](docs/EMAIL-EVENT-MATRIX.md). These templates are not necessarily active event triggers.
 
-## Technical structure
+## Project structure
 
 ```text
 travel-agency-project/
+├── .github/workflows/  GitHub Actions CI
 ├── apps/
 │   ├── accounts/       authentication, profiles, wishlist
-│   ├── admin_panel/    dashboard and CRUD administration
+│   ├── admin_panel/    dashboard and administration
 │   ├── booking/        booking, payment, invoices, reviews
 │   └── core/           destinations, tours, home, shared utilities
 ├── config/             Django settings, URLs, WSGI
-├── media/              uploaded images and generated invoices
+├── docs/               product, email, and presentation documentation
+├── media/              uploaded files and generated invoices
 ├── static/             CSS, JavaScript, images, loader assets
 ├── templates/          customer, admin, component, and email templates
-├── docs/               product, wireframing, email, and presentation notes
-├── db.sqlite3          local development database
 └── manage.py
 ```
 
-## Local setup
+## Get started
 
 ### Requirements
 
 - Python 3.10 or newer
-- A virtual environment
 - SQLite for local development
-- SMTP credentials or Django's console email backend for local email inspection
+- A virtual environment
 
 ### Install and run
 
@@ -210,24 +158,29 @@ py manage.py migrate
 py manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/` for the customer site and `http://127.0.0.1:8000/admin-panel/` for the VOYAGE admin panel.
+Open the customer site at `http://127.0.0.1:8000/`. The VOYAGE admin panel is available at `http://127.0.0.1:8000/admin-panel/`.
 
-For local email development, use the console backend:
+For local email development, use Django's console backend to print messages in the terminal:
 
 ```powershell
 $env:EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 py manage.py runserver
 ```
 
-## Useful verification commands
+## Checks and tests
+
+Run the same core checks used by the GitHub Actions workflow:
 
 ```powershell
 py manage.py check
-py manage.py test
+py manage.py makemigrations --check --dry-run
 py manage.py collectstatic --noinput
+py manage.py test
 ```
 
-The email template set can be compiled through Django's template loader:
+The workflow runs on pushes to `main` and on pull requests. See [CI results](https://github.com/Adityasonar29/Travel-Agency-Website/actions/workflows/ci.yml).
+
+To compile the email templates through Django's template loader:
 
 ```powershell
 py manage.py shell -c "from django.template.loader import get_template; import glob,os; [get_template('emails/'+os.path.basename(f)) for f in glob.glob('templates/emails/*.html')]; print('email templates compile successfully')"
@@ -243,14 +196,12 @@ py manage.py shell -c "from django.template.loader import get_template; import g
 
 ## Design principles
 
-VOYAGE keeps the interface deliberately quiet:
-
-- Inspiration comes from editorial typography and destination imagery.
-- Forms use visible labels above controls and predictable spacing.
-- Actions remain clear, with charcoal primary buttons and restrained secondary actions.
-- Feedback appears at the moment of action through validation messages, branded loading overlays, confirmation states, and transactional email.
-- Admin tools share the same design language without sacrificing operational density.
+- Editorial typography and destination imagery create a sense of discovery.
+- Warm ivory, charcoal, and restrained champagne-gold accents keep the interface calm.
+- Forms use visible labels and predictable spacing.
+- Clear actions and timely validation guide each booking step.
+- The admin experience shares the brand language while keeping operational tools efficient.
 
 ## Project status
 
-This is an active project prototype. Before production deployment, configure a production secret key, disable debug mode, set explicit allowed hosts, use a production database and email provider, review uploaded-file storage, and add automated tests for payment idempotency and notification delivery.
+VOYAGE is an active project prototype. Before production deployment, configure a production secret key, disable debug mode, set explicit allowed hosts, use a production database and email provider, review uploaded-file storage, and add automated tests for payment idempotency and notification delivery.

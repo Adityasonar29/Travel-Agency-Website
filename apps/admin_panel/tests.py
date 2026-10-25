@@ -15,7 +15,10 @@ from apps.core.utils.mailer import email_html_to_text
 User = get_user_model()
 
 
-@override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+@override_settings(
+    EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    DEFAULT_FROM_EMAIL="VOYAGE Tests <no-reply@example.test>",
+)
 class AdminAccountLifecycleTests(TestCase):
     def setUp(self):
         self.admin = User.objects.create_user(
@@ -241,7 +244,7 @@ class AdminAccountLifecycleTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["visitor@example.com"])
         email_log = EmailLog.objects.get(event="contact_reply")
-        self.assertEqual(email_log.sender, "try.kaivalya24@gmail.com")
+        self.assertEqual(email_log.sender, "no-reply@example.test")
         self.assertEqual(email_log.recipient, "visitor@example.com")
         self.assertEqual(email_log.body_text, "We can help.")
 
@@ -263,7 +266,7 @@ class AdminAccountLifecycleTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["traveller@example.com"])
         email_log = EmailLog.objects.get(event="admin_composed")
-        self.assertEqual(email_log.sender, "try.kaivalya24@gmail.com")
+        self.assertEqual(email_log.sender, "no-reply@example.test")
         self.assertEqual(email_log.body_text, "We have prepared your itinerary.")
 
     def test_email_text_extraction_omits_styles_and_preserves_message(self):

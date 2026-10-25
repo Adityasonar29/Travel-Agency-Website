@@ -1,7 +1,9 @@
-Django>=5.0
+Django>=5.0,<7.0
 Pillow
 django-environ
 django-widget-tweaks
 gunicorn
 whitenoise
 reportlab
+dj-database-url
+psycopg[binary]

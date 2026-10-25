@@ -12,6 +12,9 @@ ENV/
 .env
 .env.*
 db.sqlite3
+data.json
+note.txt
+
 
 # User-generated runtime media
 media/invoices/

@@ -7,9 +7,9 @@
 
 {{ tour_durations|json_script:"tour-durations" }}
 
-<section class="pt-28 pb-24 md:pt-36 md:pb-32 bg-cream">
+<section class="booking-page pt-28 pb-24 md:pt-36 md:pb-32 bg-cream">
 
-    <div class="max-w-5xl mx-auto px-6 md:px-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-12">
 
         <!-- ========================================================= -->
         <!-- PREMIUM HERO -->
@@ -71,7 +71,7 @@
         <!-- BOOKING CARD -->
         <!-- ========================================================= -->
 
-        <div class="bg-white rounded-[2rem] shadow-[0_25px_90px_rgba(0,0,0,0.07)] overflow-hidden p-8 md:p-12">
+        <div class="bg-white rounded-[2rem] shadow-[0_25px_90px_rgba(0,0,0,0.07)] overflow-hidden p-5 sm:p-8 md:p-12">
 
             <form id="booking-form" method="post" class="space-y-8" novalidate>
                 {% csrf_token %}
@@ -251,7 +251,7 @@
 
 
                     <!-- Continue -->
-                    <div class="mt-8 pt-6 border-t border-cream flex justify-end">
+                    <div class="booking-navigation booking-navigation-next mt-8 pt-6 border-t border-cream flex justify-end">
 
                         <button
                             type="button"
@@ -477,7 +477,7 @@
 
                     <!-- Navigation -->
 
-                    <div class="mt-10 pt-7 border-t border-cream flex justify-between">
+                    <div class="booking-navigation mt-10 pt-7 border-t border-cream flex justify-between">
 
                         <button
                             type="button"
@@ -672,7 +672,7 @@
 
                     <!-- Navigation -->
 
-                    <div class="mt-10 pt-7 border-t border-cream flex justify-between">
+                    <div class="booking-navigation mt-10 pt-7 border-t border-cream flex justify-between">
 
                         <button
                             type="button"
@@ -915,15 +915,15 @@
 
                     <!-- Trust -->
 
-                    <div class="mt-8 p-6 rounded-2xl bg-cream border border-cream-dark">
+                    <div class="mt-8 p-4 sm:p-6 rounded-2xl bg-cream border border-cream-dark">
 
                         <div class="flex gap-4">
 
-                            <div class="text-gold text-xl">
+                            <div class="shrink-0 text-gold text-xl">
                                 ✦
                             </div>
 
-                            <div>
+                            <div class="min-w-0">
 
                                 <h3 class="font-heading text-lg text-ink">
                                     Your request is personally reviewed.
@@ -944,7 +944,7 @@
 
                     <!-- Final navigation -->
 
-                    <div class="mt-10 pt-7 border-t border-cream flex justify-between">
+                    <div class="booking-navigation mt-10 pt-7 border-t border-cream flex justify-between">
 
                         <button
                             type="button"
@@ -1090,6 +1090,48 @@
         display: block;
         font-size: 0.9rem;
         color: #282821;
+        overflow-wrap: anywhere;
+    }
+
+    #booking-form .form-input {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .booking-navigation {
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .booking-navigation .btn-secondary {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    .booking-navigation .btn-primary {
+        flex: 0 1 auto;
+        min-width: 0;
+        max-width: calc(100% - 5rem);
+        padding: 1rem 1.25rem;
+    }
+
+    .booking-navigation .btn-primary span {
+        min-width: 0;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    .booking-navigation-next .btn-primary {
+        max-width: 100%;
+    }
+
+    @media (max-width: 480px) {
+        .booking-navigation .btn-primary {
+            padding: 0.9rem 1rem;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+        }
     }
 
 </style>

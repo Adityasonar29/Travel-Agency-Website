@@ -321,4 +321,1708 @@ body { overflow-x: hidden; }
         transition-duration: 0.01ms !important;
     }
     .snap-section { scroll-snap-align: none; min-height: auto; }
+    .home-marquee-track { animation: none !important; transform: none !important; }
+}
+
+/* ── Mobile layout refinements ── */
+@media (max-width: 768px) {
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    img,
+    video,
+    iframe {
+        max-width: 100%;
+    }
+
+    main .absolute[class*="blur-"][class*="-right-"] {
+        right: 0 !important;
+        max-width: calc(100vw - 2rem);
+    }
+
+    main .absolute[class*="blur-"][class*="-left-"] {
+        left: 0 !important;
+        max-width: calc(100vw - 2rem);
+    }
+
+    #navbar > div {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    #menu-overlay {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    #menu-overlay > .relative {
+        min-height: 100%;
+        height: auto;
+        padding: 5rem 1rem 2rem;
+    }
+
+    #menu-overlay .flex.flex-col.items-center.gap-8 {
+        gap: clamp(0.9rem, 3vh, 1.5rem);
+    }
+
+    #menu-overlay .flex.flex-col.items-center.gap-8 > a.menu-link:nth-of-type(-n+5),
+    #menu-overlay .flex.flex-col.items-center.gap-8 > a.menu-link:last-of-type {
+        font-size: clamp(1.65rem, 7vw, 2.25rem);
+        line-height: 1.1;
+    }
+
+    #menu-overlay .flex.gap-4.mt-4 {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-top: 0.25rem;
+    }
+
+    #menu-overlay .flex.gap-4.mt-4 a,
+    #menu-overlay .flex.gap-4.mt-4 button,
+    #menu-overlay > .relative > .flex.flex-col.items-center.gap-8 > a.menu-link:last-of-type {
+        padding: 0.7rem 1rem;
+        font-size: 0.65rem;
+    }
+
+    .horizontal-gallery {
+        grid-auto-columns: minmax(82vw, 1fr);
+        gap: 0.85rem;
+        padding-right: 1rem;
+    }
+
+    .gallery-item {
+        min-height: clamp(250px, 70vw, 360px);
+        border-radius: 1.25rem;
+    }
+
+    .gallery-overlay {
+        opacity: 1;
+        padding: 1.1rem;
+    }
+
+    .glass-card,
+    .glass-alt {
+        padding: 1.35rem;
+        border-radius: 1.5rem;
+    }
+
+    .feature-row,
+    .place-card {
+        gap: 0.55rem;
+        padding: 0.95rem;
+        border-radius: 1rem;
+    }
+
+    .map-frame,
+    .map-frame iframe {
+        border-radius: 1.25rem;
+    }
+
+    .map-frame iframe {
+        height: 280px;
+    }
+
+    .badge {
+        max-width: 100%;
+        padding: 0.65rem 0.85rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.1em;
+    }
+
+    .profile-page {
+        padding-bottom: 5.5rem !important;
+    }
+
+    .profile-floating-nav {
+        bottom: max(12px, env(safe-area-inset-bottom)) !important;
+        width: calc(100% - 20px) !important;
+        max-width: 480px !important;
+        justify-content: space-around !important;
+        gap: 0 !important;
+        padding: 4px !important;
+        overflow-x: auto !important;
+        overscroll-behavior-x: contain !important;
+    }
+
+    .profile-floating-nav a {
+        flex: 1 0 auto !important;
+        justify-content: center !important;
+        gap: 4px !important;
+        padding: 0.65rem 0.45rem !important;
+        font-size: clamp(8px, 2.5vw, 10px) !important;
+        letter-spacing: 0.04em !important;
+    }
+
+    .profile-floating-nav .nav-dot {
+        width: 4px !important;
+        height: 4px !important;
+    }
+
+    .form-input,
+    input,
+    select,
+    textarea,
+    button,
+    .btn-primary {
+        scroll-margin-bottom: 1rem;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #menu-overlay > .relative {
+        padding-top: 4.5rem;
+    }
+
+    #menu-overlay > .relative > .flex.flex-col.items-center.gap-8 > a.menu-link:nth-of-type(-n+5) {
+        font-size: 1.65rem;
+    }
+
+    .absolute[class~="-right-10"][class~="top-12"] {
+        right: 0.75rem !important;
+        max-width: min(16rem, calc(100vw - 3rem));
+        padding: 1rem !important;
+    }
+
+    .feature-row,
+    .place-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .map-frame iframe {
+        height: 240px;
+    }
+
+    main .absolute[class~="rounded-full"][class*="blur-"] {
+        width: min(80vw, 20rem) !important;
+        height: min(80vw, 20rem) !important;
+        max-width: calc(100vw - 2rem);
+        left: auto !important;
+        right: 0 !important;
+        transform: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .fun-facts-list {
+        display: flex;
+        height: auto !important;
+        flex-direction: column;
+    }
+
+    .fun-fact-card {
+        min-height: 5.5rem;
+        cursor: pointer;
+        transition: min-height 0.55s cubic-bezier(0.16, 1, 0.3, 1), flex 0.55s ease;
+    }
+
+    .fun-fact-card > img {
+        opacity: 0.32;
+        transition: opacity 0.45s ease, transform 0.8s ease;
+    }
+
+    .fun-fact-card > div.absolute.inset-0 {
+        position: relative;
+        min-height: 5.5rem;
+        padding: 1rem 1.1rem;
+        justify-content: center;
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.76), rgba(0, 0, 0, 0.18));
+    }
+
+    .fun-fact-card .fun-fact-title {
+        font-size: 1.15rem;
+        line-height: 1.25;
+    }
+
+    .fun-fact-card .fun-fact-description {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.55s ease;
+    }
+
+    .fun-fact-card .fun-fact-description p {
+        max-height: none;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.35s ease;
+    }
+
+    .fun-fact-card.is-expanded {
+        min-height: 13rem;
+    }
+
+    .fun-fact-card.is-expanded > img {
+        opacity: 0.5;
+        transform: scale(1.04);
+    }
+
+    .fun-fact-card.is-expanded > div.absolute.inset-0 {
+        justify-content: flex-end;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.84));
+    }
+
+    .fun-fact-card.is-expanded .fun-fact-description {
+        grid-template-rows: 1fr;
+    }
+
+    .fun-fact-card.is-expanded .fun-fact-description p {
+        opacity: 1;
+    }
+
+    .fun-fact-card:focus-visible {
+        outline: 2px solid #c8a96e;
+        outline-offset: 3px;
+    }
+
+    footer .footer-brand img {
+        width: min(15rem, 74vw) !important;
+        height: auto;
+        margin-bottom: 1rem;
+    }
+
+    footer .footer-follow {
+        grid-column: 1 / -1 !important;
+    }
+
+    footer .footer-follow-links {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.85rem;
+    }
+
+    footer .footer-follow-links > a {
+        min-width: 0;
+        padding: 0.8rem;
+        border: 1px solid rgba(200, 169, 110, 0.22);
+        border-radius: 0.75rem;
+        overflow-wrap: normal;
+    }
+
+    .featured-destination-slider {
+        min-height: 32rem;
+        height: min(39rem, 84svh) !important;
+    }
+
+    .featured-destination-content > div > div {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .featured-destination-content h2,
+    .featured-destination-content p {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .featured-destination-counter {
+        top: auto;
+        right: auto;
+        bottom: 3.55rem;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.55);
+        white-space: nowrap;
+    }
+
+    #slider-dots {
+        bottom: 1.1rem;
+    }
+
+    #slider-prev,
+    #slider-next {
+        bottom: 0.6rem;
+        z-index: 45;
+    }
+
+    #slider-prev {
+        left: 0.7rem;
+    }
+
+    #slider-next {
+        right: 0.7rem;
+    }
+
+    .destination-search-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        min-height: 3.5rem;
+        border-radius: 0.9rem;
+    }
+
+    .destination-search-section {
+        margin-top: 1.5rem !important;
+        margin-bottom: 2.5rem !important;
+    }
+
+    .destination-search-section > div {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .destination-search-input {
+        width: 100%;
+        min-width: 0;
+        padding: 0.85rem 0.9rem !important;
+        font-size: 0.88rem;
+    }
+
+    .destination-search-input::placeholder {
+        font-size: 0.78rem;
+    }
+
+    .destination-search-button {
+        min-height: 3.5rem;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.72rem;
+    }
+
+    .destination-directory-card {
+        height: clamp(25rem, 112vw, 32rem);
+    }
+
+    .destination-directory-copy {
+        padding: 1.2rem !important;
+    }
+
+    .destination-directory-title {
+        max-width: 100%;
+        font-size: clamp(1.8rem, 8vw, 2.5rem) !important;
+        line-height: 1.12;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .destination-directory-description {
+        display: -webkit-box;
+        max-width: 100%;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        opacity: 1 !important;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .destination-gallery-section {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
+    }
+
+    .destination-gallery-section > div {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .destination-gallery-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.85rem;
+    }
+
+    .destination-gallery-grid img {
+        height: clamp(13rem, 68vw, 20rem) !important;
+        border-radius: 1.25rem;
+    }
+
+    .destination-gallery-grid > div:first-child img {
+        height: clamp(17rem, 92vw, 25rem) !important;
+    }
+
+    .destination-stats-grid {
+        gap: 1.5rem 0.75rem !important;
+    }
+
+    .destination-stat-value {
+        font-size: clamp(2.1rem, 10vw, 3rem) !important;
+        line-height: 1;
+    }
+
+    .destination-stat-label {
+        margin-top: 0.55rem !important;
+        font-size: 0.62rem;
+        line-height: 1.4;
+        letter-spacing: 0.1em;
+        overflow-wrap: anywhere;
+    }
+
+    .tour-listing-card {
+        min-height: 0 !important;
+        border-radius: 1.5rem;
+    }
+
+    .tour-listing-card > div:first-child {
+        height: clamp(15rem, 70vw, 21rem);
+    }
+
+    .tour-listing-card > div:first-child > div.absolute.bottom-8 {
+        right: 1rem;
+        bottom: 1rem;
+        left: 1rem;
+    }
+
+    .tour-listing-card > div:first-child h2 {
+        font-size: clamp(1.7rem, 8vw, 2.4rem);
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+    }
+
+    .tour-listing-content {
+        padding: 1.2rem !important;
+    }
+
+    .tour-listing-content > p {
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.55;
+    }
+
+    .tour-listing-price-row {
+        align-items: flex-end;
+        gap: 0.75rem;
+    }
+
+    .tour-listing-price-row > div:first-child > div {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .tour-listing-price-row > div:first-child > div > span:first-child {
+        font-size: clamp(1.7rem, 8vw, 2.25rem);
+        overflow-wrap: anywhere;
+    }
+
+    .tour-listing-price-row > div:last-child {
+        flex: 0 0 auto;
+    }
+
+    .tour-listing-price-row > div:last-child p:first-child {
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
+    }
+
+    .tour-listing-actions {
+        gap: 0.6rem;
+        margin-top: 1.4rem !important;
+    }
+
+    .tour-listing-actions a {
+        min-width: 0;
+        padding: 0.8rem 0.55rem;
+        font-size: 0.78rem;
+        line-height: 1.3;
+    }
+
+    .tour-detail-content {
+        padding-right: 1rem !important;
+        padding-left: 1rem !important;
+    }
+
+    .tour-detail-content > section {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .tour-highlights-section .section-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .tour-highlights-section .section-header > p:last-child {
+        padding: 0 0.25rem;
+        font-size: 0.85rem;
+        line-height: 1.55;
+        letter-spacing: 0.12em;
+        overflow-wrap: anywhere;
+    }
+
+    .tour-highlights-section .section-header h2 {
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+        line-height: 1.12;
+    }
+
+    .tour-highlights-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+    }
+
+    .tour-highlights-grid > div {
+        min-width: 0;
+        padding: 1rem !important;
+        border-radius: 1rem !important;
+    }
+
+    .tour-highlights-grid > div > div:first-child {
+        width: 2.7rem;
+        height: 2.7rem;
+        border-radius: 0.8rem;
+        font-size: 1.35rem;
+    }
+
+    .tour-highlights-grid > div h3 {
+        margin-top: 0.9rem !important;
+        font-size: clamp(1.05rem, 5vw, 1.5rem);
+        line-height: 1.15;
+        overflow-wrap: anywhere;
+    }
+
+    .tour-highlights-grid > div p {
+        font-size: 0.78rem;
+        line-height: 1.35;
+    }
+
+    .tour-journey-overview {
+        padding: 1.25rem !important;
+        border-radius: 0.45rem !important;
+    }
+
+    .tour-journey-overview h2 {
+        margin-top: 0.7rem !important;
+        font-size: clamp(1.75rem, 8vw, 2.4rem);
+        line-height: 1.12;
+    }
+
+    .tour-journey-overview .mt-10 {
+        margin-top: 0.9rem;
+    }
+
+    .tour-journey-overview .mt-10 p {
+        font-size: 0.92rem;
+        line-height: 1.65;
+    }
+
+    .tour-detail-content > section:first-child {
+        padding-top: 1rem;
+    }
+
+    .tour-itinerary-heading {
+        padding-right: 0.2rem;
+        padding-left: 0.2rem;
+    }
+
+    .tour-itinerary-heading > p {
+        font-size: 0.62rem;
+        letter-spacing: 0.25em;
+    }
+
+    .tour-itinerary-heading h2 {
+        margin-top: 0.7rem;
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+        line-height: 1.12;
+    }
+
+    .tour-itinerary-day {
+        gap: 0.55rem !important;
+    }
+
+    .tour-itinerary-day > :first-child {
+        flex-basis: 2rem;
+    }
+
+    .tour-itinerary-day > :first-child > div {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.8rem;
+    }
+
+    .tour-itinerary-card {
+        padding: 0.85rem !important;
+        border-radius: 1rem !important;
+    }
+
+    .tour-itinerary-card h3 {
+        font-size: clamp(1.05rem, 5.2vw, 1.4rem);
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .tour-itinerary-card p {
+        margin-top: 0.65rem;
+        font-size: 0.82rem;
+        line-height: 1.55;
+    }
+
+    .tour-itinerary-heading + .relative > .space-y-10 > .relative > .absolute.left-7 {
+        left: 1rem;
+    }
+
+    .tour-journey-information {
+        padding: 1.2rem !important;
+        border-radius: 1.1rem !important;
+    }
+
+    .tour-journey-information > .mt-8 {
+        margin-top: 1rem;
+    }
+
+    .tour-journey-information > .mt-8 > div {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.3rem;
+        padding-bottom: 0.75rem;
+    }
+
+    .tour-journey-information > .mt-8 > div > span:last-child {
+        max-width: 100%;
+        text-align: left;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .tour-gallery-grid {
+        columns: 1 !important;
+        column-gap: 0;
+    }
+
+    .tour-gallery-grid > div {
+        margin-bottom: 0.9rem !important;
+    }
+
+    .tour-gallery-grid > div img {
+        height: clamp(14rem, 72vw, 22rem) !important;
+        border-radius: 1.1rem;
+    }
+
+    .about-trust-card {
+        right: 0.75rem !important;
+        bottom: 0.75rem !important;
+        left: auto !important;
+        width: min(10.5rem, calc(100% - 1.5rem)) !important;
+        max-width: 10.5rem !important;
+        padding: 0.75rem !important;
+        border-radius: 0.8rem !important;
+        transform: none !important;
+    }
+
+    .about-trust-card > div:first-child h3 {
+        font-size: 1.35rem;
+    }
+
+    .about-trust-card > p:last-child {
+        display: none;
+    }
+
+    #story {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
+    }
+
+    #story h2 {
+        font-size: clamp(2rem, 9vw, 2.8rem);
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+    }
+
+    #story .space-y-6 {
+        font-size: 0.92rem;
+        line-height: 1.65;
+    }
+
+    .about-story-cards {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.85rem;
+        margin-top: 2rem !important;
+    }
+
+    .about-story-cards > div {
+        padding: 1.15rem !important;
+        border-radius: 0.9rem !important;
+    }
+
+    .about-story-cards h4 {
+        font-size: 1.45rem;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .about-story-cards p {
+        font-size: 0.85rem;
+        line-height: 1.55;
+    }
+
+    .contact-layout {
+        gap: 1.5rem;
+    }
+
+    .contact-info-card {
+        padding: 1.15rem !important;
+        border-radius: 1.1rem !important;
+    }
+
+    .contact-info-card > div:first-child {
+        margin-bottom: 0.75rem;
+        font-size: 1.7rem;
+    }
+
+    .contact-info-card > a,
+    .contact-info-card > p:last-child {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .contact-social-card > div:first-child {
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .contact-social-card > div:first-child > div:first-child {
+        flex: 0 0 2.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .contact-social-links {
+        gap: 0.65rem !important;
+    }
+
+    .contact-social-links > a {
+        min-width: 0;
+        min-height: 3.25rem;
+        gap: 0.5rem;
+        justify-content: flex-start;
+        padding: 0.7rem !important;
+        border-radius: 0.85rem !important;
+    }
+
+    .contact-social-links > a svg {
+        flex: 0 0 1.15rem;
+        width: 1.15rem;
+        height: 1.15rem;
+    }
+
+    .contact-social-links > a span {
+        min-width: 0;
+        font-size: 0.76rem;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    .contact-form-card {
+        padding: 1.2rem !important;
+        border-radius: 1.25rem !important;
+    }
+
+    .contact-form-card h2 {
+        font-size: clamp(1.8rem, 8vw, 2.4rem);
+        line-height: 1.12;
+    }
+
+    .contact-form-card form {
+        margin-top: 1.5rem !important;
+        display: grid;
+        gap: 1.1rem;
+    }
+
+    .contact-form-card form > div,
+    .contact-form-card form .grid {
+        gap: 1rem;
+    }
+
+    .contact-form-card form .grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .contact-form-card label {
+        margin-bottom: 0.45rem !important;
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+    }
+
+    .contact-form-card input,
+    .contact-form-card textarea {
+        min-height: 2.8rem;
+        padding: 0.8rem 0.9rem !important;
+        border-radius: 0.75rem !important;
+        font-size: 0.9rem;
+    }
+
+    .contact-form-card textarea {
+        min-height: 9rem;
+        resize: vertical;
+    }
+
+    .contact-form-card form > .flex,
+    .contact-form-card form > div:last-child {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .contact-form-card form button[type="submit"] {
+        width: 100%;
+        min-height: 3rem;
+    }
+
+    .admin-stat-label {
+        display: block !important;
+        margin: 0 0 0.45rem !important;
+        color: #77736b !important;
+        font-size: 0.8rem !important;
+        font-weight: 500;
+        line-height: 1.35;
+        text-transform: none;
+        letter-spacing: 0 !important;
+        opacity: 1 !important;
+    }
+}
+
+@media (max-width: 768px) {
+    h1,
+    h2,
+    h3,
+    p,
+    a,
+    button,
+    span {
+        min-width: 0;
+        overflow-wrap: break-word;
+    }
+
+    h1,
+    h2,
+    h3 {
+        text-wrap: balance;
+    }
+
+    #hero {
+        min-height: 100svh;
+        height: 100svh;
+    }
+
+    #hero .home-hero-copy {
+        right: 1.25rem;
+        bottom: 6.5rem;
+        left: 1.25rem;
+        max-width: none;
+    }
+
+    #hero .home-hero-copy h1 {
+        font-size: clamp(2.25rem, 10vw, 3.25rem);
+        line-height: 0.98;
+    }
+
+    #hero .home-hero-copy > p:last-child {
+        max-width: 36ch;
+        margin-top: 0.85rem;
+        font-size: 0.9rem;
+        line-height: 1.55;
+    }
+
+    #hero .home-hero-copy > p:first-child {
+        margin-bottom: 0.65rem;
+    }
+
+    #hero .home-hero-cta {
+        right: auto;
+        bottom: max(1.25rem, env(safe-area-inset-bottom));
+        left: 1.25rem;
+    }
+
+    #hero .home-hero-cta .btn-primary {
+        min-height: 42px;
+        gap: 0.55rem;
+        padding: 0.7rem 1rem;
+        font-size: 0.63rem;
+        letter-spacing: 0.1em;
+    }
+
+    .home-destination-card {
+        height: 360px !important;
+        min-height: 0 !important;
+    }
+
+    .home-destination-card:first-child {
+        height: 420px !important;
+    }
+
+    .home-destination-card > div.absolute.top-6.left-6 {
+        right: 0.75rem;
+        left: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .home-destination-card > div.absolute.inset-x-0.bottom-0 {
+        padding: 1.1rem !important;
+    }
+
+    .home-destination-card > div.absolute.inset-x-0.bottom-0 > p {
+        opacity: 1;
+    }
+
+    .destination-detail-hero > .relative.z-10 {
+        min-height: 100svh;
+        padding: 7rem 1.25rem 2rem;
+    }
+
+    .destination-detail-hero > .relative.z-10 > div {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .destination-detail-hero h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+        line-height: 0.98;
+    }
+
+    .destination-detail-hero .hero-item.mt-10 {
+        margin-top: 1.25rem;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .destination-detail-hero .hero-item.mt-12 {
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .destination-detail-hero .hero-item.mt-12 a {
+        justify-content: center;
+        padding: 0.8rem 1rem;
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
+    .destination-detail-hero .hero-item.mt-16 {
+        gap: 0.65rem;
+        margin-top: 2rem;
+    }
+
+    .destination-detail-hero .hero-item.mt-16 > div {
+        min-width: 0;
+        padding: 0.9rem;
+        border-radius: 1rem;
+    }
+
+    .destination-story-card {
+        position: relative !important;
+        top: auto !important;
+        border-radius: 1.5rem;
+        box-shadow: none;
+    }
+
+    .destination-story-visual {
+        position: relative !important;
+    }
+
+    .destination-story-photo {
+        height: min(112vw, 26rem) !important;
+        border-radius: 1.5rem;
+    }
+
+    .destination-story-name {
+        right: 0.75rem !important;
+        bottom: 0.75rem !important;
+        left: 0.75rem !important;
+        padding: 1rem !important;
+        border-radius: 1.1rem;
+    }
+
+    .destination-story-name h3 {
+        margin-top: 0.5rem;
+        font-size: clamp(1.5rem, 7vw, 2rem);
+        line-height: 1.15;
+    }
+
+    .destination-story-name > p:last-child {
+        margin-top: 0.5rem;
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    .destination-why-visit {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        max-width: 100%;
+        margin: 0.85rem 0 0 !important;
+        padding: 1.25rem !important;
+        border-radius: 1.25rem;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+    }
+
+    .destination-why-visit > p:nth-child(2) {
+        margin-top: 0.65rem !important;
+        font-size: 1.2rem !important;
+        line-height: 1.25 !important;
+    }
+
+    .destination-why-visit > p:last-child {
+        margin-top: 0.6rem !important;
+        font-size: 0.88rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .tour-detail-hero {
+        padding-top: 6.5rem;
+        padding-bottom: 3rem;
+    }
+
+    .tour-detail-hero > div.relative.z-10 {
+        padding-right: 1.1rem;
+        padding-left: 1.1rem;
+    }
+
+    .tour-detail-hero h1 {
+        font-size: clamp(2.4rem, 11vw, 4rem);
+        line-height: 1.05;
+    }
+
+    .tour-detail-hero .grid {
+        gap: 2rem;
+    }
+
+    .tour-detail-hero p.mt-8 {
+        margin-top: 1rem;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .tour-detail-hero .flex.flex-wrap.gap-4.mt-10 {
+        gap: 0.55rem;
+        margin-top: 1.25rem;
+    }
+
+    .tour-detail-hero .flex.flex-wrap.gap-4.mt-10 > span {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.75rem;
+    }
+
+    .tour-detail-hero .flex.flex-wrap.items-center.gap-5.mt-12 {
+        gap: 0.65rem;
+        margin-top: 1.5rem;
+    }
+
+    .tour-detail-hero .flex.flex-wrap.items-center.gap-5.mt-12 > a {
+        min-height: 44px;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    .tour-detail-hero .relative > .absolute {
+        max-width: calc(100% - 1rem);
+        padding: 0.85rem 1rem;
+        border-radius: 1rem;
+    }
+
+    .tour-detail-hero .relative > .absolute.-left-6 {
+        left: 0.5rem;
+    }
+
+    .tour-detail-hero .relative > .absolute.-right-6 {
+        right: 0.5rem;
+    }
+
+    .tour-detail-hero img {
+        height: min(105vw, 420px);
+        border-radius: 1.5rem;
+    }
+
+    .tour-detail-content {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    .tour-detail-content > section {
+        max-width: 100%;
+    }
+
+    .tour-detail-content .section-header h2,
+    .tour-detail-content h2.text-5xl {
+        font-size: clamp(2rem, 9vw, 3rem);
+        line-height: 1.08;
+    }
+
+    .tour-detail-content .grid > .group.rounded-\[30px\] {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+    }
+
+    .tour-itinerary-heading {
+        margin-bottom: 1.5rem;
+    }
+
+    .tour-itinerary-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .tour-itinerary-list > .tour-itinerary-day + .tour-itinerary-day {
+        margin-top: 0 !important;
+    }
+
+    .tour-itinerary-day {
+        gap: 0.75rem !important;
+        align-items: flex-start;
+    }
+
+    .tour-itinerary-day > :first-child {
+        flex: 0 0 2.5rem;
+    }
+
+    .tour-itinerary-day > :first-child > div {
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 0.9rem;
+    }
+
+    .tour-itinerary-card {
+        min-width: 0;
+        padding: 1rem !important;
+        border-radius: 1.25rem !important;
+    }
+
+    .tour-itinerary-card h3 {
+        margin-top: 0.75rem;
+        font-size: clamp(1.25rem, 6vw, 1.7rem);
+        line-height: 1.2;
+    }
+
+    .tour-itinerary-card p {
+        margin-top: 0.8rem;
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+    .tour-itinerary-list > .relative > .absolute.left-7 {
+        left: 1.2rem;
+    }
+
+    .destination-detail-hero ~ section {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
+    }
+
+    .destination-detail-hero ~ section .scroll-reveal {
+        margin-bottom: 2.5rem;
+    }
+
+    .destination-detail-hero ~ section h2 {
+        font-size: clamp(2rem, 9vw, 3rem);
+        line-height: 1.1;
+    }
+
+    .featured-destination-slider {
+        height: min(42rem, 82svh) !important;
+        min-height: 34rem;
+        border-radius: 1.25rem !important;
+    }
+
+    .featured-destination-content > div {
+        padding-right: 1.25rem;
+        padding-bottom: 4.5rem;
+        padding-left: 1.25rem;
+    }
+
+    .featured-destination-content h2 {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+        line-height: 1;
+        overflow-wrap: anywhere;
+    }
+
+    .featured-destination-content p.mt-8 {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.55;
+    }
+
+    .featured-destination-content .mt-12 {
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 1.25rem;
+    }
+
+    .featured-destination-content .mt-12 a {
+        min-height: 42px;
+        padding: 0.7rem 0.85rem;
+        font-size: 0.62rem;
+    }
+
+    #slider-prev,
+    #slider-next {
+        bottom: 0.75rem;
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    #slider-prev {
+        left: 0.75rem;
+    }
+
+    #slider-next {
+        right: 0.75rem;
+    }
+
+    #slider-dots {
+        bottom: 1.5rem;
+        gap: 0.55rem;
+    }
+
+    .featured-destination-counter {
+        top: auto !important;
+        right: auto !important;
+        bottom: 3.55rem !important;
+        left: 50% !important;
+        height: 1rem;
+        line-height: 1rem;
+        transform: translateX(-50%);
+        padding: 0.5rem 0.65rem;
+        border-radius: 99px;
+        background: rgba(0, 0, 0, 0.35);
+    }
+
+    .destination-directory-card {
+        min-height: 0 !important;
+        height: clamp(26rem, 110vw, 34rem);
+        aspect-ratio: auto;
+    }
+
+    .destination-directory-card > div.absolute.bottom-0 {
+        padding: 1.25rem !important;
+    }
+
+    .destination-directory-card h3 {
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+        line-height: 1.1;
+    }
+
+    .destination-related-tour-card {
+        height: auto !important;
+        min-height: 28rem;
+        border-radius: 1.5rem;
+    }
+
+    .destination-related-tour-content {
+        padding: 1.15rem;
+    }
+
+    .destination-related-tour-title {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        font-size: clamp(1.35rem, 6vw, 1.65rem);
+        line-height: 1.2;
+    }
+
+    .destination-related-tour-summary {
+        margin-bottom: 0.8rem;
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    .destination-related-tour-action {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.85rem;
+    }
+
+    .destination-related-tour-action > a {
+        max-width: 100%;
+        padding: 0.7rem 0.9rem;
+        font-size: 0.68rem;
+        white-space: normal;
+    }
+
+    .fun-facts-section {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
+    }
+
+    .fun-facts-section .scroll-reveal {
+        margin-bottom: 2rem;
+    }
+
+    .fun-facts-list {
+        height: auto !important;
+        gap: 0.85rem !important;
+    }
+
+    .fun-fact-card {
+        flex: none !important;
+        min-height: 14rem;
+        border-radius: 1rem;
+        cursor: default;
+    }
+
+    .fun-fact-card > img {
+        opacity: 0.5;
+    }
+
+    .fun-fact-card > div.absolute.inset-0 {
+        padding: 1.15rem;
+        background: linear-gradient(180deg, transparent 10%, rgba(0, 0, 0, 0.78) 100%);
+    }
+
+    .fun-fact-card .fun-fact-title {
+        max-width: 100%;
+        white-space: normal;
+        transform: none !important;
+        font-size: 1.35rem;
+        line-height: 1.15;
+    }
+
+    .fun-fact-card .fun-fact-description {
+        display: block;
+        grid-template-rows: 1fr;
+    }
+
+    .fun-fact-card .fun-fact-description p {
+        max-height: none;
+        overflow: visible;
+        opacity: 1;
+        font-size: 0.9rem;
+        line-height: 1.55;
+    }
+
+    .fun-fact-card span {
+        opacity: 1;
+    }
+
+    footer > div {
+        padding-right: 1.25rem !important;
+        padding-left: 1.25rem !important;
+    }
+
+    footer .footer-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+
+    footer .footer-columns > .footer-brand {
+        grid-column: 1 / -1;
+    }
+
+    footer .footer-columns > div {
+        min-width: 0;
+    }
+
+    footer .footer-columns h4 {
+        margin-bottom: 0.85rem;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+    }
+
+    footer .footer-columns ul {
+        display: grid;
+        gap: 0.55rem;
+    }
+
+    footer .footer-columns a,
+    footer .footer-columns li {
+        font-size: 0.8rem;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+
+    footer .footer-columns > div:nth-child(4),
+    footer .footer-columns > div:nth-child(5) {
+        grid-column: 1 / -1;
+    }
+
+    footer .border-t + section .max-w-\[1440px\] {
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    footer .voyage-big-text {
+        width: 100%;
+        font-size: clamp(3.25rem, 17vw, 7rem) !important;
+        letter-spacing: -0.04em;
+        transform: none !important;
+    }
+
+    .btn-primary,
+    button,
+    input[type="submit"] {
+        max-width: 100%;
+        white-space: normal;
+        line-height: 1.35;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    #hero .home-hero-copy {
+        bottom: 6.25rem;
+    }
+
+    #hero .home-hero-copy h1 {
+        font-size: clamp(2rem, 9.5vw, 2.75rem);
+    }
+
+    #hero .home-hero-copy > p:last-child {
+        max-width: 32ch;
+        font-size: 0.82rem;
+    }
+
+    .destinations-index-hero {
+        min-height: auto;
+    }
+
+    .destinations-index-hero-layout {
+        height: auto !important;
+    }
+
+    .destinations-index-hero-layout > .grid {
+        height: auto;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .destinations-index-hero-image {
+        height: 36svh;
+        min-height: 14rem;
+    }
+
+    .destinations-index-hero-image img {
+        object-position: center 45%;
+    }
+
+    .destinations-index-hero-copy {
+        padding: 2rem 1.25rem 2.5rem;
+    }
+
+    .destinations-index-hero-copy > div {
+        width: 100%;
+        padding: 0;
+    }
+
+    .destinations-index-hero-copy p.uppercase {
+        margin-bottom: 0.85rem;
+        font-size: 0.65rem;
+    }
+
+    .destinations-index-title {
+        font-size: clamp(2.5rem, 12vw, 3.4rem) !important;
+        line-height: 0.98 !important;
+    }
+
+    .destinations-index-hero-copy p.mt-12 {
+        margin-top: 1rem;
+        font-size: 0.98rem;
+        line-height: 1.65;
+    }
+
+    .featured-destination-slider {
+        height: 37rem !important;
+    }
+
+    .tour-detail-content .tour-itinerary-heading + .relative {
+        margin-top: 0;
+    }
+}
+
+#lightboxModal > button {
+    position: absolute !important;
+    display: grid;
+    width: 3rem !important;
+    min-width: 3rem !important;
+    max-width: 3rem !important;
+    height: 3rem !important;
+    min-height: 3rem !important;
+    max-height: 3rem !important;
+    padding: 0.75rem !important;
+    place-items: center;
+    box-sizing: border-box;
+}
+
+#lightboxModal > button:first-child {
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+}
+
+#lightboxModal > button:nth-of-type(2) {
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 1rem !important;
+    transform: translateY(-50%) !important;
+}
+
+#lightboxModal > button:nth-of-type(3) {
+    top: 50% !important;
+    right: 1rem !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: translateY(-50%) !important;
+}
+
+#lightboxModal #lightboxCounter {
+    top: auto !important;
+    right: auto !important;
+    bottom: 1rem !important;
+    left: 50% !important;
+    width: max-content !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 2rem) !important;
+    height: auto !important;
+    transform: translateX(-50%) !important;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    #site-messages {
+        right: auto !important;
+        left: 50% !important;
+        width: min(28rem, calc(100% - 2rem));
+        transform: translateX(-50%);
+        text-align: center;
+    }
+
+    #site-messages .auto-dismiss-message {
+        width: 100%;
+        font-size: 0.82rem;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+
+    footer .footer-brand img {
+        width: min(20rem, 100%) !important;
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .payment-page > div:first-of-type,
+    .payment-page > div:nth-of-type(2) {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .payment-page #payment-form > div[class*="mb-6"] input,
+    .payment-page #upi_id {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .payment-page #card_number {
+        font-size: clamp(12px, 3.6vw, 14px) !important;
+        letter-spacing: 0.04em;
+    }
+
+    .payment-page #payment-submit {
+        min-width: 0;
+        padding: 1rem;
+        font-size: 9px;
+        letter-spacing: 0.12em;
+    }
+
+    .payment-page aside h2 {
+        overflow-wrap: anywhere;
+    }
+
+    .review-page #rating-stars {
+        gap: 0.5rem;
+    }
+
+    .review-page .rating-star {
+        flex: 0 0 auto;
+    }
+
+    .review-page .star-circle {
+        height: 2.75rem;
+        width: 2.75rem;
+    }
+
+    .fun-fact-card {
+        flex: none !important;
+        min-height: 6.25rem;
+        border-radius: 1rem;
+        cursor: pointer;
+        filter: none;
+        transition: min-height 0.45s ease;
+    }
+
+    .fun-fact-card > img {
+        opacity: 0.62;
+        filter: none;
+        transition: opacity 0.35s ease, transform 0.6s ease;
+    }
+
+    .fun-fact-card > div.absolute.inset-0 {
+        position: relative;
+        min-height: 6.25rem;
+        padding: 1rem 1.1rem;
+        justify-content: center;
+        background: rgba(10, 12, 16, 0.28);
+        filter: none;
+        backdrop-filter: none;
+    }
+
+    .fun-fact-card .fun-fact-title {
+        max-width: 100%;
+        white-space: normal;
+        transform: none !important;
+        font-size: 1.2rem;
+        line-height: 1.2;
+    }
+
+    .fun-fact-card .fun-fact-description {
+        display: grid;
+        grid-template-rows: 0fr;
+        transition: grid-template-rows 0.4s ease;
+    }
+
+    .fun-fact-card .fun-fact-description p {
+        max-height: none;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+
+    .fun-fact-card.is-expanded {
+        min-height: 13rem;
+    }
+
+    .fun-fact-card.is-expanded > img {
+        opacity: 0.7;
+        transform: scale(1.03);
+    }
+
+    .fun-fact-card.is-expanded > div.absolute.inset-0 {
+        min-height: 13rem;
+        justify-content: flex-end;
+        background: rgba(10, 12, 16, 0.42);
+    }
+
+    .fun-fact-card.is-expanded .fun-fact-description {
+        grid-template-rows: 1fr;
+    }
+
+    .fun-fact-card.is-expanded .fun-fact-description p {
+        opacity: 1;
+        font-size: 0.9rem;
+        line-height: 1.55;
+    }
+
+    .fun-fact-card span {
+        opacity: 1;
+    }
+}
+.home-marquee-track {
+    will-change: transform;
+}
+
+.home-marquee-group {
+    min-width: 100vw;
+}
+
+.home-marquee-word:not(.text-gold) {
+    color: rgba(255, 255, 255, 0.32);
+}
+
+.home-marquee-word:hover:not(.text-gold) {
+    color: rgba(200, 169, 110, 0.82);
 }

@@ -7,13 +7,13 @@
 
 {% block content %}
 
-<section class="min-h-screen bg-[#F8F5F0] text-[#1A1A1A]">
+<section class="booking-overview-page min-h-screen bg-[#F8F5F0] text-[#1A1A1A]">
 
     <!-- =====================================================
          TOP HEADER
     ====================================================== -->
 
-    <div class="mx-auto max-w-[1380px] px-6 md:px-10 lg:px-16 pt-32 pb-12">
+    <div class="mx-auto max-w-[1380px] px-4 sm:px-6 md:px-10 lg:px-16 pt-28 sm:pt-32 pb-10 sm:pb-12">
 
         <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
 
@@ -51,7 +51,7 @@
          BOOKING REFERENCE
     ====================================================== -->
 
-    <div class="mx-auto max-w-[1380px] px-6 md:px-10 lg:px-16">
+    <div class="mx-auto max-w-[1380px] px-4 sm:px-6 md:px-10 lg:px-16">
 
         <div class="border-y border-[#DDD6CC] py-7">
 
@@ -127,7 +127,7 @@
          MAIN CONTENT
     ====================================================== -->
 
-    <div class="mx-auto max-w-[1380px] px-6 md:px-10 lg:px-16 py-16 lg:py-24">
+    <div class="mx-auto max-w-[1380px] px-4 sm:px-6 md:px-10 lg:px-16 py-10 sm:py-16 lg:py-24">
 
         <div class="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_380px]">
 
@@ -143,7 +143,7 @@
                      DESTINATION / TOUR
                 ============================================== -->
 
-                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-7 md:p-10">
+                <div class="rounded-[2px] border border-[#DDD6CC] bg-white/60 p-5 sm:p-7 md:p-10">
 
                     <div class="mb-10 flex items-start justify-between gap-6">
 
@@ -685,11 +685,11 @@
 
                     {% if booking.tour %}
 
-                    <div class="flex items-start justify-between gap-5 py-3">
+                    <div class="booking-overview-tour-row flex items-start justify-between gap-5 py-3">
 
-                        <div>
+                        <div class="min-w-0">
 
-                            <p class="text-sm text-[#2D2D2D]">
+                            <p class="booking-overview-tour-name text-sm text-[#2D2D2D]">
                                 {{ booking.tour.name }}
                             </p>
 
@@ -700,10 +700,9 @@
                         </div>
 
 
-                        <p class="text-sm whitespace-nowrap">
+                        <p class="booking-overview-tour-price text-sm whitespace-nowrap">
                             ${{ booking.total_amount|floatformat:2 }}
                         </p>
-Journey
                     </div>
 
                     {% endif %}
@@ -866,6 +865,20 @@ Journey
 .journey-overview-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(26,25,22,.48);backdrop-filter:blur(5px)}
 .journey-overview-modal.is-open{display:flex}.journey-overview-modal-card{width:min(100%,480px);padding:34px;border:1px solid #d8cfc3;background:#f8f5f0;box-shadow:0 24px 70px rgba(26,25,22,.2)}
 .journey-overview-kicker{margin:0 0 12px;color:#a8874d;font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}.journey-overview-modal h2{margin:0 0 12px;font:500 34px/1.1 'Cormorant Garamond',Georgia,serif}.journey-overview-modal-card>p:not(.journey-overview-kicker){color:#6b665e;font-size:14px;line-height:1.7}.journey-overview-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:26px}.journey-overview-actions button{padding:12px 16px;border:1px solid #d8cfc3;background:transparent;font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.journey-overview-confirm{border-color:#8a5555!important;color:#8a5555}.journey-overview-confirm:hover{background:#8a5555;color:#fff}
+@media(max-width:600px){
+    .journey-overview-modal{padding:16px}
+    .journey-overview-modal-card{width:min(100%,360px);padding:24px 20px}
+    .journey-overview-modal h2{font-size:clamp(28px,8vw,34px);line-height:1.05}
+    .journey-overview-modal-card>p:not(.journey-overview-kicker){font-size:13px;line-height:1.55}
+    .journey-overview-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:20px}
+    .journey-overview-actions button{min-width:0;min-height:48px;padding:9px 6px;font-size:8px;line-height:1.35;letter-spacing:.08em;white-space:normal;overflow-wrap:normal;word-break:normal}
+    .booking-overview-page aside>div{padding:20px}
+    .booking-overview-page aside h2{font-size:1.65rem;line-height:1.1}
+    .booking-overview-tour-row{gap:12px}
+    .booking-overview-tour-name{font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+    .booking-overview-tour-price{flex:0 0 auto;font-size:12px}
+    .booking-overview-page aside .font-heading.text-4xl{font-size:2rem}
+}
 </style>
 
 <script>

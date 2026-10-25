@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ tour.name }} — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block meta_description %}{% if tour.overview %}{{ tour.overview|truncatechars:200 }}{% else %}Discover this curated journey with {{ site_settings.site_name|default:"VOYAGE" }}.{% endif %}{% endblock %}
+{% block social_title %}{{ tour.name }} — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block social_description %}{% if tour.overview %}{{ tour.overview|truncatechars:200 }}{% else %}Discover this curated journey with {{ site_settings.site_name|default:"VOYAGE" }}.{% endif %}{% endblock %}
 
 {% block content %}
 
 <!-- ================= PREMIUM HERO ================= -->
 <!-- ================= PREMIUM HERO ================= -->
-<section class="relative overflow-hidden bg-[#f8f4ec] py-28 md:py-36">
+<section class="tour-detail-hero relative overflow-hidden bg-[#f8f4ec] py-28 md:py-36">
     <!-- Decorative Background -->
     
        <!-- Decorative Background Wrapper -->
@@ -135,7 +138,7 @@
         <div class="absolute right-0 bottom-0 w-96 h-96 rounded-full bg-[#b8860b]/5 blur-3xl"></div>
     </div>
 
-    <div class="relative pr-10 pl-10 mx-auto px-6 md:px-12 lg:px-24 space-y-16">
+    <div class="tour-detail-content relative pr-10 pl-10 mx-auto px-6 md:px-12 lg:px-24 space-y-16">
 
 
         <!--<div class="space-y-12">-->
@@ -144,7 +147,7 @@
 
         <!-- ================= TOUR HIGHLIGHTS ================= -->
 
-        <section>
+        <section class="tour-highlights-section">
 
             <div class="section-header text-center mb-12">
 
@@ -170,7 +173,7 @@
 
             </div>
 
-            <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-7">
+            <div class="tour-highlights-grid grid sm:grid-cols-2 xl:grid-cols-3 gap-7">
 
                 <!-- Duration -->
 
@@ -334,7 +337,7 @@
 
         <!-- ================= OVERVIEW ================= -->
 
-        <section class="relative overflow-hidden rounded-[38px]
+        <section class="tour-journey-overview relative overflow-hidden rounded-[38px]
                             bg-gradient-to-br from-white to-[#fcf8ef]
                             border border-[#eee3cf]
                             p-12 lg:p-16">
@@ -378,7 +381,7 @@
         <!-- ================= ITINERARY ================= -->
 
 
-            <div class="section-header mb-12">
+            <div class="tour-itinerary-heading section-header mb-12">
 
                 <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
 
@@ -407,11 +410,11 @@
                             class="absolute left-7 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#d4af37] via-[#e8d8a8] to-transparent">
                         </div>
 
-                        <div class="space-y-12">
+                        <div class="tour-itinerary-list space-y-12">
 
                             {% for item in tour.itinerary %}
 
-                            <div class="relative flex gap-8 group">
+                            <div class="tour-itinerary-day relative flex gap-8 group">
 
                                 <!-- Timeline Circle -->
 
@@ -428,7 +431,7 @@
 
                                 <!-- Card -->
 
-                                <div class="flex-1 rounded-[32px]
+                                <div class="tour-itinerary-card flex-1 rounded-[32px]
                                                 border border-[#ece3d1]
                                                 bg-white
                                                 p-8
@@ -479,6 +482,11 @@
                                 </div>
 
                             </div>
+
+                            {% empty %}
+                            <p class="rounded-2xl border border-dashed border-[#d9c7ab] bg-white p-5 text-sm leading-relaxed text-gray-600">
+                                A day-by-day itinerary for this tour is being prepared. Contact our travel team for the current schedule.
+                            </p>
 
                             {% endfor %}
 
@@ -629,7 +637,7 @@
                             - If you have 2-3 images: Automatically forms balanced panels.
                             - If you have 4+ images: Assembles an elegant staggered photo wall.
                         -->
-                        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance] w-full">
+                        <div class="tour-gallery-grid columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance] w-full">
                             {% for image in tour.gallery %}
                                 <div class="break-inside-avoid mb-6">
                                     <div onclick="openLightbox({{ forloop.counter0 }})" 
@@ -685,7 +693,7 @@
                     <!-- MAIN LIGHTBOX IMAGE CONTAINER -->
                     <div class="relative max-w-full max-h-[85vh] flex items-center justify-center">
                         <!-- Added fixed path namespace error fix from prior step snippet -->
-                        <img id="lightboxTargetImg" src="" alt="Enlarged view"
+                        <img id="lightboxTargetImg" alt="Enlarged view"
                              class="max-w-full max-h-[85vh] rounded-2xl object-contain shadow-2xl transform scale-95 transition-all duration-300 select-none"
                              onclick="event.stopPropagation()">
                             
@@ -768,7 +776,7 @@
                         const imgTarget = document.getElementById('lightboxTargetImg');
                         imgTarget.style.opacity = '0.3';
                         imgTarget.style.transform = 'scale(0.98)';
-                        setTimeout(() => {updateLightboxContent();imgTarget.style.opacity = '1';imgTarget.style.transform = 'scale(1)';}, 120);}function closeLightbox() {const modal = document.getElementById('lightboxModal');const imgTarget = document.getElementById('lightboxTargetImg');modal.classList.add('opacity-0');imgTarget.classList.add('scale-95');setTimeout(() => {modal.classList.add('hidden');imgTarget.src = "";}, 300);}document.addEventListener('keydown', function(e) {const modal = document.getElementById('lightboxModal');if (modal.classList.contains('hidden')) return;if (e.key === 'Escape') closeLightbox();if (e.key === 'ArrowRight') navigateLightbox(1);if (e.key === 'ArrowLeft') navigateLightbox(-1);});
+                        setTimeout(() => {updateLightboxContent();imgTarget.style.opacity = '1';imgTarget.style.transform = 'scale(1)';}, 120);}function closeLightbox() {const modal = document.getElementById('lightboxModal');const imgTarget = document.getElementById('lightboxTargetImg');modal.classList.add('opacity-0');imgTarget.classList.add('scale-95');setTimeout(() => {modal.classList.add('hidden');imgTarget.removeAttribute('src');}, 300);}document.addEventListener('keydown', function(e) {const modal = document.getElementById('lightboxModal');if (modal.classList.contains('hidden')) return;if (e.key === 'Escape') closeLightbox();if (e.key === 'ArrowRight') navigateLightbox(1);if (e.key === 'ArrowLeft') navigateLightbox(-1);});
 
                               </script>
 
@@ -1012,7 +1020,7 @@
                 
                     <!-- ================= JOURNEY INFORMATION ================= -->
                 
-                    <div class="rounded-[36px] bg-white border border-[#e9deca] p-10">
+                    <div class="tour-journey-information rounded-[36px] bg-white border border-[#e9deca] p-10">
                 
                         <p class="text-xs uppercase tracking-[0.45em] text-[#b8860b]">
                 

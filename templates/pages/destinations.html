@@ -3,33 +3,39 @@
 {% block title %}
 Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 {% endblock %}
+{% block meta_description %}Explore remarkable destinations and find the perfect place for your next curated journey.{% endblock %}
+{% block social_title %}Explore Destinations — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block social_description %}Explore remarkable destinations and find the perfect place for your next curated journey.{% endblock %}
 
 {% block content %}
 {% load static %}
 <!-- ===================================================== -->
 <!-- HERO -->
 <!-- ===================================================== -->
-<section class="relative min-h-screen bg-[#f0eade] overflow-hidden">
+<section class="destinations-index-hero relative min-h-screen bg-[#f0eade] overflow-hidden">
 
     <!-- decorative blobs -->
 
-    <div class="relative z-20 h-screen">
+    <div class="destinations-index-hero-layout relative z-20 h-screen">
 
         <div class="grid lg:grid-cols-2 h-full">
 
             <!-- LEFT IMAGE -->
 
-            <div class="relative overflow-hidden">
+            <div class="destinations-index-hero-image relative overflow-hidden">
 
                 <img
                     src="{% static 'images/destinations_bg/dest_bg2 (2).jpg' %}"
+                    alt="Explore remarkable destinations around the world"
+                    loading="eager"
+                    fetchpriority="high"
                     class="absolute inset-0 w-full h-full object-cover">
 
             </div>
 
             <!-- RIGHT CONTENT -->
 
-            <div class="bg-[#f0eade] flex items-center">
+            <div class="destinations-index-hero-copy bg-[#f0eade] flex items-center">
 
                 <div class="max-w-xl mx-auto px-16">
 
@@ -37,7 +43,7 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
                         DISCOVER THE WORLD
                     </p>
 
-                    <h1 class="font-heading text-[90px] leading-[0.95] font-light text-ink">
+                    <h1 class="destinations-index-title font-heading text-[90px] leading-[0.95] font-light text-ink">
 
                         Explore
 
@@ -97,7 +103,7 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
         <div
             id="featured-slider"
-            class="relative rounded-[32px] overflow-hidden h-[760px] w-[100%] items-center justify-center">
+            class="featured-destination-slider relative rounded-[32px] overflow-hidden h-[760px] w-[100%] items-center justify-center">
 
             {% for destination in featured_destinations %}
 
@@ -124,7 +130,7 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
                     <!-- Content -->
 
-                    <div class="relative z-20 h-full flex items-center">
+                    <div class="featured-destination-content relative z-20 h-full flex items-center">
 
                         <div class="max-w-7xl mx-auto w-full px-8 md:px-16">
 
@@ -237,7 +243,7 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
                 <!-- Counter -->
 
                 <div
-                    class="absolute right-10 bottom-8 text-white tracking-[0.25em] uppercase text-xs z-40">
+                    class="featured-destination-counter absolute right-10 bottom-8 text-white tracking-[0.25em] uppercase text-xs z-40">
 
                     <span id="current-slide">01</span>
 
@@ -292,24 +298,24 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
             </div>
 
-<section class="-mt-12 mt-20 mb-20 relative z-40">
+<section class="destination-search-section -mt-12 mt-20 mb-20 relative z-40">
 
     <div class="max-w-7xl mx-auto px-6 md:px-12">
 
         <form method="GET">
 
             <div
-                class="flex items-center  rounded-full bg-[#fff4e2]  overflow-hidden border border-[#d4af37]">
+                class="destination-search-form flex items-center rounded-full bg-[#fff4e2] overflow-hidden border border-[#d4af37]">
 
                 <input
                     type="text"
                     name="q"
                     value="{{ request.GET.q }}"
                     placeholder="Search destinations or countries..."
-                    class="flex-1 px-8 py-6 outline-none bg-transparent">
+                    class="destination-search-input flex-1 px-8 py-6 outline-none bg-transparent">
 
                 <button
-                    class="bg-gold text-white px-10 py-6 hover:bg-ink transition">
+                    class="destination-search-button bg-gold text-white px-10 py-6 hover:bg-ink transition">
 
                     Search
 
@@ -336,7 +342,7 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
                         <!-- Image -->
 
-                        <div class="relative aspect-[3/4] min-h-[620px] overflow-hidden rounded-2xl">
+                        <div class="destination-directory-card relative aspect-[3/4] min-h-[620px] overflow-hidden rounded-2xl">
 
                             <!-- Main Image -->
 
@@ -382,9 +388,9 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
                             <!-- Bottom Content -->
 
-                            <div class="absolute bottom-0 left-0 right-0 p-10 md:p-12   ">
+                            <div class="destination-directory-copy absolute bottom-0 left-0 right-0 p-10 md:p-12">
 
-                                <h3 class="font-heading text-4xl text-white font-light">
+                                <h3 class="destination-directory-title font-heading text-4xl text-white font-light">
 
                                     {{ dest.name }}
 
@@ -392,7 +398,7 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
                                 {% if dest.description %}
 
-                                <p class="mt-4 text-white/80 leading-7 line-clamp-2">
+                                <p class="destination-directory-description mt-4 text-white/80 leading-7 line-clamp-2">
 
                                     {{ dest.description|truncatewords:18 }}
 
@@ -501,11 +507,11 @@ Destinations — {{ site_settings.site_name|default:"VOYAGE" }}
 
             </div>
 
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-10">
+                <div class="destination-stats-grid grid grid-cols-2 lg:grid-cols-4 gap-10">
                     {% for stat in site_stats %}
                     <div class="text-center">
-                        <h3 class="font-heading text-6xl font-light text-ink">{{ stat.display_value }}</h3>
-                        <p class="mt-4 uppercase tracking-[0.2em] text-xs text-charcoal/60">
+                        <h3 class="destination-stat-value font-heading text-6xl font-light text-ink">{{ stat.display_value }}</h3>
+                        <p class="destination-stat-label mt-4 uppercase tracking-[0.2em] text-xs text-charcoal/60">
                             {{ stat.label }}
                         </p>
                     </div>

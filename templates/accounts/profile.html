@@ -1655,13 +1655,105 @@
     }
 
     .journey-row {
-        grid-template-columns: 38px 1fr auto;
-
-        gap: 12px;
+        grid-template-columns: 30px minmax(0, 1fr);
+        gap: 10px;
+        padding-right: 8px;
     }
 
     .journey-name {
-        font-size: 22px;
+        font-size: 20px;
+        overflow-wrap: anywhere;
+    }
+
+    .journey-row > div:nth-child(2) {
+        min-width: 0;
+    }
+
+    .journey-row > .journey-status {
+        grid-column: 2;
+        min-width: 0;
+        width: 100%;
+        margin-top: 2px;
+    }
+
+    .journey-actions {
+        justify-content: flex-start;
+        gap: 8px;
+        min-width: 0;
+        padding-right: 4px;
+    }
+
+    .journey-actions::before {
+        display: none;
+    }
+
+    .journey-process-button {
+        min-width: 0;
+        width: 100%;
+        gap: 8px;
+        padding: 10px 11px;
+        font-size: 8px;
+        letter-spacing: 0.1em;
+    }
+
+    .journey-process-button span:first-child {
+        min-width: 0;
+        overflow-wrap: normal;
+    }
+
+    .journey-cancel-form {
+        width: 100%;
+    }
+
+    .journey-cancel-button {
+        width: 100%;
+        padding: 9px 10px;
+        font-size: 8px;
+        letter-spacing: 0.09em;
+    }
+
+    .journey-modal {
+        padding: 16px;
+    }
+
+    .journey-modal-card {
+        width: min(100%, 360px);
+        padding: 24px 20px;
+    }
+
+    .journey-modal-title {
+        font-size: clamp(28px, 8vw, 34px);
+        line-height: 1.05;
+    }
+
+    .journey-modal-copy {
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .journey-modal-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .journey-modal-actions .journey-process-button,
+    .journey-modal-actions .journey-cancel-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+        min-height: 48px;
+        padding: 9px 6px;
+        font-size: 8px;
+        line-height: 1.35;
+        letter-spacing: 0.08em;
+        text-align: center;
+        white-space: normal;
+        overflow-wrap: normal;
+        word-break: normal;
     }
 
     .wishlist-row {

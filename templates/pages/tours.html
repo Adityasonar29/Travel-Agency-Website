@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% block title %}Curated Tours — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block meta_description %}Browse curated tours and thoughtfully planned itineraries for your next unforgettable trip.{% endblock %}
+{% block social_title %}Curated Tours — {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block social_description %}Browse curated tours and thoughtfully planned itineraries for your next unforgettable trip.{% endblock %}
 {% block content %}
 {% load static %}
 
@@ -173,7 +177,7 @@
                     {% for tour in tours %}
 
                     <article
-                        class="group rounded-[36px] min-h-[850px] overflow-hidden bg-white border border-black/5 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_40px_90px_rgba(0,0,0,.18)]"
+                        class="tour-listing-card group rounded-[36px] min-h-[850px] overflow-hidden bg-white border border-black/5 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_40px_90px_rgba(0,0,0,.18)]"
                     >
                         <!-- Image -->
 
@@ -202,7 +206,7 @@
                             </div>
                         </div>
                         <!-- Card Content -->
-                        <div class="flex flex-col flex-1 p-8">
+                        <div class="tour-listing-content flex flex-col flex-1 p-8">
                             <p class="text-ink/70 leading-8 mb-8">
                                 {{ tour.summary }}
                             </p>
@@ -229,7 +233,7 @@
 
                             <!-- Bottom -->
 
-                            <div class="flex justify-between items-end">
+                            <div class="tour-listing-price-row flex justify-between items-end">
                                 <!-- Price -->
 
                                 <div>
@@ -267,7 +271,7 @@
 
                             <!-- Buttons -->
 
-                            <div class="flex gap-4 mt-10">
+                            <div class="tour-listing-actions flex gap-4 mt-10">
                                 <a
                                     href="{{ tour.get_absolute_url }}"
                                     class="flex-1 text-center rounded-full border border-black/10 py-4 font-medium transition hover:bg-black hover:text-white"

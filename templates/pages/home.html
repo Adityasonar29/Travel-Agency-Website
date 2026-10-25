@@ -1,5 +1,8 @@
 {% extends 'base.html' %} {% load static %} 
 {% block title %}{{site_settings.site_name|default:"VOYAGE" }} — Luxury Travel Agency{% endblock %}
+{% block meta_description %}Discover exceptional destinations and thoughtfully curated journeys with {{ site_settings.site_name|default:"VOYAGE" }}.{% endblock %}
+{% block social_title %}{{ site_settings.site_name|default:"VOYAGE" }} — Curated Journeys{% endblock %}
+{% block social_description %}Discover exceptional destinations and thoughtfully curated journeys with {{ site_settings.site_name|default:"VOYAGE" }}.{% endblock %}
 {% block content %}
 <!-- ① HERO — Full screen video with parallax -->
 {% include 'components/hero.html' %}

@@ -24,7 +24,7 @@
    
 
     <!-- Main Text — BOTTOM LEFT -->
-    <div class="absolute bottom-24 md:bottom-32 left-6 md:left-12 lg:left-24 z-10 max-w-[700px]">
+    <div class="home-hero-copy absolute bottom-24 md:bottom-32 left-6 md:left-12 lg:left-24 z-10 max-w-[700px]">
         <!-- Overline -->
         <p class="text-[10px] md:text-xs font-body text-gold-light tracking-[0.2em] uppercase mb-4 hero-fade" style="opacity:0;">
             Discover Extraordinary
@@ -51,7 +51,7 @@
     </div>
 
     <!-- CTA — BOTTOM RIGHT -->
-    <div class="absolute bottom-24 md:bottom-32 right-6 md:right-12 lg:right-24 z-10 hero-fade" style="opacity:0;">
+    <div class="home-hero-cta absolute bottom-24 md:bottom-32 right-6 md:right-12 lg:right-24 z-10 hero-fade" style="opacity:0;">
         <a href="{% url 'booking:booking' %}" class="btn-primary">
             <span>{{ site_settings.hero_cta_text|default:"Begin Your Journey" }}</span>
             <span>→</span>

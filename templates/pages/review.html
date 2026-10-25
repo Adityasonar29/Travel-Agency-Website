@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<section class="min-h-screen bg-[#F8F5EF] px-6 py-24">
+<section class="review-page min-h-screen bg-[#F8F5EF] px-4 py-16 sm:px-6 sm:py-24">
     <div class="mx-auto max-w-3xl">
 
         <!-- Back -->
@@ -17,12 +17,12 @@
         </a>
 
         <!-- Heading -->
-        <div class="mb-12">
+        <div class="mb-8 sm:mb-12">
             <p class="mb-4 text-xs font-medium tracking-[0.25em] uppercase text-[#B58A42]">
                 Your Journey
             </p>
 
-            <h1 class="font-serif text-5xl text-[#171717] md:text-6xl">
+            <h1 class="font-serif text-[clamp(2.25rem,9vw,3rem)] leading-tight text-[#171717] md:text-6xl">
                 How was your journey?
             </h1>
 
@@ -33,13 +33,13 @@
         </div>
 
         <!-- Journey Card -->
-        <div class="mb-8 rounded-2xl border border-[#DED8CC] bg-white p-7">
+        <div class="mb-6 rounded-2xl border border-[#DED8CC] bg-white p-5 sm:mb-8 sm:p-7">
 
             <p class="text-xs tracking-[0.2em] uppercase text-[#A58A5A]">
                 Booking #{{ booking.booking_id }}
             </p>
 
-            <h2 class="mt-3 font-serif text-3xl text-[#171717]">
+            <h2 class="mt-3 font-serif text-2xl leading-tight text-[#171717] sm:text-3xl">
                 {% if booking.destination_name %}
                     {{ booking.destination_name }}
                 {% elif booking.tour %}
@@ -64,7 +64,7 @@
         <form
             method="POST"
             action="{% url 'booking:submit_review' booking.booking_id %}"
-            class="rounded-2xl border border-[#DED8CC] bg-white p-8 md:p-10"
+            class="rounded-2xl border border-[#DED8CC] bg-white p-5 sm:p-8 md:p-10"
         >
 
             {% csrf_token %}
@@ -78,7 +78,7 @@
 
                 <div
                     id="rating-stars"
-                    class="flex gap-3"
+                    class="flex flex-wrap gap-2 sm:gap-3"
                 >
                     {% for value in "12345" %}
                 
@@ -96,7 +96,7 @@
                             >
                 
                             <span
-                                class="star-circle flex h-14 w-14 items-center justify-center rounded-full border border-[#D8CFBF] text-xl text-[#B58A42] transition-all duration-300"
+                                class="star-circle flex h-11 w-11 items-center justify-center rounded-full border border-[#D8CFBF] text-lg text-[#B58A42] transition-all duration-300 sm:h-14 sm:w-14 sm:text-xl"
                             >
                                 ★
                             </span>
@@ -129,7 +129,7 @@
                     maxlength="5000"
                     required
                     placeholder="What did you love about your journey?"
-                    class="w-full resize-none rounded-xl border border-[#D8CFBF] bg-[#FCFAF6] px-5 py-4 text-sm text-[#222] outline-none transition placeholder:text-[#AAA] focus:border-[#B58A42]"
+                    class="w-full min-w-0 resize-none rounded-xl border border-[#D8CFBF] bg-[#FCFAF6] px-4 py-4 text-sm text-[#222] outline-none transition placeholder:text-[#AAA] focus:border-[#B58A42] sm:px-5"
                 ></textarea>
 
             </div>

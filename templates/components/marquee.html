@@ -1,13 +1,16 @@
 <!-- Marquee Strips — Below hero, two rows -->
-<section class="py-8 md:py-12 bg-ink overflow-hidden border-t border-ink-soft">
-    <!-- Row 1: Big, scrolls left -->
-    <div class="relative">
-        <div class="flex whitespace-nowrap animate-marquee">
-            {% for word in marquee_words %}{% for word in marquee_words %}{% for word in marquee_words %}
-            <span class="inline-block mx-6 md:mx-10 font-heading font-light {% if word.word == '✦' %}text-gold text-2xl md:text-3xl{% else %}text-[2rem] md:text-[3.5rem] text-white/[0.06] hover:text-gold/40 transition-colors duration-500 cursor-default{% endif %}">
-                {{ word.word }}
-            </span>
-            {% endfor %}{% endfor %}{% endfor %}
+<section class="home-marquee py-8 md:py-12 bg-ink overflow-hidden border-t border-ink-soft" aria-label="Travel inspiration">
+    <div class="home-marquee-viewport relative overflow-hidden">
+        <div class="home-marquee-track flex w-max animate-marquee">
+            {% for repetition in "12" %}
+            <div class="home-marquee-group flex shrink-0 items-center justify-around whitespace-nowrap" {% if forloop.last %}aria-hidden="true"{% endif %}>
+                {% for word in marquee_words %}
+                <span class="home-marquee-word inline-block shrink-0 mx-6 md:mx-10 font-heading font-light {% if word.word == '✦' %}text-gold text-2xl md:text-3xl{% else %}text-[2rem] md:text-[3.5rem] transition-colors duration-500 cursor-default{% endif %}">
+                    {{ word.word }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

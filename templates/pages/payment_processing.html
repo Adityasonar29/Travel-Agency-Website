@@ -12,7 +12,7 @@
     id="payment-processing-page"
 >
 
-    <div class="mx-auto flex min-h-screen max-w-[1100px] items-center justify-center px-6 py-24 md:px-10">
+    <div class="mx-auto flex min-h-screen max-w-[1100px] items-start justify-center px-4 py-20 sm:items-center sm:px-6 sm:py-24 md:px-10">
 
         <div class="w-full max-w-[720px] text-center">
 
@@ -32,7 +32,7 @@
 
             <h1
                 id="processing-heading"
-                class="font-heading text-[clamp(3rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em]"
+                class="font-heading text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.03em] sm:text-[clamp(3rem,7vw,6.5rem)]"
             >
                 Verifying your
                 <br>
@@ -50,6 +50,7 @@
             >
                 Please keep this window open while we complete
                 the payment verification for your journey.
+                Do not close this page or navigate away until the process is complete.
             </p>
 
 
@@ -58,7 +59,7 @@
                  PAYMENT STATUS CARD
             ================================================== -->
 
-            <div class="mx-auto mt-14 max-w-[560px] border border-[#D8CFC3] bg-white/60 px-7 py-10 md:px-10">
+            <div class="mx-auto mt-10 max-w-[560px] border border-[#D8CFC3] bg-white/60 px-5 py-8 sm:mt-14 sm:px-7 sm:py-10 md:px-10">
 
 
                 <!-- =============================================
@@ -165,7 +166,7 @@
                         Booking
                     </p>
 
-                    <p class="text-sm font-medium tracking-[0.1em]">
+                    <p class="break-all text-sm font-medium tracking-[0.1em]">
                         {{ booking.booking_id }}
                     </p>
 

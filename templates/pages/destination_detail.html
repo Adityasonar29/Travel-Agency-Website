@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ destination.name }} Details — {{ site_settings.site_name|default:"VOYAGE" }} {% endblock %}
+{% block meta_description %}{% if destination.description %}{{ destination.description|truncatechars:200 }}{% else %}Discover the scenery, culture and experiences of {{ destination.name }}.{% endif %}{% endblock %}
+{% block social_title %}{{ destination.name }} — Explore with {{ site_settings.site_name|default:"VOYAGE" }}{% endblock %}
+{% block social_description %}{% if destination.description %}{{ destination.description|truncatechars:200 }}{% else %}Discover the scenery, culture and experiences of {{ destination.name }}.{% endif %}{% endblock %}
 
 {% block content %}
 
@@ -8,7 +11,7 @@
 <!-- HERO -->
 <!-- ===================================================== -->
 
-<section class="relative min-h-screen overflow-hidden bg-[#0d0d0d]">
+<section class="destination-detail-hero relative min-h-screen overflow-hidden bg-[#0d0d0d]">
 
     <!-- Background -->
     <div id="heroImage"
@@ -334,11 +337,12 @@
             
                 <!-- The Sticky Wrapper -->
                 <!-- Added 'relative' and removed 'overflow-hidden' so the card can hang off the right side like the mockup -->
-                <div class="sticky top-28 relative rounded-[34px] shadow-2xl">
+                <div class="destination-story-card sticky top-28 relative rounded-[34px] shadow-2xl">
             
+                    <div class="destination-story-visual relative">
                     <!-- Background Image -->
                     <!-- Moved 'overflow-hidden' here so the zoom effect stays clipped inside the image borders -->
-                    <div class="overflow-hidden rounded-[34px] h-[700px] w-full">
+                    <div class="destination-story-photo overflow-hidden rounded-[34px] h-[700px] w-full">
                         <img
                             src="{{ destination.image }}"
                             alt="{{ destination.name }}"
@@ -346,7 +350,7 @@
                     </div>
             
                     <!-- 1. The Original Destination Name Card (Shifted down slightly to clear the top card) -->
-                    <div class="absolute bottom-8 left-8 right-8 rounded-3xl border border-white/20 bg-black/40 p-6 backdrop-blur-xl">
+                    <div class="destination-story-name absolute bottom-8 left-8 right-8 rounded-3xl border border-white/20 bg-black/40 p-6 backdrop-blur-xl">
                         <p class="text-xs uppercase tracking-[0.35em] text-white/70">
                             {% if destination.is_featured %}
                                 Featured Destination
@@ -359,10 +363,11 @@
                             Experience breathtaking scenery, unforgettable adventures and timeless luxury.
                         </p>
                     </div>
+                    </div>
             
                     <!-- 2. The "Why Visit?" White Card (Moved inside, styled to match the image mockup) -->
                     <!-- Positioned at top-12 and hangs off the right edge by 24px (-right-6) -->
-                    <div class="absolute top-12 -right-6 w-[65%] rounded-[28px] border border-slate-100 bg-white p-8 shadow-2xl">
+                    <div class="destination-why-visit absolute top-12 -right-6 w-[65%] rounded-[28px] border border-slate-100 bg-white p-8 shadow-2xl">
                         <p class="text-xs uppercase tracking-[0.35em] text-[#C6A46A] font-semibold">
                             Why Visit?
                         </p>
@@ -388,7 +393,7 @@
 <!-- GALLERY -->
 <!-- ===================================================== -->
 
-<section class="bg-[#F4EEE4] py-28">
+<section class="destination-gallery-section bg-[#F4EEE4] py-28">
 
     <div class="mx-auto max-w-[1450px] px-8 md:px-14 lg:px-24">
 
@@ -417,7 +422,7 @@
 
         {% if destination.gallery %}
         
-        <div class="grid grid-cols-12 gap-6">
+        <div class="destination-gallery-grid grid grid-cols-12 gap-6">
         
             <!-- Large Image -->
             <div class="col-span-12 md:col-span-7">
@@ -566,7 +571,7 @@
         <!-- Dynamic Related Tours Display Grid -->
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {% for tour in destination.tours.all %}
-                <div class="group relative h-[460px] overflow-hidden rounded-[32px] bg-[#181512] shadow-xl transition-all duration-500 hover:-translate-y-2 scroll-reveal">
+                <div class="destination-related-tour-card group relative h-[460px] overflow-hidden rounded-[32px] bg-[#181512] shadow-xl transition-all duration-500 hover:-translate-y-2 scroll-reveal">
                     
                     <!-- 1. Background Image Zoom View Layer -->
                     <!-- Tries hero_image first, then fallback image field, then unspash stock fallback -->
@@ -594,7 +599,7 @@
                     </div>
 
                     <!-- 4. Inside Layout Content Block -->
-                    <div class="absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end">
+                    <div class="destination-related-tour-content absolute inset-x-0 bottom-0 p-8 flex flex-col justify-end">
                         
                         <!-- Mini Budget Category / Range tag -->
                         <span class="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#C6A46A] mb-2">
@@ -602,17 +607,17 @@
                         </span>
 
                         <!-- Tour Heading Title -->
-                        <h4 class="text-2xl font-light text-white tracking-wide leading-tight line-clamp-1 mb-2">
+                        <h4 class="destination-related-tour-title text-2xl font-light text-white tracking-wide leading-tight line-clamp-1 mb-2">
                             {{ tour.name }}
                         </h4>
 
                         <!-- Dynamic Summary snippet text constrained visually to 2 maximum rows -->
-                        <p class="text-sm text-white/70 font-light leading-relaxed line-clamp-2 mb-5">
+                        <p class="destination-related-tour-summary text-sm text-white/70 font-light leading-relaxed line-clamp-2 mb-5">
                             {{ tour.summary|default:tour.overview }}
                         </p>
 
                         <!-- Price Split & Interactive Action Button Row Layout -->
-                        <div class="flex items-center justify-between border-t border-white/10 pt-4 mt-2">
+                        <div class="destination-related-tour-action flex items-center justify-between border-t border-white/10 pt-4 mt-2">
                             <div>
                                 <p class="text-[10px] uppercase tracking-wider text-white/40">From Per Person</p>
                                 <p class="text-xl font-semibold text-white">${{ tour.price_per_person }}</p>
@@ -991,7 +996,7 @@
     
         <img
             id="lightboxImage"
-            src=""
+            alt="Enlarged destination view"
             class="max-h-[90vh] max-w-[90vw] rounded-2xl shadow-2xl transition-all duration-300">
     
         <!-- Next -->

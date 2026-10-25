@@ -398,7 +398,7 @@
         }
 
         .confirmation-title {
-            font-size: clamp(40px, 12vw, 56px);
+            font-size: clamp(34px, 10.5vw, 50px);
         }
 
         .confirmation-subtitle {
@@ -407,13 +407,22 @@
         }
 
         .booking-reference {
-            padding: 22px;
+            padding: 18px;
             flex-direction: column;
             align-items: flex-start;
         }
 
+        .reference-number {
+            font-size: clamp(17px, 5vw, 23px);
+            letter-spacing: 0.08em;
+            overflow-wrap: anywhere;
+        }
+
         .reference-status {
             align-self: flex-start;
+            max-width: 100%;
+            white-space: normal;
+            font-size: 9px;
         }
 
         .journey-info {

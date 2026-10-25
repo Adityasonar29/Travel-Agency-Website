@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ site_settings.site_name|default:"VOYAGE" }} — Luxury Travel{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Explore remarkable destinations, browse curated tours and plan your next adventure with {{ site_settings.site_name|default:'VOYAGE' }}.{% endblock %}">
+    {% static 'images/voyage-og.jpg' as og_image %}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ site_settings.site_name|default:'VOYAGE' }} Travel">
+    <meta property="og:title" content="{% block social_title %}{{ site_settings.site_name|default:'VOYAGE' }} — Discover your next adventure{% endblock %}">
+    <meta property="og:description" content="{% block social_description %}Explore destinations, browse tours and book your next trip with {{ site_settings.site_name|default:'VOYAGE' }}.{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_image }}">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="VOYAGE Travel — Curated journeys. Discover your next adventure.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_image }}">
     <link rel="icon" type="image/svg+xml" href="{% static 'images/voyage-favicon.svg' %}">
     <link rel="alternate icon" type="image/png" href="{% static 'images/voyage-logo.png' %}">
 
@@ -53,7 +67,7 @@
       }
     </script>
 
-    <link rel="stylesheet" href="{% static 'css/custom.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}?v=15">
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-ink-soft font-body text-ink overflow-x-hidden">
@@ -74,9 +88,9 @@
 
     <!-- Main Content -->
     {% if messages %}
-    <div class="fixed right-4 top-4 z-[120] space-y-2">
+    <div id="site-messages" class="fixed right-4 top-4 z-[120] space-y-2">
         {% for message in messages %}
-        <div class="auto-dismiss-message rounded-lg px-4 py-3 text-sm shadow-lg {% if message.tags == 'success' %}bg-emerald-600 text-white{% elif message.tags == 'error' %}bg-rose-600 text-white{% elif message.tags == 'warning' %}bg-amber-500 text-slate-900{% else %}bg-slate-800 text-white{% endif %}">
+        <div class="auto-dismiss-message rounded-lg px-4 py-3 text-center text-sm shadow-lg {% if message.tags == 'success' %}bg-emerald-600 text-white{% elif message.tags == 'error' %}bg-rose-600 text-white{% elif message.tags == 'warning' %}bg-amber-500 text-slate-900{% else %}bg-slate-800 text-white{% endif %}">
             {{ message }}
         </div>
         {% endfor %}
@@ -97,7 +111,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/app.js' %}?v=6"></script>
+    {% if debug_mode %}
+    <script>
+        console.info('VOYAGE is running in development mode. Please avoid changing data or settings unless you are authorized to test this site.');
+    </script>
+    {% endif %}
     {% block extra_js %}{% endblock %}
 </body>
 </html>

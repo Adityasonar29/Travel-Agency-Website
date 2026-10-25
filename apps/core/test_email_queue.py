@@ -28,7 +28,8 @@ class OutboundEmailQueueTests(TestCase):
         self.assertEqual(email_log.status, "pending")
         self.assertEqual(mail.outbox, [])
 
-        self.assertTrue(process_next_email())
+        with self.assertLogs("apps.core.utils.email_queue", level="INFO") as logs:
+            self.assertTrue(process_next_email())
 
         queued_email.refresh_from_db()
         email_log.refresh_from_db()
@@ -36,6 +37,8 @@ class OutboundEmailQueueTests(TestCase):
         self.assertEqual(email_log.status, "sent")
         self.assertEqual(mail.outbox[0].to, ["traveller@example.com"])
         self.assertEqual(mail.outbox[0].body, "Your itinerary is ready.")
+        self.assertIn("Email sent to traveller@example.com", logs.output[0])
+        self.assertIn("Your itinerary", logs.output[0])
 
     def test_failed_delivery_is_retried_after_backoff(self):
         send_admin_message(

@@ -93,9 +93,13 @@ def process_next_email():
                 error_message=str(exc),
             )
         logger.exception(
-            "Email delivery failed; retry scheduled for %s (queue id %s).",
-            retry_at.isoformat(),
+            "Email delivery failed for %s (subject=%r, queue_id=%s, attempt=%s); "
+            "retry scheduled for %s.",
+            queued_email.recipient,
+            queued_email.subject,
             email_id,
+            queued_email.attempts,
+            retry_at.isoformat(),
         )
         return True
 
@@ -124,4 +128,11 @@ def process_next_email():
                     invoice_pdf_path__in=queued_email.attachment_paths
                 )
             bookings.update(**booking_update)
+    logger.info(
+        "Email sent to %s (subject=%r, queue_id=%s, attempt=%s).",
+        queued_email.recipient,
+        queued_email.subject,
+        email_id,
+        queued_email.attempts,
+    )
     return True

@@ -147,3 +147,26 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "Voyage Travel <noreply@example.com>"
 )
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "email_worker": {
+            "format": "%(asctime)s %(levelname)s %(name)s: %(message)s",
+        },
+    },
+    "handlers": {
+        "email_worker_console": {
+            "class": "logging.StreamHandler",
+            "formatter": "email_worker",
+        },
+    },
+    "loggers": {
+        "apps.core": {
+            "handlers": ["email_worker_console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}

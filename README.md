@@ -4,6 +4,7 @@
 
 ![Django](https://img.shields.io/badge/Django-5.x-0f5132?style=flat-square&logo=django&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?style=flat-square&logo=python&logoColor=white)
+![CI](https://github.com/Adityasonar29/Travel-Agency-Website/actions/workflows/ci.yml/badge.svg?branch=main)
 ![Status](https://img.shields.io/badge/status-active%20prototype-be9958?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-be9958?style=flat-square)
 

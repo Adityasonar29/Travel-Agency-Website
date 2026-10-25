@@ -3,7 +3,8 @@ from django.core import mail
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from apps.booking.models import Booking, Review
-from .models import ContactMessage, Destination, Stat, Tour
+from .models import ContactMessage, Destination, OutboundEmail, Stat, Tour
+from .utils.email_queue import process_next_email
 from .utils.mailer import email_html_to_message_text
 
 
@@ -109,6 +110,7 @@ class ContactFormTests(TestCase):
     @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
     def test_contact_form_submits_and_saves_message(self):
         mail.outbox.clear()
+        OutboundEmail.objects.all().delete()
         submitted_message = "I would love to plan a premium beach escape."
         response = self.client.post(
             reverse('core:contact'),
@@ -124,6 +126,8 @@ class ContactFormTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Thanks for reaching out')
         self.assertTrue(ContactMessage.objects.filter(email='ava@example.com').exists())
+        while process_next_email():
+            pass
         customer_email = next(
             message for message in mail.outbox if message.to == ['ava@example.com']
         )

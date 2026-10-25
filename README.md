@@ -167,6 +167,16 @@ $env:EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 py manage.py runserver
 ```
 
+All application emails are first saved to the database-backed outbound queue; web requests do not connect to SMTP. Run the worker in a second terminal alongside the web server:
+
+```powershell
+py manage.py run_email_worker
+```
+
+The worker retries failed deliveries with exponential backoff, capped at one hour, and continues retrying until delivery succeeds. SMTP connections time out after five seconds by default; configure `EMAIL_TIMEOUT` to change that limit. Email logs stay pending while queued or retrying and become sent after the email backend accepts the message. Delivery is at-least-once: an abrupt worker failure after provider acceptance but before the database update can result in a duplicate email.
+
+For Render, apply database migrations with `python manage.py migrate` before enabling the queue, then keep the existing web service and set its Start Command to `sh start.sh`. The script runs Gunicorn and the queue worker in the same service, so no additional service is required. Use the persistent production database configured by `DATABASE_URL`; queued messages survive service restarts. Configure a working email backend/provider as well: retries cannot deliver mail while the provider is unavailable or misconfigured.
+
 ## Checks and tests
 
 Run the same core checks used by the GitHub Actions workflow:

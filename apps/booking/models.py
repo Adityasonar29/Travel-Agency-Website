@@ -1,7 +1,10 @@
 import uuid
+import logging
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 def _generate_booking_id():
     return "BK" + "".join([c for c in str(uuid.uuid4())[:8].upper() if c.isalnum()][:8])
@@ -215,6 +218,7 @@ class Booking(models.Model):
             'travel_date': self.travel_date,
             'num_travelers': self.num_travelers,
             'support_email': getattr(settings, 'DEFAULT_FROM_EMAIL', 'hello@voyagetravel.com'),
+            '_email_booking_id': self.pk,
         }
 
         try:
@@ -225,11 +229,15 @@ class Booking(models.Model):
                 context=context,
                 attachments=[self.invoice_pdf_path] if self.invoice_pdf_path else None
             )
-            self.invoice_status = 'sent'
-            self.invoice_sent_at = timezone.now()
-            self.save()
+            self.invoice_status = 'processing'
+            self.invoice_sent_at = None
+            self.save(update_fields=['invoice_status', 'invoice_sent_at', 'updated_at'])
             return True
-        except Exception as e:
+        except Exception:
+            logger.exception(
+                "Unable to queue invoice email for booking %s.",
+                self.booking_id,
+            )
             self.invoice_status = 'failed'
             self.save()
             return False

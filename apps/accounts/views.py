@@ -103,9 +103,9 @@ def login_view(request):
                                 'profile_url': request.build_absolute_uri(reverse('accounts:profile')),
                             },
                         )
-                    except Exception as exc:
+                    except Exception:
                         # A mail server outage must never prevent a valid login.
-                        print(f"[LOGIN ALERT] Failed: {exc}")
+                        logger.exception("Login alert email delivery failed.")
 
                 messages.success(request, "You are now logged in.")
 

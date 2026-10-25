@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 
 
@@ -23,6 +24,7 @@ class ContactMessage(models.Model):
 
 class EmailLog(models.Model):
     STATUS_CHOICES = [
+        ("pending", "Pending"),
         ("sent", "Sent"),
         ("failed", "Failed"),
     ]
@@ -44,6 +46,52 @@ class EmailLog(models.Model):
 
     def __str__(self):
         return f"{self.subject} → {self.recipient}"
+
+
+class OutboundEmail(models.Model):
+    STATUS_CHOICES = [
+        ("queued", "Queued"),
+        ("sending", "Sending"),
+        ("sent", "Sent"),
+    ]
+
+    email_log = models.ForeignKey(
+        EmailLog,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="queued_emails",
+    )
+    booking = models.ForeignKey(
+        "booking.Booking",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="queued_emails",
+    )
+    sender = models.EmailField(blank=True)
+    recipient = models.EmailField()
+    subject = models.CharField(max_length=255)
+    body_text = models.TextField(blank=True)
+    body_html = models.TextField(blank=True)
+    attachment_paths = models.JSONField(default=list, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="queued")
+    attempts = models.PositiveIntegerField(default=0)
+    available_at = models.DateTimeField(default=timezone.now)
+    locked_until = models.DateTimeField(null=True, blank=True)
+    last_error = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["status", "available_at"]),
+            models.Index(fields=["status", "locked_until"]),
+        ]
+
+    def __str__(self):
+        return f"{self.subject} → {self.recipient} ({self.status})"
 
 
 class SiteSettings(models.Model):

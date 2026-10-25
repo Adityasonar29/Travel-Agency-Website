@@ -7,7 +7,8 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.core.models import Destination
+from apps.core.models import Destination, OutboundEmail
+from apps.core.utils.email_queue import process_next_email
 from apps.booking.models import Booking
 from apps.accounts.models import PasswordResetPin, WishlistItem
 
@@ -27,6 +28,7 @@ class AuthFlowTests(TestCase):
             image='https://example.com/test.jpg',
             hero_image='https://example.com/test-hero.jpg',
         )
+        OutboundEmail.objects.all().delete()
 
     def test_register_redirects_to_login_with_success_message(self):
         response = self.client.post(
@@ -61,6 +63,22 @@ class AuthFlowTests(TestCase):
         self.assertRedirects(response, reverse('core:home'))
         self.assertContains(response, 'You are now logged in.')
 
+    def test_login_queues_alert_without_waiting_for_email_delivery(self):
+        response = self.client.post(
+            reverse("accounts:login"),
+            {
+                "username_or_email": "demo_user",
+                "password": "StrongPass123!",
+                "remember_me": "",
+            },
+        )
+
+        self.assertRedirects(response, reverse("core:home"))
+        self.assertIn("_auth_user_id", self.client.session)
+        queued_email = OutboundEmail.objects.get(recipient="demo@example.com")
+        self.assertEqual(queued_email.status, "queued")
+        self.assertEqual(mail.outbox, [])
+
     def test_logout_confirmation_overlay_is_rendered_and_logout_requires_post(self):
         self.client.force_login(self.user)
 
@@ -90,6 +108,7 @@ class AuthFlowTests(TestCase):
 
         self.assertEqual(request_response.status_code, 200)
         self.assertContains(request_response, "6-digit PIN sent")
+        self.assertTrue(process_next_email())
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["demo@example.com"])
         pin = re.search(r"\b(\d{6})\b", mail.outbox[0].body).group(1)
@@ -119,6 +138,7 @@ class AuthFlowTests(TestCase):
             reverse("accounts:forgot_password"),
             {"username_or_email": "DEMO@example.com"},
         )
+        self.assertTrue(process_next_email())
         pin = re.search(r"\b(\d{6})\b", mail.outbox[0].body).group(1)
 
         response = self.client.post(

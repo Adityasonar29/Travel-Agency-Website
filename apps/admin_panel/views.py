@@ -493,7 +493,7 @@ def compose_message(request):
     except Exception as exc:
         messages.error(request, f"The message could not be sent: {exc}")
     else:
-        messages.success(request, f"Email sent to {recipient}.")
+        messages.success(request, f"Email queued for {recipient}.")
     return redirect(f"{reverse('admin_panel:communications')}?tab=sent")
 
 
@@ -529,5 +529,5 @@ def reply_to_contact(request, pk):
         contact_message.reply_body = reply_body
         contact_message.replied_at = timezone.now()
         contact_message.save(update_fields=["is_replied", "reply_subject", "reply_body", "replied_at"])
-        messages.success(request, f"Reply sent to {contact_message.email}.")
+        messages.success(request, f"Reply queued for {contact_message.email}.")
     return redirect(f"{reverse('admin_panel:communications')}?tab=contacts")

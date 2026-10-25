@@ -1,14 +1,13 @@
-import os
 import re
-from email.mime.image import MIMEImage
 from email.utils import parseaddr
 from html import unescape
 from html.parser import HTMLParser
 
 from django.conf import settings
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.db import transaction
 from django.template.loader import render_to_string
-from django.utils import timezone
+
+from apps.core.models import EmailLog, OutboundEmail
 
 
 class _EmailTextParser(HTMLParser):
@@ -122,89 +121,71 @@ def clean_logged_email_text(text):
     return re.sub(r"\s+", " ", text).strip()
 
 
-def _send_html_email(subject, to_email, template_path, context=None, attachments=None):
-    context = context or {}
-    template_context = dict(context)
-    event = template_context.pop('_email_event', '') or template_path.rsplit('/', 1)[-1].replace('.html', '')
-    log_body = template_context.pop('_email_log_body', None)
-    html_content = render_to_string(template_path, template_context)
-    text_content = email_html_to_text(html_content)
-    message_content = email_html_to_message_text(html_content)
+def _queue_email(
+    subject,
+    to_email,
+    text_content,
+    html_content="",
+    template_path="",
+    event="",
+    log_body=None,
+    attachments=None,
+    booking_id=None,
+):
     sender_email = parseaddr(settings.DEFAULT_FROM_EMAIL)[1] or settings.EMAIL_HOST_USER
-
-    email_log = None
-    try:
-        from apps.core.models import EmailLog
+    with transaction.atomic():
         email_log = EmailLog.objects.create(
             sender=sender_email,
             recipient=to_email,
             subject=subject,
             template_path=template_path,
             event=event,
-            body_text=log_body if log_body is not None else message_content,
+            body_text=log_body if log_body is not None else text_content,
             body_html=html_content,
-            status='sent',
+            status="pending",
         )
-    except Exception:
-        email_log = None
+        OutboundEmail.objects.create(
+            email_log=email_log,
+            booking_id=booking_id,
+            sender=settings.DEFAULT_FROM_EMAIL,
+            recipient=to_email,
+            subject=subject,
+            body_text=text_content,
+            body_html=html_content,
+            attachment_paths=[str(path) for path in (attachments or []) if path],
+        )
 
-    msg = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [to_email])
-    msg.attach_alternative(html_content, "text/html")
 
-    logo_path = os.path.join(settings.BASE_DIR, "static", "images", "voyage-logo.png")
-    if os.path.exists(logo_path):
-        with open(logo_path, "rb") as logo_file:
-            logo = MIMEImage(logo_file.read(), _subtype="png")
-        logo.add_header("Content-ID", "<voyage-logo>")
-        logo.add_header("Content-Disposition", "inline", filename="voyage-logo.png")
-        msg.attach(logo)
-
-    # Attach files if provided (list of file paths)
-    if attachments:
-        for path in attachments:
-            if path and os.path.exists(path):
-                msg.attach_file(path)
-
-    try:
-        msg.send(fail_silently=False)
-    except Exception as exc:
-        if email_log:
-            email_log.status = 'failed'
-            email_log.error_message = str(exc)
-            email_log.save(update_fields=['status', 'error_message'])
-        raise
-    if email_log:
-        email_log.sent_at = timezone.now()
-        email_log.save(update_fields=['sent_at'])
+def _send_html_email(subject, to_email, template_path, context=None, attachments=None):
+    context = context or {}
+    template_context = dict(context)
+    event = template_context.pop('_email_event', '') or template_path.rsplit('/', 1)[-1].replace('.html', '')
+    log_body = template_context.pop('_email_log_body', None)
+    booking_id = template_context.pop('_email_booking_id', None)
+    html_content = render_to_string(template_path, template_context)
+    text_content = email_html_to_text(html_content)
+    message_content = email_html_to_message_text(html_content)
+    _queue_email(
+        subject=subject,
+        to_email=to_email,
+        text_content=text_content,
+        html_content=html_content,
+        template_path=template_path,
+        event=event,
+        log_body=log_body if log_body is not None else message_content,
+        attachments=attachments,
+        booking_id=booking_id,
+    )
 
 
 def send_admin_message(to_email, subject, body):
-    sender_email = parseaddr(settings.DEFAULT_FROM_EMAIL)[1] or settings.EMAIL_HOST_USER
-    email_log = None
-    try:
-        from apps.core.models import EmailLog
-        email_log = EmailLog.objects.create(
-            sender=sender_email,
-            recipient=to_email,
-            subject=subject,
-            event="admin_composed",
-            body_text=body,
-            status="sent",
-        )
-    except Exception:
-        email_log = None
-
-    try:
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [to_email], fail_silently=False)
-    except Exception as exc:
-        if email_log:
-            email_log.status = "failed"
-            email_log.error_message = str(exc)
-            email_log.save(update_fields=["status", "error_message"])
-        raise
-    if email_log:
-        email_log.sent_at = timezone.now()
-        email_log.save(update_fields=["sent_at"])
+    _queue_email(
+        subject=subject,
+        to_email=to_email,
+        text_content=body,
+        event="admin_composed",
+        log_body=body,
+    )
 
 
 def send_booking_confirmation(to_email, context):

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db.models import Avg, Sum
 from apps.booking.models import Booking, Review
-from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage, EmailLog, Blog, AboutPage
+from .models import SiteSettings, Destination, Tour, Experience, FunFact, Testimonial, Stat, MarqueeWord, ContactMessage, EmailLog, OutboundEmail, Blog, AboutPage
 
 
 
@@ -19,7 +19,37 @@ class EmailLogAdmin(admin.ModelAdmin):
     list_display = ('subject', 'recipient', 'event', 'status', 'created_at', 'sent_at')
     list_filter = ('status', 'event', 'created_at')
     search_fields = ('subject', 'recipient', 'event', 'body_text')
-    readonly_fields = ('created_at', 'sent_at')
+    readonly_fields = ('created_at', 'sent_at', 'error_message')
+
+
+@admin.register(OutboundEmail)
+class OutboundEmailAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'recipient', 'status', 'attempts', 'available_at', 'sent_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('subject', 'recipient')
+    readonly_fields = (
+        'email_log',
+        'booking',
+        'sender',
+        'recipient',
+        'subject',
+        'body_text',
+        'body_html',
+        'attachment_paths',
+        'status',
+        'attempts',
+        'available_at',
+        'locked_until',
+        'last_error',
+        'created_at',
+        'sent_at',
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(AboutPage)

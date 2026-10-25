@@ -9,7 +9,8 @@ from django.utils import timezone
 
 from apps.admin_panel.forms import DestinationForm
 from apps.booking.models import Booking, Review
-from apps.core.models import ContactMessage, Destination, EmailLog, Tour
+from apps.core.models import ContactMessage, Destination, EmailLog, OutboundEmail, Tour
+from apps.core.utils.email_queue import process_next_email
 from apps.core.utils.mailer import email_html_to_text
 
 User = get_user_model()
@@ -35,12 +36,18 @@ class AdminAccountLifecycleTests(TestCase):
             last_name="Traveller",
         )
         self.client.force_login(self.admin)
+        OutboundEmail.objects.all().delete()
+
+    def deliver_queued_emails(self):
+        while process_next_email():
+            pass
 
     def test_deactivation_emails_user_and_prevents_login(self):
         mail.outbox.clear()
         response = self.client.post(
             reverse("admin_panel:toggle_user", args=[self.customer.pk])
         )
+        self.deliver_queued_emails()
 
         self.assertRedirects(response, reverse("admin_panel:users"))
         self.customer.refresh_from_db()
@@ -78,6 +85,7 @@ class AdminAccountLifecycleTests(TestCase):
         response = self.client.post(
             reverse("admin_panel:toggle_user", args=[self.customer.pk])
         )
+        self.deliver_queued_emails()
 
         self.assertRedirects(response, reverse("admin_panel:users"))
         self.customer.refresh_from_db()
@@ -234,6 +242,7 @@ class AdminAccountLifecycleTests(TestCase):
             reverse("admin_panel:reply_to_contact", args=[contact.pk]),
             {"subject": "Re: Trip question", "reply_body": "We can help."},
         )
+        self.deliver_queued_emails()
 
         self.assertRedirects(
             response, f"{reverse('admin_panel:communications')}?tab=contacts"
@@ -259,6 +268,7 @@ class AdminAccountLifecycleTests(TestCase):
                 "body": "We have prepared your itinerary.",
             },
         )
+        self.deliver_queued_emails()
 
         self.assertRedirects(
             response, f"{reverse('admin_panel:communications')}?tab=sent"

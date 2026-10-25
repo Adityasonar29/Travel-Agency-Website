@@ -1,4 +1,4 @@
-import os
+import logging
 import uuid
 from decimal import Decimal
 
@@ -15,6 +15,8 @@ from apps.core.models import Tour, Destination
 from .forms import BookingForm
 from .models import Booking, Review
 from apps.core.utils import mailer, invoice as invoice_utils
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================
@@ -48,34 +50,6 @@ def _generate_transaction_id():
             if c.isalnum()
         ][:8]
     )
-
-
-def _can_send_mail():
-    """
-    Check whether email sending is configured.
-
-    Console email backend is allowed during development.
-    """
-    email_backend = getattr(
-        settings,
-        'EMAIL_BACKEND',
-        ''
-    )
-
-    if email_backend == 'django.core.mail.backends.console.EmailBackend':
-        return True
-
-    email_user = (
-        os.environ.get('EMAIL_HOST_USER', '')
-        or getattr(settings, 'EMAIL_HOST_USER', '')
-    )
-
-    email_pass = (
-        os.environ.get('EMAIL_HOST_PASSWORD', '')
-        or getattr(settings, 'EMAIL_HOST_PASSWORD', '')
-    )
-
-    return bool(email_user and email_pass)
 
 
 def _lock_booking_total(booking):
@@ -1071,12 +1045,13 @@ def payment_complete(request, booking_id):
 
         booking.generate_invoice()
 
-    except Exception as exc:
+    except Exception:
 
         # Payment is still successful even if invoice
         # generation has a problem.
-        print(
-            f"[INVOICE] Failed for {booking.booking_id}: {exc}"
+        logger.exception(
+            "Invoice generation failed for booking %s.",
+            booking.booking_id,
         )
 
     # --------------------------------------------------------
@@ -1088,11 +1063,10 @@ def payment_complete(request, booking_id):
         if booking.invoice_pdf_path:
             booking.send_invoice()
 
-    except Exception as exc:
-
-        print(
-            f"[INVOICE EMAIL] Failed for "
-            f"{booking.booking_id}: {exc}"
+    except Exception:
+        logger.exception(
+            "Unable to queue invoice email for booking %s.",
+            booking.booking_id,
         )
 
     # --------------------------------------------------------
@@ -1106,11 +1080,10 @@ def payment_complete(request, booking_id):
             booking
         )
 
-    except Exception as exc:
-
-        print(
-            f"[PAYMENT EMAIL] Failed for "
-            f"{booking.booking_id}: {exc}"
+    except Exception:
+        logger.exception(
+            "Unable to queue payment confirmation for booking %s.",
+            booking.booking_id,
         )
 
     return JsonResponse(
@@ -1195,38 +1168,35 @@ def cancel_booking(request, booking_id):
             'cancellation_reason', 'updated_at',
         ])
 
-    if _can_send_mail():
-        try:
+    try:
+        mailer.send_generic_notification(
+            to_email=booking.email,
+            subject=f'Journey cancellation received — {booking.booking_id}',
+            template_path='emails/booking_cancelled.html',
+            context={
+                'customer_name': booking.full_name or 'Traveller',
+                'booking_id': booking.booking_id,
+                'tour_name': booking.tour.name if booking.tour else booking.destination_name,
+                'travel_date': booking.travel_date,
+                'amount': booking.total_amount or 0,
+                'refund_pending': booking.refund_status == 'pending',
+                'support_email': settings.DEFAULT_FROM_EMAIL,
+            },
+        )
+        if booking.refund_status == 'pending':
             mailer.send_generic_notification(
                 to_email=booking.email,
-                subject=f'Journey cancellation received — {booking.booking_id}',
-                template_path='emails/booking_cancelled.html',
+                subject=f'Refund initiated — {booking.booking_id}',
+                template_path='emails/refund_initiated.html',
                 context={
                     'customer_name': booking.full_name or 'Traveller',
                     'booking_id': booking.booking_id,
-                    'tour_name': booking.tour.name if booking.tour else booking.destination_name,
-                    'travel_date': booking.travel_date,
                     'amount': booking.total_amount or 0,
-                    'refund_pending': booking.refund_status == 'pending',
                     'support_email': settings.DEFAULT_FROM_EMAIL,
                 },
             )
-            if booking.refund_status == 'pending':
-                mailer.send_generic_notification(
-                    to_email=booking.email,
-                    subject=f'Refund initiated — {booking.booking_id}',
-                    template_path='emails/refund_initiated.html',
-                    context={
-                        'customer_name': booking.full_name or 'Traveller',
-                        'booking_id': booking.booking_id,
-                        'amount': booking.total_amount or 0,
-                        'support_email': settings.DEFAULT_FROM_EMAIL,
-                    },
-                )
-        except Exception as exc:
-            print(f'[CANCELLATION EMAIL] Failed: {exc}')
-    else:
-        print(f'[CANCELLATION] Would email {booking.email} for {booking.booking_id}')
+    except Exception:
+        logger.exception("Unable to queue cancellation email for booking %s.", booking.booking_id)
 
     if booking.refund_status == 'pending':
         messages.success(request, 'Your journey was cancelled. Your refund has been initiated and should arrive within 24 hours. Contact support if it does not.')
@@ -1493,16 +1463,6 @@ def _send_booking_emails(request, booking):
     The invoice is generated only after successful payment.
     """
 
-    if not _can_send_mail():
-
-        print(
-            f"[BOOKING] Would email: "
-            f"{booking.email} "
-            f"(booking {booking.booking_id})"
-        )
-
-        return
-
     total_price = (
         booking.total_amount
         if booking.total_amount is not None
@@ -1564,10 +1524,10 @@ def _send_booking_emails(request, booking):
             guest_context
         )
 
-    except Exception as exc:
-
-        print(
-            f"[BOOKING EMAIL] Failed: {exc}"
+    except Exception:
+        logger.exception(
+            "Unable to queue booking confirmation for booking %s.",
+            booking.booking_id,
         )
 
     # --------------------------------------------------------
@@ -1605,10 +1565,10 @@ def _send_booking_emails(request, booking):
                 admin_context
             )
 
-        except Exception as exc:
-
-            print(
-                f"[ADMIN BOOKING EMAIL] Failed: {exc}"
+        except Exception:
+            logger.exception(
+                "Unable to queue admin booking email for booking %s.",
+                booking.booking_id,
             )
 
 
@@ -1622,16 +1582,6 @@ def _send_payment_success_email(request, booking):
 
     This is separate from the initial booking-received email.
     """
-
-    if not _can_send_mail():
-
-        print(
-            f"[PAYMENT] Would send confirmation: "
-            f"{booking.email} "
-            f"(booking {booking.booking_id})"
-        )
-
-        return
 
     total_price = (
         booking.total_amount
@@ -1722,8 +1672,8 @@ def _send_payment_success_email(request, booking):
             )
         )
 
-    except Exception as exc:
-
-        print(
-            f"[PAYMENT SUCCESS EMAIL] Failed: {exc}"
+    except Exception:
+        logger.exception(
+            "Unable to queue payment confirmation for booking %s.",
+            booking.booking_id,
         )
